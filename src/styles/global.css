@@ -1,1 +1,44 @@
 @import "tailwindcss";
+
+/*
+  Couleurs : variables de la collection Figma « Repolink » (mode Sombre).
+  Le nom Figma « fond/page » devient la classe Tailwind « bg-fond-page »,
+  « texte/principal » devient « text-texte-principal », etc.
+*/
+@theme {
+  /* Fonds */
+  --color-fond-page: #0d1117;
+  --color-fond-panneau: #161b22;
+  --color-fond-carte: #1c2128;
+  --color-fond-champ: #21262d;
+  --color-fond-topic: #14233a;
+  --color-fond-succes: #12301c;
+
+  /* Bordures */
+  --color-bordure-defaut: #30363d;
+
+  /* Textes */
+  --color-texte-principal: #e6edf3;
+  --color-texte-secondaire: #8b949e;
+
+  /* Accents */
+  --color-accent-lien: #58a6ff;
+  --color-accent-succes: #3fb950;
+  --color-accent-etoile: #e3b341;
+  --color-accent-danger: #f85149;
+  --color-accent-cyan: #00b8c8;
+  --color-accent-rose: #d45a9a;
+  --color-accent-onglet: #fd8c73;
+
+  /* Boutons */
+  --color-bouton-primaire: #238636;
+  --color-bouton-primaire-bordure: #3fa050;
+  --color-bouton-primaire-survol: #2ea043;
+  --color-bouton-page-active: #1f6feb;
+
+  /* Labels */
+  --color-label-good-first-issue: #7057ff;
+
+  /* Divers */
+  --color-blanc: #ffffff;
+}
