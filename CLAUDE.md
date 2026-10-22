@@ -9,8 +9,6 @@ npm run dev
 ```
 URL : http://localhost:4321
 
-(Disponible à partir de l'étape 1.3 : le projet Astro n'est pas encore installé.)
-
 ## Structure
 ```
 src/        code source (pages, composants, styles)
