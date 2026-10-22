@@ -20,8 +20,11 @@ URL : http://localhost:4321
 ## Structure
 
 ```
-src/        code source (pages, composants, styles)
+src/
+  pages/    une page = une route (index.astro = l'accueil)
+  styles/   global.css : thème Tailwind (couleurs et polices Figma)
 assets/     images et polices
+public/     fichiers servis tels quels (favicon)
 README.md
 ```
 
