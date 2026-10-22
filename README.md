@@ -30,4 +30,11 @@ README.md
 
 ## Maquettes
 
-Les maquettes (46 pages, composants, prototype) sont dans Figma : fichier « wireframe github (copie) ».
+- **Figma** : [wireframe github (copie)](https://www.figma.com/design/GJ2KMbxx5scYChiw6kxbUE)
+  - section *Wireframes* : les wireframes en gris
+  - sections *Site* et *Pages secondaires* : les 46 pages stylées, avec le prototype cliquable (mode Présentation)
+  - section *Composants* : la bibliothèque (boutons, champs, cartes, liens…) avec leurs états (survol, focus, ouvert…)
+  - variables de couleurs (collection « Repolink ») et styles de texte
+- **FigJam** : [Arborescence Repolink](https://www.figma.com/board/2iw6Lsaaydt88pwBVmgYYk) : les 46 pages et les liens entre elles
+
+Ces liens demandent un accès Figma.
