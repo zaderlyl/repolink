@@ -1,11 +1,19 @@
 @import "tailwindcss";
 
+/* Polices chargées en local (Fontsource) : pas d'appel à Google Fonts */
+@import "@fontsource-variable/inter";
+@import "@fontsource-variable/space-grotesk";
+
 /*
   Couleurs : variables de la collection Figma « Repolink » (mode Sombre).
   Le nom Figma « fond/page » devient la classe Tailwind « bg-fond-page »,
   « texte/principal » devient « text-texte-principal », etc.
 */
 @theme {
+  /* Polices : Inter pour le texte (police par défaut), Space Grotesk pour les titres */
+  --font-sans: "Inter Variable", system-ui, sans-serif;
+  --font-titre: "Space Grotesk Variable", system-ui, sans-serif;
+
   /* Fonds */
   --color-fond-page: #0d1117;
   --color-fond-panneau: #161b22;
