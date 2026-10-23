@@ -3,6 +3,7 @@
 // La ligne mène au profil (le lien du nom s'étire dessus) ; le bouton Suivre / Suivi passe au-dessus.
 // `suivi` : l'utilisateur suit déjà ce créateur (le bouton devient « Suivi », en secondaire).
 // Le changement d'état au clic sera branché à l'étape 8 (interactions).
+// Sous le nom : « pseudo · N followers » ; `detail` remplace « N followers » (ex. « 2.1k contributions »).
 import type { HTMLAttributes } from 'astro/types';
 import Avatar from './avatar.astro';
 import Bouton from './bouton.astro';
@@ -10,13 +11,15 @@ import Bouton from './bouton.astro';
 type Props = {
 	nom: string;
 	pseudo: string;
-	abonnes: string;
+	abonnes?: string;
+	detail?: string;
 	href: string;
 	suivi?: boolean;
 	avatar?: string;
 } & HTMLAttributes<'article'>;
 
-const { nom, pseudo, abonnes, href, suivi = false, avatar, class: classe, ...reste } = Astro.props;
+const { nom, pseudo, abonnes, detail, href, suivi = false, avatar, class: classe, ...reste } = Astro.props;
+const info = detail ?? `${abonnes} followers`;
 ---
 
 <article
@@ -32,7 +35,7 @@ const { nom, pseudo, abonnes, href, suivi = false, avatar, class: classe, ...res
 			<h3 class="text-sm leading-4 font-semibold">
 				<a href={href} class="after:absolute after:inset-0">{nom}</a>
 			</h3>
-			<p class="text-xs leading-4 text-texte-secondaire">{pseudo} · {abonnes} followers</p>
+			<p class="text-xs leading-4 text-texte-secondaire">{pseudo} · {info}</p>
 		</div>
 	</div>
 	<Bouton variante={suivi ? 'secondaire' : 'primaire'} aria-pressed={suivi} class="relative z-10">

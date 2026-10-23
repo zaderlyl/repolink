@@ -6,18 +6,34 @@ import {
 	ErreurGithub,
 	rechercherIssues,
 	rechercherRepos,
+	recupererContributeurs,
 	recupererLangages,
 	recupererProfil,
 	recupererRepo,
 } from '../lib/github.ts';
 import type { IssueGithub } from '../lib/github.ts';
-import { ilYA, nomRepoDepuisUrl, versFicheRepo, versProfil, versRepartition } from '../lib/conversion.ts';
+import {
+	ilYA,
+	nomRepoDepuisUrl,
+	versContributeur,
+	versFicheRepo,
+	versProfil,
+	versRepartition,
+} from '../lib/conversion.ts';
 import type { FicheRepo } from '../lib/conversion.ts';
 import { purgerCache } from '../lib/cache.ts';
 import { hrefProfil, hrefRepo } from '../lib/adresses.ts';
 import type { OngletRepo } from '../lib/adresses.ts';
-import { construireRequeteIssuesRepo, construireRequeteSimilaires, lireNomRepo, lireOnglet } from '../lib/recherche.ts';
-import { $, creerCarteRepo, depuisModele, messageErreur, montrer } from './commun.ts';
+import {
+	construireRequeteIssuesRepo,
+	construireRequeteSimilaires,
+	lireFiltres,
+	lireNomRepo,
+	lireOnglet,
+	nombrePages,
+	RESULTATS_PAR_PAGE,
+} from '../lib/recherche.ts';
+import { $, afficherPagination, creerCarteRepo, depuisModele, messageErreur, montrer } from './commun.ts';
 
 const ZONES = ['chargement', 'contenu', 'introuvable', 'erreur'];
 const ONGLETS: { id: OngletRepo; texte: string }[] = [
@@ -26,8 +42,9 @@ const ONGLETS: { id: OngletRepo; texte: string }[] = [
 	{ id: 'contributeurs', texte: 'Contributeurs' },
 	{ id: 'similaires', texte: 'Similaires' },
 ];
-const NB_ISSUES = 4;
-const NB_SIMILAIRES = 2;
+const NB_ISSUES = 4; // dans l'Aperçu
+const NB_SIMILAIRES = 2; // dans l'Aperçu
+const MAX_CONTRIBUTEURS = 30; // l'API en donne 30 par page : on affiche les 30 premiers
 
 function afficherOnglets(nom: string, onglet: OngletRepo) {
 	const barre = $('onglets');
@@ -64,7 +81,17 @@ function afficherApropos(fiche: FicheRepo) {
 	$('watchers').textContent = fiche.watchers;
 }
 
-// --- Blocs chargés séparément ---
+// La ligne mène à l'issue sur GitHub : c'est là qu'on la prend en charge
+function creerLigneIssue(issue: IssueGithub) {
+	return depuisModele('modele-issue', {
+		titre: issue.title,
+		href: issue.html_url,
+		repo: nomRepoDepuisUrl(issue.repository_url),
+		ouverte: ilYA(issue.created_at),
+	});
+}
+
+// --- Blocs chargés séparément (Aperçu) ---
 
 async function chargerLangages(nom: string) {
 	const barre = $('barre-langages');
@@ -136,17 +163,7 @@ async function chargerIssues(fiche: FicheRepo) {
 			vide.hidden = false;
 			return;
 		}
-		liste.replaceChildren(
-			...resultat.items.map((issue: IssueGithub) =>
-				depuisModele('modele-issue', {
-					titre: issue.title,
-					// La ligne mène à l'issue sur GitHub : c'est là qu'on la prend en charge
-					href: issue.html_url,
-					repo: nomRepoDepuisUrl(issue.repository_url),
-					ouverte: ilYA(issue.created_at),
-				}),
-			),
-		);
+		liste.replaceChildren(...resultat.items.map(creerLigneIssue));
 	} catch (erreur) {
 		vide.textContent = `Issues indisponibles : ${messageErreur(erreur)}`;
 		vide.hidden = false;
@@ -182,6 +199,125 @@ async function chargerSimilaires(fiche: FicheRepo) {
 	}
 }
 
+// --- Onglets Issues, Contributeurs et Similaires ---
+
+// Page demandée au-delà de la dernière (adresse tapée à la main) : on va à la dernière page qui existe
+function allerALaDerniere(page: number, total: number, href: (page: number) => string) {
+	const pages = nombrePages(total);
+	if (page <= pages) return false;
+	location.replace(href(pages));
+	return true;
+}
+
+async function chargerOngletIssues(fiche: FicheRepo, page: number) {
+	const liste = $('toutes-issues');
+	const vide = $('toutes-issues-vide');
+	const attente = $('chargement-issues');
+	const href = (p: number) => hrefRepo(fiche.nom, 'issues', p);
+	try {
+		const resultat = await rechercherIssues(construireRequeteIssuesRepo(fiche.nom), {
+			tri: 'updated',
+			ordre: 'desc',
+			page,
+			parPage: RESULTATS_PAR_PAGE,
+		});
+		if (allerALaDerniere(page, resultat.total_count, href)) return;
+		attente.hidden = true;
+		$('entete-toutes-issues').querySelector('h2')!.textContent = `Issues ouvertes · ${new Intl.NumberFormat('fr-FR').format(resultat.total_count)}`;
+		if (resultat.items.length === 0) {
+			vide.textContent = 'Aucune good first issue ouverte pour l’instant.';
+			vide.hidden = false;
+			return;
+		}
+		liste.replaceChildren(...resultat.items.map(creerLigneIssue));
+		afficherPagination($('pagination'), page, resultat.total_count, href);
+	} catch (erreur) {
+		attente.hidden = true;
+		vide.textContent = `Issues indisponibles : ${messageErreur(erreur)}`;
+		vide.hidden = false;
+	}
+}
+
+async function chargerOngletContributeurs(fiche: FicheRepo) {
+	const liste = $('liste-contributeurs');
+	const vide = $('contributeurs-vide');
+	const attente = $('chargement-contributeurs');
+	try {
+		const tous = await recupererContributeurs(fiche.nom, MAX_CONTRIBUTEURS);
+		attente.hidden = true;
+		// Les robots (« xxx[bot] ») n'ont pas de profil : on ne les liste pas
+		const contributeurs = tous.filter((c) => !c.login.endsWith('[bot]')).map(versContributeur);
+		if (contributeurs.length === 0) {
+			vide.textContent = 'Aucun contributeur trouvé.';
+			vide.hidden = false;
+			return;
+		}
+		const plusDeTrente = tous.length >= MAX_CONTRIBUTEURS;
+		$('titre-contributeurs').textContent = plusDeTrente
+			? 'Principaux contributeurs'
+			: `${contributeurs.length} contributeur${contributeurs.length > 1 ? 's' : ''}`;
+		liste.replaceChildren(
+			...contributeurs.map((contributeur) => {
+				const item = document.createElement('li');
+				item.append(
+					depuisModele('modele-contributeur', {
+						nom: contributeur.pseudo,
+						pseudo: `@${contributeur.pseudo}`,
+						detail: contributeur.contributions,
+						href: hrefProfil(contributeur.pseudo),
+						avatar: contributeur.avatar,
+					}),
+				);
+				return item;
+			}),
+		);
+		if (plusDeTrente) {
+			$('contributeurs-plus').hidden = false;
+			$<HTMLAnchorElement>('contributeurs-github').href = `${fiche.urlGithub}/graphs/contributors`;
+		}
+	} catch (erreur) {
+		attente.hidden = true;
+		vide.textContent = `Contributeurs indisponibles : ${messageErreur(erreur)}`;
+		vide.hidden = false;
+	}
+}
+
+async function chargerOngletSimilaires(fiche: FicheRepo, page: number) {
+	const liste = $('tous-similaires');
+	const vide = $('tous-similaires-vide');
+	const attente = $('chargement-similaires');
+	const href = (p: number) => hrefRepo(fiche.nom, 'similaires', p);
+	const requete = construireRequeteSimilaires(fiche);
+	if (!requete) {
+		attente.hidden = true;
+		vide.textContent = 'Pas assez d’informations pour trouver des repos similaires.';
+		vide.hidden = false;
+		return;
+	}
+	try {
+		const resultat = await rechercherRepos(requete, { tri: 'stars', ordre: 'desc', page, parPage: RESULTATS_PAR_PAGE });
+		if (allerALaDerniere(page, resultat.total_count, href)) return;
+		attente.hidden = true;
+		if (resultat.items.length === 0) {
+			vide.textContent = 'Aucun repo similaire trouvé.';
+			vide.hidden = false;
+			return;
+		}
+		liste.replaceChildren(
+			...resultat.items.map((repo) => {
+				const item = document.createElement('li');
+				item.append(creerCarteRepo(repo));
+				return item;
+			}),
+		);
+		afficherPagination($('pagination'), page, resultat.total_count, href);
+	} catch (erreur) {
+		attente.hidden = true;
+		vide.textContent = `Repos similaires indisponibles : ${messageErreur(erreur)}`;
+		vide.hidden = false;
+	}
+}
+
 // --- Page ---
 
 async function charger() {
@@ -189,6 +325,7 @@ async function charger() {
 	const parametres = new URLSearchParams(location.search);
 	const nom = lireNomRepo(parametres);
 	const onglet = lireOnglet(parametres);
+	const page = lireFiltres(parametres).page;
 	if (!nom) {
 		montrer(ZONES, 'introuvable');
 		return;
@@ -211,8 +348,7 @@ async function charger() {
 	afficherOnglets(fiche.nom, onglet);
 	afficherEntete(fiche);
 	afficherApropos(fiche);
-	$('panneau-apercu').hidden = onglet !== 'apercu';
-	$('panneau-bientot').hidden = onglet === 'apercu';
+	for (const { id } of ONGLETS) $(`panneau-${id}`).hidden = id !== onglet;
 	montrer(ZONES, 'contenu');
 
 	if (onglet === 'apercu') {
@@ -220,6 +356,12 @@ async function charger() {
 		chargerCreateur(fiche);
 		chargerIssues(fiche);
 		chargerSimilaires(fiche);
+	} else if (onglet === 'issues') {
+		chargerOngletIssues(fiche, page);
+	} else if (onglet === 'contributeurs') {
+		chargerOngletContributeurs(fiche);
+	} else {
+		chargerOngletSimilaires(fiche, page);
 	}
 }
 

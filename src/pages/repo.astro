@@ -98,10 +98,37 @@ import Pill from '../components/ui/pill.astro';
 				</aside>
 			</div>
 
-			<!-- Issues, Contributeurs et Similaires : à venir (étape 7.3) -->
-			<div id="panneau-bientot" hidden class="mt-12">
-				<EtatVide symbole="…" titre="Bientôt disponible" texte="Cette section de la fiche arrive très vite." />
-			</div>
+			<!-- Onglet Issues : toutes les good first issues du repo, par pages -->
+			<section id="panneau-issues" aria-label="Issues ouvertes" hidden class="mt-12">
+				<div class="overflow-hidden rounded-xl border border-bordure-defaut bg-fond-page">
+					<EntetePanneau id="entete-toutes-issues" titre="Issues ouvertes" />
+					<div id="toutes-issues"></div>
+					<div id="chargement-issues" aria-hidden="true" class="h-60 animate-pulse border-t border-bordure-defaut bg-fond-panneau"></div>
+					<p id="toutes-issues-vide" hidden class="border-t border-bordure-defaut px-5 py-6 text-sm text-texte-secondaire"></p>
+				</div>
+			</section>
+
+			<!-- Onglet Contributeurs : les premiers contributeurs du repo -->
+			<section id="panneau-contributeurs" aria-labelledby="titre-contributeurs" hidden class="mt-12">
+				<h2 id="titre-contributeurs" class="text-xl font-semibold">Contributeurs</h2>
+				<ul id="liste-contributeurs" class="mt-6 grid gap-4 md:grid-cols-2"></ul>
+				<div id="chargement-contributeurs" aria-hidden="true" class="mt-6 h-40 animate-pulse rounded-xl bg-fond-panneau"></div>
+				<p id="contributeurs-vide" hidden class="mt-6 text-sm text-texte-secondaire"></p>
+				<p id="contributeurs-plus" hidden class="mt-6 text-sm text-texte-secondaire">
+					Seuls les premiers contributeurs sont affichés.
+					<a id="contributeurs-github" href="/" target="_blank" rel="noopener noreferrer" class="text-accent-lien hover:underline">Voir tous les contributeurs sur GitHub</a>
+				</p>
+			</section>
+
+			<!-- Onglet Similaires : tous les repos proches, par pages -->
+			<section id="panneau-similaires" aria-labelledby="titre-tous-similaires" hidden class="mt-12">
+				<h2 id="titre-tous-similaires" class="text-xl font-semibold">Repos similaires</h2>
+				<ul id="tous-similaires" class="mt-6 grid gap-6 md:grid-cols-2"></ul>
+				<div id="chargement-similaires" aria-hidden="true" class="mt-6 h-60 animate-pulse rounded-xl bg-fond-panneau"></div>
+				<p id="tous-similaires-vide" hidden class="mt-6 text-sm text-texte-secondaire"></p>
+			</section>
+
+			<div id="pagination" class="mt-6 flex justify-center"></div>
 		</div>
 
 		<div id="introuvable" hidden class="mt-6">
@@ -133,6 +160,9 @@ import Pill from '../components/ui/pill.astro';
 	</template>
 	<template id="modele-createur">
 		<LigneCreateur nom="__nom__" pseudo="__pseudo__" abonnes="__abonnes__" href="__href__" avatar="__avatar__" />
+	</template>
+	<template id="modele-contributeur">
+		<LigneCreateur nom="__nom__" pseudo="__pseudo__" detail="__detail__" href="__href__" avatar="__avatar__" />
 	</template>
 	<template id="modele-repo">
 		<CarteRepo

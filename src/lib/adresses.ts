@@ -6,9 +6,9 @@
 export type OngletRepo = 'apercu' | 'issues' | 'contributeurs' | 'similaires';
 
 // Le nom d'un repo ne contient que des lettres, chiffres et - _ . / : il s'écrit tel quel dans l'adresse.
-// L'onglet « Aperçu » est celui par défaut : il n'est pas écrit.
-export const hrefRepo = (nom: string, onglet: OngletRepo = 'apercu') =>
-	`/repo?nom=${nom}${onglet === 'apercu' ? '' : `&onglet=${onglet}`}`;
+// L'onglet « Aperçu » et la page 1 sont ceux par défaut : ils ne sont pas écrits.
+export const hrefRepo = (nom: string, onglet: OngletRepo = 'apercu', page = 1) =>
+	`/repo?nom=${nom}${onglet === 'apercu' ? '' : `&onglet=${onglet}`}${page > 1 ? `&page=${page}` : ''}`;
 
 export const hrefProfil = (pseudo: string) => `/profil?pseudo=${pseudo}`;
 
