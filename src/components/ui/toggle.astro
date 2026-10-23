@@ -1,0 +1,21 @@
+---
+// Interrupteur on/off (maquette Figma : « Toggle »).
+// Même principe que la case à cocher : un <input> caché (role="switch") et un dessin à côté.
+// `label` : texte affiché à droite ; sans lui, passer un `aria-label`.
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = {
+	label?: string;
+} & Omit<HTMLAttributes<'input'>, 'type'>;
+
+const { label, class: classe, ...reste } = Astro.props;
+---
+
+<label class:list={['inline-flex cursor-pointer items-center gap-3 text-sm', classe]}>
+	<input type="checkbox" role="switch" class="peer sr-only" {...reste} />
+	<span
+		aria-hidden="true"
+		class="relative h-[22px] w-10 rounded-full bg-bordure-defaut transition-colors after:absolute after:top-0.5 after:left-0.5 after:size-[18px] after:rounded-full after:bg-blanc after:transition-transform peer-checked:bg-bouton-primaire peer-checked:after:translate-x-[18px] peer-focus-visible:ring-2 peer-focus-visible:ring-accent-lien"
+	></span>
+	{label}
+</label>

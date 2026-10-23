@@ -6,6 +6,12 @@ import Layout from '../layouts/layout.astro';
 import Bouton from '../components/ui/bouton.astro';
 import BoutonIcone from '../components/ui/bouton-icone.astro';
 import BoutonStar from '../components/ui/bouton-star.astro';
+import ChampRecherche from '../components/ui/champ-recherche.astro';
+import ChampTexte from '../components/ui/champ-texte.astro';
+import ZoneTexte from '../components/ui/zone-texte.astro';
+import Selecteur from '../components/ui/selecteur.astro';
+import CaseACocher from '../components/ui/case-a-cocher.astro';
+import Toggle from '../components/ui/toggle.astro';
 
 const variantes = ['primaire', 'secondaire', 'danger'] as const;
 ---
@@ -53,6 +59,51 @@ const variantes = ['primaire', 'secondaire', 'danger'] as const;
 			<div class="mt-3 flex items-center gap-3">
 				<BoutonStar />
 				<BoutonStar actif />
+			</div>
+		</section>
+
+		<section class="mt-12" aria-labelledby="champs">
+			<h2 id="champs" class="font-titre text-2xl font-bold">Champs et sélection</h2>
+
+			<h3 class="mt-6 text-sm font-semibold text-texte-secondaire">Champ de recherche</h3>
+			<ChampRecherche class="mt-3" name="recherche-demo" />
+
+			<h3 class="mt-8 text-sm font-semibold text-texte-secondaire">
+				Champ de texte : normal, avec valeur, erreur (le focus se voit en cliquant dedans)
+			</h3>
+			<div class="mt-3 flex flex-wrap items-start gap-6">
+				<ChampTexte id="demo-nom" label="Nom" name="nom" placeholder="Saisir…" class="w-80" />
+				<ChampTexte id="demo-pseudo" label="Pseudo GitHub" name="pseudo" value="@camille-d" class="w-80" />
+				<ChampTexte
+					id="demo-email"
+					label="E-mail"
+					name="email"
+					type="email"
+					placeholder="toi@exemple.fr"
+					erreur="Champ requis"
+					class="w-80"
+				/>
+			</div>
+
+			<h3 class="mt-8 text-sm font-semibold text-texte-secondaire">Zone de texte et sélecteur</h3>
+			<div class="mt-3 flex flex-wrap items-start gap-6">
+				<ZoneTexte id="demo-message" label="Message" name="message" placeholder="Écris ton message…" class="w-80" />
+				<Selecteur
+					id="demo-niveau"
+					label="Niveau"
+					name="niveau"
+					options={['Débutant', 'Intermédiaire', 'Avancé']}
+					valeur="Débutant"
+					class="w-80"
+				/>
+			</div>
+
+			<h3 class="mt-8 text-sm font-semibold text-texte-secondaire">Case à cocher et toggle</h3>
+			<div class="mt-3 flex flex-wrap items-center gap-8">
+				<CaseACocher label="Non cochée" name="case-1" />
+				<CaseACocher label="Cochée" name="case-2" checked />
+				<Toggle label="Désactivé" name="toggle-1" />
+				<Toggle label="Activé" name="toggle-2" checked />
 			</div>
 		</section>
 	</main>
