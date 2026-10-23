@@ -1,0 +1,38 @@
+---
+// Layout de base : il enveloppe toutes les pages du site.
+import '../styles/global.css';
+import Navbar from '../components/navbar.astro';
+import Footer from '../components/footer.astro';
+
+interface Props {
+	titre?: string;
+	description?: string;
+}
+
+const {
+	titre = 'Repolink',
+	description = 'Trouve des repos GitHub à ta portée et rencontre des créateurs.',
+} = Astro.props;
+
+// « Blog · Repolink » sur les pages, « Repolink » seul sur l'accueil
+const titreComplet = titre === 'Repolink' ? titre : `${titre} · Repolink`;
+---
+
+<!doctype html>
+<html lang="fr">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="description" content={description} />
+		<meta name="generator" content={Astro.generator} />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" href="/favicon.ico" />
+		<title>{titreComplet}</title>
+	</head>
+	<body class="flex min-h-screen flex-col bg-fond-page text-texte-principal antialiased">
+		<Navbar />
+		<slot />
+		<!-- mt-auto : le footer reste en bas de page, même quand le contenu est court -->
+		<Footer />
+	</body>
+</html>

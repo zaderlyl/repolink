@@ -1,0 +1,36 @@
+---
+// Page « Guide du contributeur » (maquette Figma : « Site - Guide du contributeur »).
+import Article from '../layouts/article.astro';
+
+const sections = [
+	{
+		id: 'trouver-un-projet',
+		titre: '1. Trouver un projet',
+		texte: 'Cherche un repo dans ta technologie préférée et vérifie qu’il est actif : des commits récents, des issues qui reçoivent des réponses, un README clair.',
+	},
+	{
+		id: 'lire-le-contributing',
+		titre: '2. Lire le fichier CONTRIBUTING',
+		texte: 'Ce fichier explique comment proposer un changement : style de code, tests à lancer, format des messages de commit. Le lire t’évite beaucoup d’allers-retours.',
+	},
+	{
+		id: 'choisir-une-issue',
+		titre: '3. Choisir une good first issue',
+		texte: 'Ces issues sont repérées par les mainteneurs comme accessibles aux débutants. Commente pour dire que tu t’en occupes, puis attends leur accord.',
+	},
+	{
+		id: 'ouvrir-une-pull-request',
+		titre: '4. Ouvrir ta pull request',
+		texte: 'Crée une branche, fais ton changement, puis propose-le. Décris ce que tu as fait et pourquoi : c’est la partie que les mainteneurs lisent en premier.',
+	},
+];
+---
+
+<Article
+	titre="Guide du contributeur"
+	description="Comment faire ta première contribution open source, étape par étape."
+	intro="Contribuer à l’open source n’est pas réservé aux experts. Voici comment faire ta première contribution, étape par étape."
+	sections={sections}
+	sommaire="Sommaire"
+	libellesSommaire={['1. Trouver un projet', '2. Lire le CONTRIBUTING', '3. Choisir une issue', '4. Ouvrir une pull request']}
+/>

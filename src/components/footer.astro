@@ -1,0 +1,35 @@
+---
+// Pied de page affiché en bas de chaque page (maquette Figma : composant « Footer »).
+// Les pages vers lesquelles il pointe seront créées aux étapes suivantes.
+const liens = [
+	{ texte: 'À propos', href: '/a-propos' },
+	{ texte: 'Contact', href: '/contact' },
+	{ texte: 'Mentions légales', href: '/mentions-legales' },
+	{ texte: 'Confidentialité', href: '/confidentialite' },
+	{ texte: 'Cookies', href: '/cookies' },
+];
+
+const annee = new Date().getFullYear();
+---
+
+<footer class="mx-auto mt-auto w-full max-w-360 px-10 pt-15 pb-10">
+	<div
+		class="flex h-25 items-center justify-between rounded-xl border border-bordure-defaut bg-fond-panneau px-8 text-[13px]"
+	>
+		<p class="text-texte-secondaire">© {annee} Repolink · Fait pour la communauté open source</p>
+
+		<nav aria-label="Liens du pied de page">
+			<ul class="flex items-center gap-6">
+				{
+					liens.map(({ texte, href }) => (
+						<li>
+							<a href={href} class="font-medium transition-colors hover:text-accent-lien">
+								{texte}
+							</a>
+						</li>
+					))
+				}
+			</ul>
+		</nav>
+	</div>
+</footer>

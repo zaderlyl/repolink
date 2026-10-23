@@ -1,0 +1,32 @@
+---
+// Ligne d'une page de paramètres (maquette Figma : « Ligne paramètre »).
+// Deux types :
+//   type="lien"   : toute la ligne est un lien (avec un chevron ›) ; il faut `href`.
+//   type="toggle" : un interrupteur à droite ; il faut `id` et `name`, et `actif` pour le mettre en marche.
+import type { HTMLAttributes } from 'astro/types';
+import Toggle from './toggle.astro';
+
+type Props =
+	| ({ type?: 'lien'; label: string; href: string } & HTMLAttributes<'a'>)
+	| ({ type: 'toggle'; label: string; id: string; name: string; actif?: boolean } & HTMLAttributes<'div'>);
+
+const props = Astro.props;
+const base =
+	'flex h-14 items-center justify-between gap-4 rounded-lg border border-bordure-defaut bg-fond-panneau px-4 text-sm font-medium transition-colors';
+---
+
+{
+	props.type === 'toggle' ? (
+		<div class:list={[base, props.class]}>
+			<label for={props.id} class="flex-1 cursor-pointer">
+				{props.label}
+			</label>
+			<Toggle id={props.id} name={props.name} checked={props.actif} />
+		</div>
+	) : (
+		<a href={props.href} class:list={[base, 'hover:border-accent-lien hover:bg-fond-carte', props.class]}>
+			{props.label}
+			<span aria-hidden="true" class="text-lg text-texte-secondaire">›</span>
+		</a>
+	)
+}

@@ -1,0 +1,41 @@
+---
+// Bouton (maquette Figma : composant « Bouton »).
+// Avec `href`, il devient un lien qui a l'apparence d'un bouton.
+// Le texte se met dans le contenu : <Bouton variante="danger">Supprimer</Bouton>
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = {
+	variante?: 'primaire' | 'secondaire' | 'danger';
+	href?: string;
+	desactive?: boolean;
+} & HTMLAttributes<'button'>;
+
+const { variante = 'primaire', href, desactive = false, class: classe, ...reste } = Astro.props;
+
+const variantes = {
+	primaire:
+		'border-bouton-primaire-bordure bg-bouton-primaire text-blanc hover:bg-bouton-primaire-survol',
+	secondaire: 'border-bordure-defaut bg-fond-champ text-texte-principal hover:bg-bordure-defaut',
+	danger:
+		'border-bordure-defaut bg-fond-champ text-accent-danger hover:bg-bouton-danger-survol hover:text-blanc',
+};
+
+// Lien : on n'a pas d'attribut « disabled », on utilise aria-disabled et on sort du tab.
+const Balise = href ? 'a' : 'button';
+const attributs = href
+	? { href, 'aria-disabled': desactive || undefined, tabindex: desactive ? -1 : undefined }
+	: { type: 'button', disabled: desactive };
+---
+
+<Balise
+	class:list={[
+		'inline-flex h-9 items-center justify-center gap-2 rounded-md border px-4 text-sm font-semibold transition-colors',
+		variantes[variante],
+		desactive && 'pointer-events-none cursor-not-allowed opacity-50',
+		classe,
+	]}
+	{...attributs}
+	{...reste}
+>
+	<slot />
+</Balise>

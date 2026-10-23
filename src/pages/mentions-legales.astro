@@ -1,0 +1,34 @@
+---
+// Page « Mentions légales » (maquette Figma : « Site - Mentions légales »).
+import Article from '../layouts/article.astro';
+
+const sections = [
+	{
+		id: 'editeur',
+		titre: 'Éditeur du site',
+		texte: 'Repolink est un projet étudiant réalisé dans le cadre du BUT MMI. Responsable de la publication : l’équipe du projet.',
+	},
+	{
+		id: 'hebergement',
+		titre: 'Hébergement',
+		texte: 'Le site est hébergé sur GitHub Pages, un service de GitHub, Inc.',
+	},
+	{
+		id: 'propriete-intellectuelle',
+		titre: 'Propriété intellectuelle',
+		texte: 'Les données des dépôts affichés proviennent de l’API publique de GitHub et restent la propriété de leurs auteurs respectifs.',
+	},
+	{
+		id: 'contact',
+		titre: 'Contact',
+		texte: 'Pour toute question, utilise le formulaire de la page Contact.',
+	},
+];
+---
+
+<Article
+	titre="Mentions légales"
+	description="Informations légales relatives au site Repolink."
+	intro="Informations légales relatives au site Repolink."
+	sections={sections}
+/>

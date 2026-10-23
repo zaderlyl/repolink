@@ -1,0 +1,29 @@
+---
+// Carte d'une catégorie de la page Explorer, par exemple un langage (maquette Figma : « Carte catégorie »).
+// `couleur` : couleur de la pastille (celle du langage). Toute la carte est un lien.
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = {
+	nom: string;
+	compte: string;
+	href: string;
+	couleur: string;
+} & HTMLAttributes<'a'>;
+
+const { nom, compte, href, couleur, class: classe, ...reste } = Astro.props;
+---
+
+<a
+	href={href}
+	class:list={[
+		'flex min-h-60 flex-col justify-between rounded-xl border border-bordure-defaut bg-fond-page p-6 transition-colors hover:border-accent-lien hover:bg-fond-panneau',
+		classe,
+	]}
+	{...reste}
+>
+	<span aria-hidden="true" class="size-7 rounded-full" style={`background-color: ${couleur}`}></span>
+	<span class="flex flex-col gap-1">
+		<span class="font-titre text-[22px] leading-7 font-bold">{nom}</span>
+		<span class="text-[13px] leading-4 text-texte-secondaire">{compte}</span>
+	</span>
+</a>

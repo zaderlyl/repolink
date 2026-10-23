@@ -1,0 +1,94 @@
+---
+// Carte d'un repo (maquette Figma : « Carte repo » et « Carte repo compacte »).
+// Toute la carte est cliquable : le lien du titre « s'étire » sur la carte (after:absolute),
+// et le bouton Star passe au-dessus (relative z-10), car un bouton ne peut pas être dans un lien.
+// `compacte` : version courte (nom, description, langage, étoiles), sans Star ni topics.
+import type { HTMLAttributes } from 'astro/types';
+import BoutonStar from './bouton-star.astro';
+import Pill from './pill.astro';
+
+type Props = {
+	nom: string;
+	href: string;
+	description: string;
+	langage: string;
+	couleurLangage: string;
+	etoiles: string;
+	compacte?: boolean;
+	miseAJour?: string;
+	topics?: string[];
+	goodFirstIssues?: number;
+	actif?: boolean;
+} & HTMLAttributes<'article'>;
+
+const {
+	nom,
+	href,
+	description,
+	langage,
+	couleurLangage,
+	etoiles,
+	compacte = false,
+	miseAJour,
+	topics = [],
+	goodFirstIssues = 0,
+	actif = false,
+	class: classe,
+	...reste
+} = Astro.props;
+---
+
+<article
+	class:list={[
+		'relative flex flex-col rounded-xl border border-bordure-defaut bg-fond-page p-4 transition-colors hover:border-accent-lien hover:bg-fond-panneau',
+		compacte && 'min-h-[150px]',
+		classe,
+	]}
+	{...reste}
+>
+	<div class="flex items-start justify-between gap-4">
+		<div class:list={['flex items-center gap-2', !compacte && 'h-7']}>
+			<span aria-hidden="true" class="size-3.5 shrink-0 rounded-full border-2 border-texte-secondaire"></span>
+			<h3>
+				<a
+					href={href}
+					class:list={[
+						'font-semibold text-accent-lien after:absolute after:inset-0',
+						compacte ? 'text-[15px]' : 'text-lg',
+					]}>{nom}</a
+				>
+			</h3>
+			{!compacte && <Pill variante="public">Public</Pill>}
+		</div>
+		{!compacte && <BoutonStar actif={actif} class="relative z-10" />}
+	</div>
+
+	<p class="mt-3 text-[13px] text-texte-secondaire">{description}</p>
+	{miseAJour && !compacte && <p class="mt-0.5 text-xs text-texte-secondaire">Mis à jour {miseAJour}</p>}
+
+	<div class="mt-auto flex flex-wrap items-center gap-x-4 gap-y-2 pt-4 text-xs text-texte-secondaire">
+		<span class="inline-flex items-center gap-2">
+			<span aria-hidden="true" class="size-2.5 rounded-full" style={`background-color: ${couleurLangage}`}></span>
+			{langage}
+		</span>
+		<span><span aria-hidden="true">★</span> {etoiles}<span class="sr-only"> étoiles</span></span>
+		{
+			!compacte && topics.length > 0 && (
+				<ul class="flex gap-2" aria-label="Topics">
+					{topics.map((topic) => (
+						<li>
+							<Pill variante="topic">{topic}</Pill>
+						</li>
+					))}
+				</ul>
+			)
+		}
+		{
+			!compacte && goodFirstIssues > 0 && (
+				<Pill variante="succes" class="ml-auto">
+					{goodFirstIssues} good first issues
+				</Pill>
+			)
+		}
+	</div>
+</article>

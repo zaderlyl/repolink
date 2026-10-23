@@ -1,0 +1,400 @@
+---
+// Page de démonstration : elle affiche tous les composants de l'interface,
+// comme la section « Composants » de la maquette Figma.
+// Chaque sous-étape de l'étape 3 y ajoute une section.
+import Layout from '../layouts/layout.astro';
+import Bouton from '../components/ui/bouton.astro';
+import BoutonIcone from '../components/ui/bouton-icone.astro';
+import BoutonStar from '../components/ui/bouton-star.astro';
+import ChampRecherche from '../components/ui/champ-recherche.astro';
+import ChampTexte from '../components/ui/champ-texte.astro';
+import ZoneTexte from '../components/ui/zone-texte.astro';
+import Selecteur from '../components/ui/selecteur.astro';
+import CaseACocher from '../components/ui/case-a-cocher.astro';
+import Toggle from '../components/ui/toggle.astro';
+import Chip from '../components/ui/chip.astro';
+import Pill from '../components/ui/pill.astro';
+import Avatar from '../components/ui/avatar.astro';
+import Onglets from '../components/ui/onglets.astro';
+import Onglet from '../components/ui/onglet.astro';
+import Pagination from '../components/ui/pagination.astro';
+import CarteRepo from '../components/ui/carte-repo.astro';
+import LigneIssue from '../components/ui/ligne-issue.astro';
+import GrilleContributions from '../components/ui/grille-contributions.astro';
+import CarteProfil from '../components/ui/carte-profil.astro';
+import CarteCategorie from '../components/ui/carte-categorie.astro';
+import CarteArticle from '../components/ui/carte-article.astro';
+import CarteMiseEnRelation from '../components/ui/carte-mise-en-relation.astro';
+import LigneCreateur from '../components/ui/ligne-createur.astro';
+import LigneParametre from '../components/ui/ligne-parametre.astro';
+import LigneInfo from '../components/ui/ligne-info.astro';
+import EntetePanneau from '../components/ui/entete-panneau.astro';
+import EtatVide from '../components/ui/etat-vide.astro';
+import Toast from '../components/ui/toast.astro';
+import MessageConfirmation from '../components/ui/message-confirmation.astro';
+
+// Activité d'exemple : 24 semaines de 5 jours, niveaux de 0 à 4 (calculés, pas de vraies données)
+const activite = Array.from({ length: 24 }, (_, semaine) =>
+	Array.from({ length: 5 }, (_, jour) => ((semaine * 7 + jour * 13) % 11) % 5),
+);
+
+// Les liens de démo restent sur cette page
+const adressePage = (n: number) => `/composants?page=${n}`;
+
+const variantes = ['primaire', 'secondaire', 'danger'] as const;
+---
+
+<Layout titre="Composants" description="Démonstration des composants de l'interface Repolink.">
+	<main class="mx-auto w-full max-w-360 px-10 pt-10">
+		<h1 class="font-titre text-4xl font-bold">Composants</h1>
+		<p class="mt-2 text-texte-secondaire">
+			Tous les composants de l'interface, avec leurs états. Cette page sert à les voir et à les
+			tester ; elle suit la section « Composants » de la maquette Figma.
+		</p>
+
+		<section class="mt-12" aria-labelledby="boutons">
+			<h2 id="boutons" class="font-titre text-2xl font-bold">Boutons</h2>
+
+			<h3 class="mt-6 text-sm font-semibold text-texte-secondaire">Bouton : normal, puis désactivé</h3>
+			<div class="mt-3 flex flex-col gap-3">
+				{
+					variantes.map((variante) => (
+						<div class="flex items-center gap-4">
+							<span class="w-24 text-sm text-texte-secondaire">{variante}</span>
+							<Bouton variante={variante}>Bouton</Bouton>
+							<Bouton variante={variante} desactive>
+								Bouton
+							</Bouton>
+						</div>
+					))
+				}
+				<div class="flex items-center gap-4">
+					<span class="w-24 text-sm text-texte-secondaire">lien</span>
+					<Bouton href="/">Retour à l'accueil</Bouton>
+				</div>
+			</div>
+
+			<h3 class="mt-8 text-sm font-semibold text-texte-secondaire">Bouton icône</h3>
+			<div class="mt-3 flex items-center gap-3">
+				<BoutonIcone label="Étoile">☆</BoutonIcone>
+				<BoutonIcone label="Favori" actif>★</BoutonIcone>
+				<BoutonIcone label="Ajouter">+</BoutonIcone>
+				<BoutonIcone label="Précédent">‹</BoutonIcone>
+				<BoutonIcone label="Suivant">›</BoutonIcone>
+			</div>
+
+			<h3 class="mt-8 text-sm font-semibold text-texte-secondaire">Bouton Star</h3>
+			<div class="mt-3 flex items-center gap-3">
+				<BoutonStar />
+				<BoutonStar actif />
+			</div>
+		</section>
+
+		<section class="mt-12" aria-labelledby="champs">
+			<h2 id="champs" class="font-titre text-2xl font-bold">Champs et sélection</h2>
+
+			<h3 class="mt-6 text-sm font-semibold text-texte-secondaire">Champ de recherche</h3>
+			<ChampRecherche class="mt-3" name="recherche-demo" />
+
+			<h3 class="mt-8 text-sm font-semibold text-texte-secondaire">
+				Champ de texte : normal, avec valeur, erreur (le focus se voit en cliquant dedans)
+			</h3>
+			<div class="mt-3 flex flex-wrap items-start gap-6">
+				<ChampTexte id="demo-nom" label="Nom" name="nom" placeholder="Saisir…" class="w-80" />
+				<ChampTexte id="demo-pseudo" label="Pseudo GitHub" name="pseudo" value="@camille-d" class="w-80" />
+				<ChampTexte
+					id="demo-email"
+					label="E-mail"
+					name="email"
+					type="email"
+					placeholder="toi@exemple.fr"
+					erreur="Champ requis"
+					class="w-80"
+				/>
+			</div>
+
+			<h3 class="mt-8 text-sm font-semibold text-texte-secondaire">Zone de texte et sélecteur</h3>
+			<div class="mt-3 flex flex-wrap items-start gap-6">
+				<ZoneTexte id="demo-message" label="Message" name="message" placeholder="Écris ton message…" class="w-80" />
+				<Selecteur
+					id="demo-niveau"
+					label="Niveau"
+					name="niveau"
+					options={['Débutant', 'Intermédiaire', 'Avancé']}
+					valeur="Débutant"
+					class="w-80"
+				/>
+			</div>
+
+			<h3 class="mt-8 text-sm font-semibold text-texte-secondaire">Case à cocher et toggle</h3>
+			<div class="mt-3 flex flex-wrap items-center gap-8">
+				<CaseACocher label="Non cochée" name="case-1" />
+				<CaseACocher label="Cochée" name="case-2" checked />
+				<Toggle label="Désactivé" name="toggle-1" />
+				<Toggle label="Activé" name="toggle-2" checked />
+			</div>
+		</section>
+
+		<section class="mt-12" aria-labelledby="tags">
+			<h2 id="tags" class="font-titre text-2xl font-bold">Tags</h2>
+
+			<h3 class="mt-6 text-sm font-semibold text-texte-secondaire">
+				Chip : actif, puis normal avec la pastille d'un langage (le survol se voit à la souris)
+			</h3>
+			<div class="mt-3 flex flex-wrap items-center gap-3">
+				<Chip actif>TOUT</Chip>
+				<Chip couleur="#f1e05a">JavaScript</Chip>
+				<Chip couleur="#3572a5">Python</Chip>
+				<Chip couleur="#563d7c">CSS</Chip>
+				<Chip href="/">Lien</Chip>
+			</div>
+
+			<h3 class="mt-8 text-sm font-semibold text-texte-secondaire">Pill</h3>
+			<div class="mt-3 flex flex-wrap items-center gap-3">
+				<Pill variante="topic">topic</Pill>
+				<Pill variante="good-first-issue">good first issue</Pill>
+				<Pill variante="succes">3 good first issues</Pill>
+				<Pill variante="public">Public</Pill>
+			</div>
+
+			<h3 class="mt-8 text-sm font-semibold text-texte-secondaire">Avatar : S, M, L</h3>
+			<div class="mt-3 flex items-center gap-4">
+				<Avatar taille="s" />
+				<Avatar taille="m" />
+				<Avatar taille="l" />
+			</div>
+		</section>
+
+		<section class="mt-12" aria-labelledby="navigation">
+			<h2 id="navigation" class="font-titre text-2xl font-bold">Navigation</h2>
+
+			<h3 class="mt-6 text-sm font-semibold text-texte-secondaire">Onglets (le survol se voit à la souris)</h3>
+			<Onglets label="Sections du repo (démo)" class="mt-3 w-fit">
+				<Onglet href="/composants" actif>Aperçu</Onglet>
+				<Onglet href="/composants#issues">Issues</Onglet>
+				<Onglet href="/composants#contributeurs">Contributeurs</Onglet>
+				<Onglet href="/composants#similaires">Similaires</Onglet>
+			</Onglets>
+
+			<h3 class="mt-8 text-sm font-semibold text-texte-secondaire">
+				Pagination : page 1, 2 et 3 sur 3, puis page 5 sur 12
+			</h3>
+			<div class="mt-3 flex flex-col gap-4">
+				<Pagination courante={1} total={3} href={adressePage} label="Pagination (démo 1)" />
+				<Pagination courante={2} total={3} href={adressePage} label="Pagination (démo 2)" />
+				<Pagination courante={3} total={3} href={adressePage} label="Pagination (démo 3)" />
+				<Pagination courante={5} total={12} href={adressePage} label="Pagination (démo 4)" />
+			</div>
+		</section>
+
+		<section class="mt-12" aria-labelledby="cartes-repos">
+			<h2 id="cartes-repos" class="font-titre text-2xl font-bold">Cartes de repos</h2>
+
+			<h3 class="mt-6 text-sm font-semibold text-texte-secondaire">
+				Carte repo : normale, puis déjà en favori (toute la carte est cliquable)
+			</h3>
+			<div class="mt-3 grid gap-4 md:grid-cols-2">
+				<CarteRepo
+					nom="lunaris/pixel-kit"
+					href="/composants#pixel-kit"
+					description="Kit de composants UI minimaliste en CSS pur, sans dépendance."
+					miseAJour="il y a 2 jours"
+					langage="JavaScript"
+					couleurLangage="#f1e05a"
+					etoiles="1.2k"
+					topics={['css', 'ui-kit']}
+					goodFirstIssues={3}
+				/>
+				<CarteRepo
+					nom="ada-dev/study-planner"
+					href="/composants#study-planner"
+					description="Planificateur de révisions en Python avec export vers ton calendrier."
+					miseAJour="il y a 2 jours"
+					langage="Python"
+					couleurLangage="#3572a5"
+					etoiles="842"
+					topics={['python', 'cli']}
+					goodFirstIssues={2}
+					actif
+				/>
+			</div>
+
+			<h3 class="mt-8 text-sm font-semibold text-texte-secondaire">Carte repo compacte</h3>
+			<div class="mt-3 grid gap-4 md:grid-cols-3">
+				<CarteRepo
+					compacte
+					nom="lunaris/pixel-kit"
+					href="/composants#pixel-kit"
+					description="Kit de composants UI minimaliste en CSS pur, sans dépendance."
+					langage="JavaScript"
+					couleurLangage="#f1e05a"
+					etoiles="1.2k"
+				/>
+				<CarteRepo
+					compacte
+					nom="nomad/api-starter"
+					href="/composants#api-starter"
+					description="Squelette d'API REST typé, avec tests et documentation prêts à l'emploi."
+					langage="TypeScript"
+					couleurLangage="#3178c6"
+					etoiles="3.4k"
+				/>
+				<CarteRepo
+					compacte
+					nom="kiwi/css-grid-lab"
+					href="/composants#css-grid-lab"
+					description="Exercices progressifs pour maîtriser CSS Grid, avec corrections."
+					langage="CSS"
+					couleurLangage="#563d7c"
+					etoiles="615"
+				/>
+			</div>
+
+			<h3 class="mt-8 text-sm font-semibold text-texte-secondaire">Ligne d'issue (dans un panneau)</h3>
+			<div class="mt-3 overflow-hidden rounded-xl border border-bordure-defaut">
+				<LigneIssue
+					titre="Corriger l'alignement du menu sur mobile"
+					href="/composants#issue-1"
+					repo="lunaris/pixel-kit"
+					ouverte="il y a 2 jours"
+					class="border-t-0"
+				/>
+				<LigneIssue
+					titre="Ajouter des tests pour le parseur de dates"
+					href="/composants#issue-2"
+					repo="ada-dev/study-planner"
+					ouverte="il y a 3 jours"
+				/>
+				<LigneIssue
+					titre="Traduire le README en français"
+					href="/composants#issue-3"
+					repo="nomad/api-starter"
+					ouverte="il y a 5 jours"
+				/>
+			</div>
+		</section>
+
+		<section class="mt-12" aria-labelledby="autres-cartes">
+			<h2 id="autres-cartes" class="font-titre text-2xl font-bold">Profils, catégories et articles</h2>
+
+			<h3 class="mt-6 text-sm font-semibold text-texte-secondaire">Grille de contributions</h3>
+			<GrilleContributions semaines={activite} class="mt-3" />
+
+			<h3 class="mt-8 text-sm font-semibold text-texte-secondaire">Carte profil</h3>
+			<div class="mt-3 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+				<CarteProfil
+					nom="Camille Durand"
+					pseudo="@camille-d"
+					abonnes="128"
+					bio="Dev front passionnée d'accessibilité. Je cherche des contributeurs pour mes outils CSS."
+					href="/composants#camille"
+					niveaux={activite}
+				/>
+				<CarteProfil
+					nom="Yanis Moreau"
+					pseudo="@yanis-m"
+					abonnes="342"
+					bio="Backend Python. Mentor open source, je réponds aux débutants chaque semaine."
+					href="/composants#yanis"
+					niveaux={activite}
+				/>
+			</div>
+
+			<h3 class="mt-8 text-sm font-semibold text-texte-secondaire">Carte catégorie</h3>
+			<div class="mt-3 grid gap-4 md:grid-cols-4">
+				<CarteCategorie nom="JavaScript" compte="48 210 repos" href="/composants#js" couleur="#f1e05a" />
+				<CarteCategorie nom="Python" compte="41 880 repos" href="/composants#python" couleur="#3572a5" />
+				<CarteCategorie nom="TypeScript" compte="36 450 repos" href="/composants#ts" couleur="#3178c6" />
+				<CarteCategorie nom="CSS" compte="22 300 repos" href="/composants#css" couleur="#563d7c" />
+			</div>
+
+			<h3 class="mt-8 text-sm font-semibold text-texte-secondaire">Carte article</h3>
+			<div class="mt-3 grid gap-4 md:grid-cols-3">
+				<CarteArticle
+					titre="Choisir sa première good first issue"
+					resume="Trois critères simples pour ne pas se tromper de projet quand on débute."
+					tag="Guide"
+					date="12 oct. 2026 · 5 min de lecture"
+					href="/composants#article-1"
+				/>
+				<CarteArticle
+					titre="Apprendre Git sans stress"
+					resume="Les cinq commandes qui suffisent pour contribuer à un projet."
+					tag="Tutoriel"
+					date="8 oct. 2026 · 4 min de lecture"
+					href="/composants#article-2"
+				/>
+			</div>
+
+			<h3 class="mt-8 text-sm font-semibold text-texte-secondaire">Carte mise en relation</h3>
+			<div class="mt-3 grid gap-4 md:grid-cols-3">
+				<CarteMiseEnRelation nom="Camille Durand" href="/composants#contact-1" tags={['JavaScript', 'Mentor']} />
+				<CarteMiseEnRelation nom="Yanis Moreau" href="/composants#contact-2" tags={['Python', 'Débutant']} />
+			</div>
+		</section>
+
+		<section class="mt-12" aria-labelledby="lignes">
+			<h2 id="lignes" class="font-titre text-2xl font-bold">Lignes et panneaux</h2>
+
+			<h3 class="mt-6 text-sm font-semibold text-texte-secondaire">En-tête de panneau (dans un panneau)</h3>
+			<div class="mt-3 max-w-[880px] overflow-hidden rounded-xl border border-bordure-defaut">
+				<EntetePanneau titre="Issues ouvertes" lienTexte="Voir tout" lienHref="/composants#issues" niveau="h3" />
+				<LigneIssue
+					titre="Corriger l'alignement du menu sur mobile"
+					href="/composants#issue-a"
+					repo="lunaris/pixel-kit"
+					ouverte="il y a 2 jours"
+				/>
+			</div>
+
+			<h3 class="mt-8 text-sm font-semibold text-texte-secondaire">Ligne créateur : Suivre, puis Suivi</h3>
+			<div class="mt-3 flex max-w-[480px] flex-col gap-3">
+				<LigneCreateur nom="Prénom Nom" pseudo="@pseudo" abonnes="128" href="/composants#createur-1" />
+				<LigneCreateur nom="Prénom Nom" pseudo="@pseudo" abonnes="128" href="/composants#createur-2" suivi />
+			</div>
+
+			<h3 class="mt-8 text-sm font-semibold text-texte-secondaire">Ligne paramètre : lien, toggle désactivé, toggle activé</h3>
+			<div class="mt-3 flex max-w-[480px] flex-col gap-3">
+				<LigneParametre label="Compte" href="/composants#compte" />
+				<LigneParametre type="toggle" label="Notifications par e-mail" id="param-1" name="notifications" />
+				<LigneParametre type="toggle" label="Profil public" id="param-2" name="profil-public" actif />
+			</div>
+
+			<h3 class="mt-8 text-sm font-semibold text-texte-secondaire">Ligne info</h3>
+			<div class="mt-3 flex max-w-[392px] flex-col gap-3">
+				<LigneInfo label="Langages : JavaScript, CSS" href="/composants#langages" />
+				<LigneInfo label="github.com/camille-d" href="/composants#github" />
+			</div>
+		</section>
+
+		<section class="mt-12" aria-labelledby="etats">
+			<h2 id="etats" class="font-titre text-2xl font-bold">États</h2>
+
+			<h3 class="mt-6 text-sm font-semibold text-texte-secondaire">État vide</h3>
+			<EtatVide
+				class="mt-3 max-w-[480px]"
+				niveau="h3"
+				titre="Rien pour l'instant"
+				texte="Ajoute des repos à tes favoris pour les retrouver ici."
+			>
+				<Bouton href="/composants#explorer">Explorer</Bouton>
+			</EtatVide>
+
+			<h3 class="mt-8 text-sm font-semibold text-texte-secondaire">Toast : succès, puis erreur</h3>
+			<div class="mt-3 flex flex-wrap items-center gap-4">
+				<Toast>Repo ajouté aux favoris</Toast>
+				<Toast variante="erreur">Une erreur est survenue</Toast>
+			</div>
+
+			<h3 class="mt-8 text-sm font-semibold text-texte-secondaire">Message de confirmation</h3>
+			<MessageConfirmation
+				class="mt-3 max-w-[420px]"
+				niveau="h3"
+				titre="Connexion réussie"
+				texte="Tu peux maintenant ajouter des favoris et contacter des créateurs."
+			>
+				<Bouton href="/composants#explorer-repos">Explorer les repos</Bouton>
+			</MessageConfirmation>
+		</section>
+	</main>
+</Layout>

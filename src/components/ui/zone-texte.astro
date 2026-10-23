@@ -1,0 +1,21 @@
+---
+// Zone de texte sur plusieurs lignes (maquette Figma : « Zone de texte »).
+// `id` est obligatoire : il relie le libellé au champ.
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = {
+	id: string;
+	label: string;
+} & HTMLAttributes<'textarea'>;
+
+const { id, label, class: classe, ...reste } = Astro.props;
+---
+
+<div class:list={['flex flex-col gap-1.5', classe]}>
+	<label for={id} class="text-[13px] font-medium">{label}</label>
+	<textarea
+		id={id}
+		class="min-h-[110px] w-full resize-y rounded-md border border-bordure-defaut bg-fond-page px-3 py-2.5 text-sm text-texte-principal placeholder:text-texte-secondaire hover:border-texte-secondaire focus:border-accent-lien focus:ring-1 focus:ring-accent-lien focus:outline-none"
+		{...reste}
+	></textarea>
+</div>
