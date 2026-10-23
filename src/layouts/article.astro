@@ -48,7 +48,9 @@ const { titre, description, intro, sections, sommaire, libellesSommaire } = Astr
 
 		<div class:list={['w-full', sommaire ? 'max-w-[820px]' : 'max-w-[800px]']}>
 			<h1 class="font-titre text-[40px] leading-tight font-bold">{titre}</h1>
-			<p class="mt-4 text-[17px] leading-6 text-texte-secondaire">{intro}</p>
+			<!-- Slot « entete » : auteur et image des articles de blog, entre le titre et l'intro -->
+			<slot name="entete" />
+			<p class:list={['text-[17px] leading-6 text-texte-secondaire', Astro.slots.has('entete') ? 'mt-6' : 'mt-4']}>{intro}</p>
 
 			<div class="mt-6 flex flex-col gap-5">
 				{

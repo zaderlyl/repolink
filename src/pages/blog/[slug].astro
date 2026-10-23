@@ -1,0 +1,29 @@
+---
+// Page d'un article de blog (maquette Figma : « Site - Article de blog »).
+import ArticleLayout from '../../layouts/article.astro';
+import Avatar from '../../components/ui/avatar.astro';
+import { articles, infosArticle } from '../../data/blog';
+
+// Une page par article du fichier src/data/blog.ts
+export function getStaticPaths() {
+	return articles.map((article) => ({ params: { slug: article.slug }, props: { article } }));
+}
+
+const { article } = Astro.props;
+---
+
+<ArticleLayout
+	titre={article.titre}
+	description={article.resume}
+	intro={article.intro}
+	sections={article.sections}
+	sommaire="Dans cet article"
+>
+	<Fragment slot="entete">
+		<p class="mt-3 flex items-center gap-3 text-sm text-texte-secondaire">
+			<Avatar taille="s" />
+			{article.auteur} · {infosArticle(article)}
+		</p>
+		<div aria-hidden="true" class="mt-5 h-[300px] rounded-xl bg-linear-to-r from-[#0e0e3a] to-[#0e4f62]"></div>
+	</Fragment>
+</ArticleLayout>
