@@ -18,6 +18,8 @@ import Avatar from '../components/ui/avatar.astro';
 import Onglets from '../components/ui/onglets.astro';
 import Onglet from '../components/ui/onglet.astro';
 import Pagination from '../components/ui/pagination.astro';
+import CarteRepo from '../components/ui/carte-repo.astro';
+import LigneIssue from '../components/ui/ligne-issue.astro';
 
 // Les liens de démo restent sur cette page
 const adressePage = (n: number) => `/composants?page=${n}`;
@@ -165,6 +167,93 @@ const variantes = ['primaire', 'secondaire', 'danger'] as const;
 				<Pagination courante={2} total={3} href={adressePage} label="Pagination (démo 2)" />
 				<Pagination courante={3} total={3} href={adressePage} label="Pagination (démo 3)" />
 				<Pagination courante={5} total={12} href={adressePage} label="Pagination (démo 4)" />
+			</div>
+		</section>
+
+		<section class="mt-12" aria-labelledby="cartes-repos">
+			<h2 id="cartes-repos" class="font-titre text-2xl font-bold">Cartes de repos</h2>
+
+			<h3 class="mt-6 text-sm font-semibold text-texte-secondaire">
+				Carte repo : normale, puis déjà en favori (toute la carte est cliquable)
+			</h3>
+			<div class="mt-3 grid gap-4 md:grid-cols-2">
+				<CarteRepo
+					nom="lunaris/pixel-kit"
+					href="/composants#pixel-kit"
+					description="Kit de composants UI minimaliste en CSS pur, sans dépendance."
+					miseAJour="il y a 2 jours"
+					langage="JavaScript"
+					couleurLangage="#f1e05a"
+					etoiles="1.2k"
+					topics={['css', 'ui-kit']}
+					goodFirstIssues={3}
+				/>
+				<CarteRepo
+					nom="ada-dev/study-planner"
+					href="/composants#study-planner"
+					description="Planificateur de révisions en Python avec export vers ton calendrier."
+					miseAJour="il y a 2 jours"
+					langage="Python"
+					couleurLangage="#3572a5"
+					etoiles="842"
+					topics={['python', 'cli']}
+					goodFirstIssues={2}
+					actif
+				/>
+			</div>
+
+			<h3 class="mt-8 text-sm font-semibold text-texte-secondaire">Carte repo compacte</h3>
+			<div class="mt-3 grid gap-4 md:grid-cols-3">
+				<CarteRepo
+					compacte
+					nom="lunaris/pixel-kit"
+					href="/composants#pixel-kit"
+					description="Kit de composants UI minimaliste en CSS pur, sans dépendance."
+					langage="JavaScript"
+					couleurLangage="#f1e05a"
+					etoiles="1.2k"
+				/>
+				<CarteRepo
+					compacte
+					nom="nomad/api-starter"
+					href="/composants#api-starter"
+					description="Squelette d'API REST typé, avec tests et documentation prêts à l'emploi."
+					langage="TypeScript"
+					couleurLangage="#3178c6"
+					etoiles="3.4k"
+				/>
+				<CarteRepo
+					compacte
+					nom="kiwi/css-grid-lab"
+					href="/composants#css-grid-lab"
+					description="Exercices progressifs pour maîtriser CSS Grid, avec corrections."
+					langage="CSS"
+					couleurLangage="#563d7c"
+					etoiles="615"
+				/>
+			</div>
+
+			<h3 class="mt-8 text-sm font-semibold text-texte-secondaire">Ligne d'issue (dans un panneau)</h3>
+			<div class="mt-3 overflow-hidden rounded-xl border border-bordure-defaut">
+				<LigneIssue
+					titre="Corriger l'alignement du menu sur mobile"
+					href="/composants#issue-1"
+					repo="lunaris/pixel-kit"
+					ouverte="il y a 2 jours"
+					class="border-t-0"
+				/>
+				<LigneIssue
+					titre="Ajouter des tests pour le parseur de dates"
+					href="/composants#issue-2"
+					repo="ada-dev/study-planner"
+					ouverte="il y a 3 jours"
+				/>
+				<LigneIssue
+					titre="Traduire le README en français"
+					href="/composants#issue-3"
+					repo="nomad/api-starter"
+					ouverte="il y a 5 jours"
+				/>
 			</div>
 		</section>
 	</main>
