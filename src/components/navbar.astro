@@ -1,0 +1,48 @@
+---
+// Barre de navigation en haut de chaque page (maquette Figma : composant « Navbar »).
+// Les pages vers lesquelles elle pointe seront créées aux étapes suivantes.
+const liens = [
+	{ texte: 'Recherche', href: '/recherche' },
+	{ texte: 'Explorer', href: '/explorer' },
+	{ texte: 'À propos', href: '/a-propos' },
+];
+
+// Le lien de la page courante est mis en évidence (y compris pour ses sous-pages)
+const chemin = Astro.url.pathname;
+const estActif = (href: string) => chemin === href || chemin.startsWith(`${href}/`);
+---
+
+<header class="mx-auto max-w-360 px-10 pt-4">
+	<nav
+		aria-label="Navigation principale"
+		class="relative flex h-14 items-center justify-between rounded-md border border-bordure-defaut bg-fond-panneau pr-6 pl-10"
+	>
+		<a href="/" class="transition-colors hover:text-accent-lien">Repolink</a>
+
+		<ul class="absolute left-1/2 flex -translate-x-1/2 items-center gap-[70px]">
+			{
+				liens.map(({ texte, href }) => (
+					<li>
+						<a
+							href={href}
+							aria-current={estActif(href) ? 'page' : undefined}
+							class:list={['transition-colors hover:text-accent-lien', estActif(href) && 'text-accent-lien']}
+						>
+							{texte}
+						</a>
+					</li>
+				))
+			}
+		</ul>
+
+		<div class="flex items-center gap-6">
+			<a
+				href="/connexion"
+				class="inline-flex h-9 items-center rounded-md border border-bordure-defaut bg-fond-carte px-4 text-sm font-semibold transition-colors hover:bg-bordure-defaut"
+			>
+				Connexion
+			</a>
+			<a href="/mon-profil" aria-label="Mon profil" class="block size-10 rounded-full bg-accent-violet"></a>
+		</div>
+	</nav>
+</header>

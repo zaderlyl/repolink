@@ -1,7 +1,8 @@
 ---
 // Layout de base : il enveloppe toutes les pages du site.
-// La navbar et le footer y seront ajoutés aux étapes 2.3 et 2.4.
+// Le footer y sera ajouté à l'étape 2.4.
 import '../styles/global.css';
+import Navbar from '../components/navbar.astro';
 
 interface Props {
 	titre?: string;
@@ -29,6 +30,7 @@ const titreComplet = titre === 'Repolink' ? titre : `${titre} · Repolink`;
 		<title>{titreComplet}</title>
 	</head>
 	<body class="min-h-screen bg-fond-page text-texte-principal antialiased">
+		<Navbar />
 		<slot />
 	</body>
 </html>
