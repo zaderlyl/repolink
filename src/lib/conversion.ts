@@ -1,7 +1,14 @@
 // Conversion des réponses de GitHub vers les types de src/data/accueil.ts (Repo, Issue, Profil).
 // Les pages et les composants ne voient ainsi que des textes prêts à afficher.
 import type { Issue, Profil, Repo } from '../data/accueil.ts';
-import type { IssueGithub, RepoGithub, UtilisateurGithub } from './github.ts';
+import type {
+	ContributeurGithub,
+	EvenementGithub,
+	IssueGithub,
+	LangagesGithub,
+	RepoGithub,
+	UtilisateurGithub,
+} from './github.ts';
 
 // Couleurs des langages de GitHub (l'API ne les donne pas) ; gris pour les autres
 const COULEURS_LANGAGES: Record<string, string> = {
@@ -102,4 +109,159 @@ export function versProfil(utilisateur: UtilisateurGithub): Profil {
 		// Les bios de GitHub contiennent des retours à la ligne : on les remplace par des espaces
 		bio: (utilisateur.bio ?? '').replace(/\s+/g, ' ').trim(),
 	};
+}
+
+// --- Fiche repo et profil créateur (étape 7) ---
+
+export type FicheRepo = {
+	nom: string; // « proprietaire/repo »
+	proprietaire: string;
+	nomCourt: string; // « repo »
+	avatar: string;
+	description: string;
+	topics: string[];
+	etoiles: string;
+	forks: string;
+	watchers: string;
+	langage: string;
+	couleurLangage: string;
+	miseAJour: string;
+	urlGithub: string;
+	publique: boolean;
+};
+
+export type Repartition = {
+	nom: string;
+	couleur: string;
+	pourcentage: number; // entier de 0 à 100
+};
+
+export type Contributeur = {
+	pseudo: string;
+	avatar: string;
+	contributions: string;
+};
+
+export type ProfilCreateur = {
+	nom: string;
+	pseudo: string;
+	avatar: string;
+	bio: string;
+	abonnes: string;
+	reposPublics: number;
+	urlGithub: string;
+	lienGithub: string; // « github.com/pseudo », tel qu'affiché
+	langages: string[]; // les plus utilisés dans ses repos
+	competences: string[]; // les topics les plus fréquents de ses repos
+};
+
+const nettoyer = (texte: string | null | undefined) => (texte ?? '').replace(/\s+/g, ' ').trim();
+
+export function versFicheRepo(repo: RepoGithub): FicheRepo {
+	const [proprietaire, nomCourt] = repo.full_name.split('/');
+	return {
+		nom: repo.full_name,
+		proprietaire,
+		nomCourt,
+		avatar: repo.owner.avatar_url,
+		description: nettoyer(repo.description),
+		topics: repo.topics ?? [],
+		etoiles: formaterNombre(repo.stargazers_count),
+		forks: formaterNombre(repo.forks_count ?? 0),
+		watchers: formaterNombre(repo.subscribers_count ?? 0),
+		langage: repo.language ?? LANGAGE_PAR_DEFAUT,
+		couleurLangage: couleurLangage(repo.language),
+		miseAJour: ilYA(repo.updated_at),
+		urlGithub: repo.html_url,
+		publique: !repo.private,
+	};
+}
+
+// Barre de langages : les 3 premiers (s'ils pèsent au moins 1 %), le reste regroupé sous « Autres ».
+export function versRepartition(octets: LangagesGithub): Repartition[] {
+	const entrees = Object.entries(octets).sort((a, b) => b[1] - a[1]);
+	const total = entrees.reduce((somme, [, valeur]) => somme + valeur, 0);
+	if (total === 0) return [];
+
+	const parts = entrees.map(([nom, valeur]) => ({ nom, pourcentage: (valeur / total) * 100 }));
+	const principaux = parts.slice(0, 3).filter((part) => part.pourcentage >= 1);
+	const resteBrut = 100 - principaux.reduce((somme, part) => somme + part.pourcentage, 0);
+
+	const resultat: Repartition[] = principaux.map((part) => ({
+		nom: part.nom,
+		couleur: couleurLangage(part.nom),
+		pourcentage: Math.round(part.pourcentage),
+	}));
+	if (Math.round(resteBrut) >= 1) {
+		resultat.push({ nom: 'Autres', couleur: COULEUR_PAR_DEFAUT, pourcentage: Math.round(resteBrut) });
+	}
+	return resultat;
+}
+
+export function versContributeur(contributeur: ContributeurGithub): Contributeur {
+	return {
+		pseudo: contributeur.login,
+		avatar: contributeur.avatar_url,
+		contributions: `${formaterNombre(contributeur.contributions)} ${contributeur.contributions > 1 ? 'contributions' : 'contribution'}`,
+	};
+}
+
+// Les éléments les plus fréquents d'une liste, du plus au moins fréquent (à égalité : l'ordre d'arrivée)
+function plusFrequents(elements: string[], combien: number): string[] {
+	const compte = new Map<string, number>();
+	for (const element of elements) compte.set(element, (compte.get(element) ?? 0) + 1);
+	return [...compte.entries()]
+		.sort((a, b) => b[1] - a[1])
+		.slice(0, combien)
+		.map(([element]) => element);
+}
+
+// `repos` : les repos de la personne. Langages et compétences sont déduits de ses repos :
+// GitHub ne connaît pas de « compétences », on prend les topics les plus fréquents.
+export function versProfilCreateur(utilisateur: UtilisateurGithub, repos: RepoGithub[]): ProfilCreateur {
+	return {
+		nom: utilisateur.name ?? utilisateur.login,
+		pseudo: utilisateur.login,
+		avatar: utilisateur.avatar_url,
+		bio: nettoyer(utilisateur.bio),
+		abonnes: formaterNombre(utilisateur.followers),
+		reposPublics: utilisateur.public_repos,
+		urlGithub: utilisateur.html_url,
+		lienGithub: `github.com/${utilisateur.login}`,
+		langages: plusFrequents(repos.flatMap((repo) => (repo.language ? [repo.language] : [])), 3),
+		competences: plusFrequents(repos.flatMap((repo) => repo.topics ?? []), 4),
+	};
+}
+
+// 0 événement → 0 ; 1 → 1 ; 2 à 3 → 2 ; 4 à 6 → 3 ; 7 et plus → 4
+export const niveauActivite = (nombre: number) => (nombre <= 0 ? 0 : nombre === 1 ? 1 : nombre <= 3 ? 2 : nombre <= 6 ? 3 : 4);
+
+const JOUR_MS = 24 * 3600 * 1000;
+
+// Grille d'activité faite avec les événements publics : une liste de semaines (lundi au dimanche),
+// la dernière contenant aujourd'hui (les jours à venir restent à 0). Les jours sont comptés en UTC, comme GitHub.
+// `total` : nombre d'événements dans la période affichée.
+export function grilleActivite(
+	evenements: EvenementGithub[],
+	nbSemaines = 13,
+	maintenant: Date = new Date(),
+): { semaines: number[][]; total: number } {
+	const aujourdhui = Date.UTC(maintenant.getUTCFullYear(), maintenant.getUTCMonth(), maintenant.getUTCDate());
+	const joursDepuisLundi = (new Date(aujourdhui).getUTCDay() + 6) % 7;
+	const debut = aujourdhui - joursDepuisLundi * JOUR_MS - (nbSemaines - 1) * 7 * JOUR_MS;
+
+	const parJour = new Array<number>(nbSemaines * 7).fill(0);
+	let total = 0;
+	for (const evenement of evenements) {
+		const date = new Date(evenement.created_at);
+		const jour = Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+		const indice = Math.round((jour - debut) / JOUR_MS);
+		if (indice >= 0 && indice < parJour.length && jour <= aujourdhui) {
+			parJour[indice]++;
+			total++;
+		}
+	}
+
+	const semaines = Array.from({ length: nbSemaines }, (_, s) => parJour.slice(s * 7, s * 7 + 7).map(niveauActivite));
+	return { semaines, total };
 }

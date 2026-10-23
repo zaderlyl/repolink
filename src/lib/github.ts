@@ -24,6 +24,25 @@ export type RepoGithub = {
 	topics?: string[];
 	updated_at: string; // date ISO
 	owner: ProprietaireGithub;
+	// Présents seulement dans la réponse d'un repo seul (pas dans les résultats de recherche)
+	forks_count?: number;
+	subscribers_count?: number; // les « watchers » affichés par GitHub
+	private?: boolean;
+};
+
+export type ContributeurGithub = {
+	login: string;
+	avatar_url: string;
+	html_url: string;
+	contributions: number;
+};
+
+// Octets de code par langage : { JavaScript: 12000, CSS: 3000 }
+export type LangagesGithub = Record<string, number>;
+
+export type EvenementGithub = {
+	type: string;
+	created_at: string; // date ISO
 };
 
 export type IssueGithub = {
@@ -106,6 +125,8 @@ async function appelerGithub<T>(url: URL, token?: string): Promise<T> {
 		throw new ErreurGithub('reseau', 'Impossible de joindre GitHub. Vérifie ta connexion.');
 	}
 
+	// 204 « pas de contenu » : par exemple les contributeurs d'un repo vide. On le traite comme une liste vide.
+	if (reponse.status === 204) return [] as unknown as T;
 	if (reponse.ok) return (await reponse.json()) as T;
 
 	// GitHub répond 403 ou 429 quand la limite est atteinte : x-ratelimit-remaining vaut alors 0
@@ -147,4 +168,23 @@ export function recupererRepo(nomComplet: string, token?: string) {
 
 export function recupererProfil(pseudo: string, token?: string) {
 	return requeteGithub<UtilisateurGithub>(`/users/${pseudo}`, {}, token);
+}
+
+// Répartition du code d'un repo par langage (en octets)
+export function recupererLangages(nomComplet: string, token?: string) {
+	return requeteGithub<LangagesGithub>(`/repos/${nomComplet}/languages`, {}, token);
+}
+
+export function recupererContributeurs(nomComplet: string, parPage = 30, token?: string) {
+	return requeteGithub<ContributeurGithub[]>(`/repos/${nomComplet}/contributors`, { per_page: parPage }, token);
+}
+
+// Repos d'une personne ou d'une organisation, les plus récemment mis à jour d'abord
+export function recupererReposUtilisateur(pseudo: string, parPage = 30, token?: string) {
+	return requeteGithub<RepoGithub[]>(`/users/${pseudo}/repos`, { sort: 'updated', per_page: parPage }, token);
+}
+
+// Événements publics récents (GitHub en garde 90 jours, 300 au plus, répartis en 3 pages de 100)
+export function recupererEvenements(pseudo: string, page = 1, token?: string) {
+	return requeteGithub<EvenementGithub[]>(`/users/${pseudo}/events/public`, { per_page: 100, page }, token);
 }
