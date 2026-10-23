@@ -1,6 +1,6 @@
 // Notifications (maquette Figma : « Toast »). Utilisation : afficherToast('Repo ajouté aux favoris').
 // La zone et les modèles HTML sont dans src/layouts/layout.astro, donc disponibles sur toutes les pages.
-import { depuisModele } from './commun.ts';
+import { depuisModele } from './modeles.ts';
 
 export type VarianteToast = 'succes' | 'erreur';
 
@@ -8,8 +8,8 @@ const DUREE_MS = { succes: 4000, erreur: 6000 }; // une erreur reste plus longte
 const TRANSITION_MS = 200;
 const MAX_TOASTS = 3;
 
-// Affiche un toast qui disparaît seul. Il se met en pause quand on le survole ou qu'on le touche au clavier,
-// et un clic dessus le ferme. Sans mouvement (prefers-reduced-motion), il apparaît et disparaît sans animation.
+// Affiche un toast qui disparaît seul. Il se met en pause quand on le survole, et un clic dessus le ferme.
+// Sans mouvement (prefers-reduced-motion), il apparaît et disparaît sans animation.
 export function afficherToast(message: string, variante: VarianteToast = 'succes') {
 	const zone = document.getElementById('zone-toasts');
 	if (!zone) return;

@@ -66,6 +66,9 @@ function afficherEntete(fiche: FicheRepo) {
 	repo.textContent = fiche.nomCourt;
 	repo.href = hrefRepo(fiche.nom);
 
+	// Le bouton Star devient interactif dès qu'il sait de quel repo il s'agit (src/scripts/favoris.ts le repère)
+	$('star-repo').dataset.repo = fiche.nom;
+
 	$('visibilite').textContent = fiche.publique ? 'Public' : 'Privé';
 	$<HTMLAnchorElement>('lien-github').href = fiche.urlGithub;
 	$<HTMLAnchorElement>('lien-fork').href = `${fiche.urlGithub}/fork`;
