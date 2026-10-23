@@ -1,0 +1,47 @@
+---
+// Page Explorer : titre, choix « Langages / Topics » et grille de catégories (maquettes Figma : « Site - Explorer »).
+// Le choix est un vrai lien vers deux pages (/explorer et /explorer/topics), donc il marche sans JavaScript.
+import Layout from '../layouts/layout.astro';
+import Chip from './ui/chip.astro';
+import CarteCategorie from './ui/carte-categorie.astro';
+import { formaterRepos, hrefLangage, hrefTopic, langagesExplorer, topicsExplorer } from '../data/explorer.ts';
+
+interface Props {
+	onglet: 'langages' | 'topics';
+}
+
+const { onglet } = Astro.props;
+const categories = onglet === 'langages' ? langagesExplorer : topicsExplorer;
+const hrefCategorie = onglet === 'langages' ? hrefLangage : hrefTopic;
+const description =
+	onglet === 'langages'
+		? 'Parcours les repos GitHub par langage de programmation.'
+		: 'Parcours les repos GitHub par topic : accessibilité, API, tests, documentation…';
+---
+
+<Layout titre={onglet === 'langages' ? 'Explorer' : 'Explorer les topics'} description={description}>
+	<main class="mx-auto w-full max-w-360 px-10 pt-6">
+		<h1 class="font-titre text-[40px] leading-tight font-bold">Explorer</h1>
+
+		<nav aria-label="Catégories" class="mt-4 flex gap-3">
+			<Chip href="/explorer" actif={onglet === 'langages'}>Langages</Chip>
+			<Chip href="/explorer/topics" actif={onglet === 'topics'}>Topics</Chip>
+		</nav>
+
+		<ul class="mt-[38px] grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+			{
+				categories.map((categorie) => (
+					<li class="flex">
+						<CarteCategorie
+							nom={categorie.nom}
+							compte={formaterRepos(categorie.nombre)}
+							href={hrefCategorie(categorie.nom)}
+							couleur={categorie.couleur}
+							class="w-full"
+						/>
+					</li>
+				))
+			}
+		</ul>
+	</main>
+</Layout>
