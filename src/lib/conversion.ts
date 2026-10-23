@@ -28,6 +28,8 @@ const COULEURS_LANGAGES: Record<string, string> = {
 	SCSS: '#c6538c',
 };
 const COULEUR_PAR_DEFAUT = '#8b949e';
+// Un repo peut avoir 20 topics : la carte n'en montre que quelques-uns
+const MAX_TOPICS = 3;
 const LANGAGE_PAR_DEFAUT = 'Autre';
 
 export const couleurLangage = (langage: string | null) =>
@@ -74,7 +76,7 @@ export function versRepo(repo: RepoGithub, goodFirstIssues = 0): Repo {
 		langage: repo.language ?? LANGAGE_PAR_DEFAUT,
 		couleurLangage: couleurLangage(repo.language),
 		etoiles: formaterNombre(repo.stargazers_count),
-		topics: repo.topics ?? [],
+		topics: (repo.topics ?? []).slice(0, MAX_TOPICS),
 		goodFirstIssues,
 		miseAJour: ilYA(repo.updated_at),
 	};
@@ -93,6 +95,7 @@ export function versProfil(utilisateur: UtilisateurGithub): Profil {
 		nom: utilisateur.name ?? utilisateur.login,
 		pseudo: utilisateur.login,
 		abonnes: formaterNombre(utilisateur.followers),
-		bio: utilisateur.bio ?? '',
+		// Les bios de GitHub contiennent des retours à la ligne : on les remplace par des espaces
+		bio: (utilisateur.bio ?? '').replace(/\s+/g, ' ').trim(),
 	};
 }

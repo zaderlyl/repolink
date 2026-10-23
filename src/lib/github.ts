@@ -11,6 +11,7 @@ const URL_API = 'https://api.github.com';
 export type ProprietaireGithub = {
 	login: string;
 	avatar_url: string;
+	type: 'User' | 'Organization';
 };
 
 export type RepoGithub = {

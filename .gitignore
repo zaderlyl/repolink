@@ -5,6 +5,9 @@ node_modules/
 dist/
 .astro/
 
+# Données de l'accueil générées par « npm run donnees »
+src/data/accueil.json
+
 # Variables d'environnement (jamais de clé ou token dans git)
 .env
 .env.*
