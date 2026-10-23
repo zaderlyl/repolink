@@ -1,6 +1,7 @@
 // Filtres de la page Recherche : lecture de l'adresse (?q=…&langage=…&topic=…&page=…)
 // et construction de la requête de l'API de GitHub. Ces fonctions ne font aucun appel réseau.
 import type { OptionsRecherche } from './github.ts';
+import type { OngletRepo } from './adresses.ts';
 
 export const RESULTATS_PAR_PAGE = 10;
 // GitHub ne donne jamais plus de 1000 résultats pour une recherche
@@ -100,4 +101,41 @@ export function construireRequeteIssues(filtres: Filtres): string {
 // Les plus récemment mises à jour d'abord
 export function construireOptionsIssues(filtres: Filtres): OptionsRecherche {
 	return { tri: 'updated', ordre: 'desc', page: filtres.page, parPage: RESULTATS_PAR_PAGE };
+}
+
+// --- Fiche repo et profil créateur ---
+
+// Le propriétaire est un pseudo GitHub (lettres, chiffres, tirets) ; le repo ne peut pas s'appeler « . » ni « .. »
+// (sinon l'adresse de l'API remonterait d'un dossier : /repos/../etc).
+const NOM_REPO_VALIDE = /^[a-zA-Z0-9-]{1,39}\/(?!\.{1,2}$)[\w.-]{1,100}$/;
+const PSEUDO_VALIDE = /^[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,38})$/;
+const ONGLETS: OngletRepo[] = ['apercu', 'issues', 'contributeurs', 'similaires'];
+
+// « proprietaire/repo » lu dans ?nom=… ; vide si l'adresse est absente ou invalide
+export function lireNomRepo(parametres: URLSearchParams): string {
+	const nom = (parametres.get('nom') ?? '').trim();
+	return NOM_REPO_VALIDE.test(nom) ? nom : '';
+}
+
+// Pseudo GitHub lu dans ?pseudo=… ; vide si l'adresse est absente ou invalide
+export function lirePseudo(parametres: URLSearchParams): string {
+	const pseudo = (parametres.get('pseudo') ?? '').trim();
+	return PSEUDO_VALIDE.test(pseudo) ? pseudo : '';
+}
+
+export function lireOnglet(parametres: URLSearchParams): OngletRepo {
+	const onglet = parametres.get('onglet') as OngletRepo | null;
+	return onglet && ONGLETS.includes(onglet) ? onglet : 'apercu';
+}
+
+// Les good first issues ouvertes d'un seul repo
+export const construireRequeteIssuesRepo = (nomRepo: string) =>
+	`repo:${nomRepo} label:"good first issue" state:open is:issue`;
+
+// Repos similaires : mêmes deux premiers topics, sinon même langage. Chaîne vide si on n'a rien pour comparer.
+export function construireRequeteSimilaires(repo: { nom: string; topics: string[]; langage: string }): string {
+	const topics = repo.topics.filter((topic) => NOM_VALIDE.test(topic)).slice(0, 2);
+	const criteres = topics.length > 0 ? topics.map((topic) => `topic:${valeur(topic)}`) : repo.langage !== 'Autre' ? [`language:${valeur(repo.langage)}`] : [];
+	if (criteres.length === 0) return '';
+	return [...criteres, `-repo:${repo.nom}`, 'stars:>=10', 'archived:false'].join(' ');
 }

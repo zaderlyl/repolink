@@ -1,0 +1,184 @@
+---
+// Page « Fiche repo » (maquette Figma : « Site - Fiche repo »).
+// Une seule page pour tous les repos : le repo à afficher est lu dans l'adresse (?nom=proprietaire/repo&onglet=…)
+// et ses données viennent de l'API de GitHub dans le navigateur (src/scripts/repo.ts).
+// Les <template> sont les modèles que le script remplit : ils utilisent les vrais composants.
+import Layout from '../layouts/layout.astro';
+import Avatar from '../components/ui/avatar.astro';
+import Bouton from '../components/ui/bouton.astro';
+import BoutonStar from '../components/ui/bouton-star.astro';
+import CarteRepo from '../components/ui/carte-repo.astro';
+import EntetePanneau from '../components/ui/entete-panneau.astro';
+import EtatVide from '../components/ui/etat-vide.astro';
+import LigneCreateur from '../components/ui/ligne-createur.astro';
+import LigneIssue from '../components/ui/ligne-issue.astro';
+import Onglet from '../components/ui/onglet.astro';
+import Onglets from '../components/ui/onglets.astro';
+import Pill from '../components/ui/pill.astro';
+---
+
+<Layout titre="Repo" description="La fiche d'un repo GitHub : issues pour débutants, repos similaires, langages et créateur.">
+	<main class="mx-auto w-full max-w-360 px-10 pt-6">
+		<!-- Titre de la page pour les lecteurs d'écran : le script y met le nom du repo -->
+		<h1 id="titre-page" class="sr-only">Fiche d'un repo</h1>
+
+		<!-- Chargement : le haut de page et deux colonnes grisées -->
+		<div id="chargement" aria-hidden="true" class="animate-pulse">
+			<div class="flex items-center gap-3">
+				<div class="size-10 rounded-full bg-fond-champ"></div>
+				<div class="h-6 w-56 rounded bg-fond-champ"></div>
+			</div>
+			<div class="mt-[50px] h-px bg-bordure-defaut"></div>
+			<div class="mt-12 grid gap-6 lg:grid-cols-[1fr_376px]">
+				<div class="h-72 rounded-xl bg-fond-panneau"></div>
+				<div class="h-[372px] rounded-xl bg-fond-panneau"></div>
+			</div>
+		</div>
+
+		<div id="contenu" hidden>
+			<header class="flex flex-wrap items-center justify-between gap-4">
+				<div class="flex min-w-0 items-center gap-3">
+					<span id="avatar-repo"><Avatar taille="m" /></span>
+					<p aria-hidden="true" class="flex min-w-0 items-baseline gap-2 text-[22px] leading-7">
+						<a id="lien-proprietaire" href="/" class="font-medium text-accent-lien hover:underline"></a>
+						<span class="text-texte-secondaire">/</span>
+						<a id="lien-repo" href="/" class="font-semibold text-accent-lien hover:underline"></a>
+					</p>
+					<Pill variante="public" id="visibilite">Public</Pill>
+				</div>
+				<div class="flex items-center gap-2">
+					<BoutonStar />
+					<Bouton id="lien-fork" href="/" variante="secondaire" target="_blank" rel="noopener noreferrer">Fork</Bouton>
+					<Bouton id="lien-github" href="/" target="_blank" rel="noopener noreferrer">Voir sur GitHub</Bouton>
+				</div>
+			</header>
+
+			<!-- Version de départ des onglets : le script les remplace selon l'adresse -->
+			<Onglets id="onglets" label="Sections du repo" class="mt-3.5">
+				<Onglet href="/" actif>Aperçu</Onglet>
+				<Onglet href="/">Issues</Onglet>
+				<Onglet href="/">Contributeurs</Onglet>
+				<Onglet href="/">Similaires</Onglet>
+			</Onglets>
+
+			<div id="panneau-apercu" class="mt-12 grid items-start gap-6 lg:grid-cols-[1fr_376px]">
+				<div class="min-w-0">
+					<section aria-label="Issues ouvertes" class="overflow-hidden rounded-xl border border-bordure-defaut bg-fond-page">
+						<EntetePanneau id="entete-issues" titre="Issues ouvertes" lienTexte="Voir tout" lienHref="/" />
+						<div id="liste-issues"></div>
+						<p id="issues-vide" hidden class="border-t border-bordure-defaut px-5 py-6 text-sm text-texte-secondaire"></p>
+					</section>
+
+					<section aria-labelledby="titre-similaires" class="mt-8">
+						<h2 id="titre-similaires" class="text-lg font-semibold">Repos similaires</h2>
+						<ul id="liste-similaires" class="mt-5 grid gap-6 md:grid-cols-2"></ul>
+						<p id="similaires-vide" hidden class="mt-5 text-sm text-texte-secondaire"></p>
+					</section>
+				</div>
+
+				<aside class="min-w-0">
+					<section aria-label="À propos du repo" class="rounded-xl border border-bordure-defaut bg-fond-page p-5">
+						<h2 class="text-base font-semibold">À propos</h2>
+						<p id="description" class="mt-3.5 text-sm text-texte-secondaire"></p>
+						<ul id="topics" aria-label="Topics" class="mt-4 flex flex-wrap gap-2"></ul>
+						<ul class="mt-5 flex flex-col gap-3 text-sm">
+							<li class="flex gap-3"><span aria-hidden="true" class="w-3 text-texte-secondaire">★</span><span><span id="etoiles"></span> étoiles</span></li>
+							<li class="flex gap-3"><span aria-hidden="true" class="w-3 text-texte-secondaire">⑂</span><span><span id="forks"></span> forks</span></li>
+							<li class="flex gap-3"><span aria-hidden="true" class="w-3 text-texte-secondaire">◉</span><span><span id="watchers"></span> watchers</span></li>
+						</ul>
+						<h3 class="mt-6 text-sm font-semibold">Langages</h3>
+						<div id="barre-langages" role="img" aria-label="Répartition des langages" class="mt-3 flex h-2 overflow-hidden rounded bg-fond-champ"></div>
+						<ul id="legende-langages" class="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-xs text-texte-secondaire"></ul>
+					</section>
+
+					<h2 class="mt-6 text-base font-semibold">Créateur</h2>
+					<div id="createur" class="mt-4">
+						<p id="createur-vide" hidden class="text-sm text-texte-secondaire"></p>
+					</div>
+				</aside>
+			</div>
+
+			<!-- Onglet Issues : toutes les good first issues du repo, par pages -->
+			<section id="panneau-issues" aria-label="Issues ouvertes" hidden class="mt-12">
+				<div class="overflow-hidden rounded-xl border border-bordure-defaut bg-fond-page">
+					<EntetePanneau id="entete-toutes-issues" titre="Issues ouvertes" />
+					<div id="toutes-issues"></div>
+					<div id="chargement-issues" aria-hidden="true" class="h-60 animate-pulse border-t border-bordure-defaut bg-fond-panneau"></div>
+					<p id="toutes-issues-vide" hidden class="border-t border-bordure-defaut px-5 py-6 text-sm text-texte-secondaire"></p>
+				</div>
+			</section>
+
+			<!-- Onglet Contributeurs : les premiers contributeurs du repo -->
+			<section id="panneau-contributeurs" aria-labelledby="titre-contributeurs" hidden class="mt-12">
+				<h2 id="titre-contributeurs" class="text-xl font-semibold">Contributeurs</h2>
+				<ul id="liste-contributeurs" class="mt-6 grid gap-4 md:grid-cols-2"></ul>
+				<div id="chargement-contributeurs" aria-hidden="true" class="mt-6 h-40 animate-pulse rounded-xl bg-fond-panneau"></div>
+				<p id="contributeurs-vide" hidden class="mt-6 text-sm text-texte-secondaire"></p>
+				<p id="contributeurs-plus" hidden class="mt-6 text-sm text-texte-secondaire">
+					Seuls les premiers contributeurs sont affichés.
+					<a id="contributeurs-github" href="/" target="_blank" rel="noopener noreferrer" class="text-accent-lien hover:underline">Voir tous les contributeurs sur GitHub</a>
+				</p>
+			</section>
+
+			<!-- Onglet Similaires : tous les repos proches, par pages -->
+			<section id="panneau-similaires" aria-labelledby="titre-tous-similaires" hidden class="mt-12">
+				<h2 id="titre-tous-similaires" class="text-xl font-semibold">Repos similaires</h2>
+				<ul id="tous-similaires" class="mt-6 grid gap-6 md:grid-cols-2"></ul>
+				<div id="chargement-similaires" aria-hidden="true" class="mt-6 h-60 animate-pulse rounded-xl bg-fond-panneau"></div>
+				<p id="tous-similaires-vide" hidden class="mt-6 text-sm text-texte-secondaire"></p>
+			</section>
+
+			<div id="pagination" class="mt-6 flex justify-center"></div>
+		</div>
+
+		<div id="introuvable" hidden class="mt-6">
+			<EtatVide symbole="⌕" titre="Repo introuvable" texte="Ce repo a peut-être été supprimé, renommé, ou n’a jamais existé.">
+				<Bouton href="/recherche" variante="secondaire">Rechercher un repo</Bouton>
+			</EtatVide>
+		</div>
+
+		<div id="erreur" hidden class="mt-6">
+			<EtatVide symbole="!" titre="Impossible de charger le repo" texte="">
+				<Bouton id="reessayer" variante="secondaire">Réessayer</Bouton>
+			</EtatVide>
+		</div>
+
+		<noscript>
+			<p class="mt-6 rounded-xl border border-bordure-defaut bg-fond-panneau p-6 text-center text-sm text-texte-secondaire">
+				Active JavaScript pour voir la fiche de ce repo.
+			</p>
+		</noscript>
+	</main>
+
+	<!-- Modèles remplis par le script : __cle__ est remplacé par la valeur -->
+	<template id="modele-onglet"><Onglet href="__href__">__texte__</Onglet></template>
+	<template id="modele-onglet-actif"><Onglet href="__href__" actif>__texte__</Onglet></template>
+	<template id="modele-avatar"><Avatar taille="m" src="__src__" /></template>
+	<template id="modele-topic"><li><Pill variante="topic">__texte__</Pill></li></template>
+	<template id="modele-issue">
+		<LigneIssue titre="__titre__" href="__href__" repo="__repo__" ouverte="__ouverte__" />
+	</template>
+	<template id="modele-createur">
+		<LigneCreateur nom="__nom__" pseudo="__pseudo__" abonnes="__abonnes__" href="__href__" avatar="__avatar__" />
+	</template>
+	<template id="modele-contributeur">
+		<LigneCreateur nom="__nom__" pseudo="__pseudo__" detail="__detail__" href="__href__" avatar="__avatar__" />
+	</template>
+	<template id="modele-repo">
+		<CarteRepo
+			nom="__nom__"
+			href="__href__"
+			description="__description__"
+			miseAJour="__miseajour__"
+			langage="__langage__"
+			couleurLangage="__couleur__"
+			etoiles="__etoiles__"
+			topics={['__topic__']}
+			class="min-h-[136px]"
+		/>
+	</template>
+</Layout>
+
+<script>
+	import '../scripts/repo.ts';
+</script>

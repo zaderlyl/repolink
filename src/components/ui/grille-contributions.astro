@@ -2,35 +2,34 @@
 // Grille d'activité façon GitHub (maquette Figma : « Grille contributions »).
 // `semaines` : une liste de semaines ; chaque semaine est une liste de niveaux de 0 (rien) à 4 (beaucoup),
 // un par jour. La grille se lit de gauche à droite, semaine après semaine.
+// `taille` : « petite » (cartes de profil) ou « grande » (page du profil). Les classes sont dans src/lib/grille.ts.
 import type { HTMLAttributes } from 'astro/types';
+import { NIVEAUX_GRILLE, TAILLES_GRILLE } from '../../lib/grille.ts';
+import type { TailleGrille } from '../../lib/grille.ts';
 
 type Props = {
 	semaines: number[][];
 	label?: string;
+	taille?: TailleGrille;
 } & HTMLAttributes<'div'>;
 
-const { semaines, label = 'Activité des dernières semaines', class: classe, ...reste } = Astro.props;
+const { semaines, label = 'Activité des dernières semaines', taille = 'petite', class: classe, ...reste } = Astro.props;
 
-const niveaux = [
-	'bg-fond-panneau',
-	'bg-contribution-1',
-	'bg-contribution-2',
-	'bg-contribution-3',
-	'bg-contribution-4',
-];
+const niveaux = NIVEAUX_GRILLE;
+const { grille, cellule, ligne } = TAILLES_GRILLE[taille];
 const lignes = Math.max(0, ...semaines.map((semaine) => semaine.length));
 ---
 
 <div
 	role="img"
 	aria-label={label}
-	class:list={['grid auto-cols-[12px] grid-flow-col gap-x-[5px] gap-y-[3px]', classe]}
-	style={`grid-template-rows: repeat(${lignes}, 10px)`}
+	class:list={[grille, classe]}
+	style={`grid-template-rows: repeat(${lignes}, ${ligne})`}
 	{...reste}
 >
 	{
 		semaines.flatMap((semaine) =>
-			semaine.map((niveau) => <span class:list={['h-[10px] w-3 rounded-xs', niveaux[niveau] ?? niveaux[0]]} />),
+			semaine.map((niveau) => <span class:list={[cellule, niveaux[niveau] ?? niveaux[0]]} />),
 		)
 	}
 </div>

@@ -1,7 +1,9 @@
-// Outils partagés par les pages qui se remplissent dans le navigateur (Recherche, Good first issues).
+// Outils partagés par les pages qui se remplissent dans le navigateur (Recherche, Good first issues, fiche repo…).
 // Chaque page fournit des modèles HTML (<template>) construits avec les vrais composants : ici on les remplit.
 import { ErreurGithub } from '../lib/github.ts';
-import { couleurLangage } from '../lib/conversion.ts';
+import type { RepoGithub } from '../lib/github.ts';
+import { couleurLangage, versRepo } from '../lib/conversion.ts';
+import { hrefRepo } from '../lib/adresses.ts';
 import { CLASSES_PAGINATION, elementsPagination } from '../lib/pagination.ts';
 import { nombrePages } from '../lib/recherche.ts';
 
@@ -19,6 +21,36 @@ export function depuisModele(id: string, valeurs: Record<string, string>): HTMLE
 	const conteneur = document.createElement('template');
 	conteneur.innerHTML = html;
 	return conteneur.content.firstElementChild as HTMLElement;
+}
+
+// Une carte de repo, d'après le modèle « modele-repo » de la page (un <template> avec le composant CarteRepo).
+// Le nombre de good first issues n'est pas dans une réponse de recherche : l'obtenir demanderait une requête par repo,
+// ce que la limite de GitHub ne permet pas. La carte n'affiche donc pas cette pastille.
+export function creerCarteRepo(repoGithub: RepoGithub): HTMLElement {
+	const repo = versRepo(repoGithub);
+	const carte = depuisModele('modele-repo', {
+		nom: repo.nom,
+		href: hrefRepo(repo.nom),
+		description: repo.description,
+		miseajour: repo.miseAJour,
+		langage: repo.langage,
+		couleur: repo.couleurLangage,
+		etoiles: repo.etoiles,
+	});
+
+	// La liste des topics du modèle contient une seule pastille : on la copie pour chaque topic
+	const listeTopics = carte.querySelector('ul[aria-label="Topics"]');
+	const modeleTopic = listeTopics?.firstElementChild;
+	if (listeTopics && modeleTopic) {
+		listeTopics.replaceChildren();
+		for (const topic of repo.topics) {
+			const pastille = modeleTopic.cloneNode(true) as HTMLElement;
+			(pastille.firstElementChild ?? pastille).textContent = topic;
+			listeTopics.append(pastille);
+		}
+		if (repo.topics.length === 0) listeTopics.remove();
+	}
+	return carte;
 }
 
 // Montre une seule zone parmi `zones` (liste, chargement, aucun résultat, erreur)
