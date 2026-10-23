@@ -33,8 +33,7 @@ export type Profil = {
 };
 
 // Adresses des pages (elles seront créées aux étapes 6 et 7)
-export const hrefRepo = (nom: string) => `/repo/${nom}`;
-export const hrefProfil = (pseudo: string) => `/profil/${pseudo}`;
+export { hrefRepo, hrefProfil } from '../lib/adresses.ts';
 
 const reposFactices: Repo[] = [
 	{

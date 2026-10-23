@@ -13,7 +13,7 @@ URL : http://localhost:4321
 
 ## Données de l'accueil (token GitHub)
 
-L'accueil affiche de vrais repos, issues et profils récupérés avec l'API de GitHub. Sans token, le site se construit quand même avec des données d'exemple.
+L'accueil affiche de vrais repos, issues et profils, et la page Explorer de vrais nombres de repos, récupérés avec l'API de GitHub. Sans token, le site se construit quand même avec des données d'exemple.
 
 1. Créer un token sur GitHub : *Settings → Developer settings → Fine-grained tokens*, accès « Public repositories (read-only) », aucune permission.
 2. Copier le modèle puis y coller le token :
@@ -28,7 +28,7 @@ L'accueil affiche de vrais repos, issues et profils récupérés avec l'API de G
    npm run donnees
    ```
 
-Cela écrit `src/data/accueil.json`. Le fichier `.env` et ce JSON sont ignorés par git : le token ne doit jamais être commité.
+Cela écrit `src/data/accueil.json` et `src/data/explorer.json` (environ 1 minute 30, car GitHub limite les recherches). Le fichier `.env` et ces JSON sont ignorés par git : le token ne doit jamais être commité.
 
 ## Stack
 

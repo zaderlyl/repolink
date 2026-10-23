@@ -1,0 +1,104 @@
+---
+// Page « Recherche » (maquettes Figma : « Site - Liste de résultats » et « Site - Chargement »).
+// La page est statique : les filtres sont lus dans l'adresse (?q=…&langage=…&topic=…&page=…)
+// et les résultats viennent de l'API de GitHub dans le navigateur (src/scripts/recherche.ts).
+// Les <template> sont les modèles que le script remplit : ils utilisent les vrais composants.
+import Layout from '../layouts/layout.astro';
+import Chip from '../components/ui/chip.astro';
+import ChampRecherche from '../components/ui/champ-recherche.astro';
+import CarteRepo from '../components/ui/carte-repo.astro';
+import EtatVide from '../components/ui/etat-vide.astro';
+import Bouton from '../components/ui/bouton.astro';
+import { couleurLangage } from '../lib/conversion.ts';
+import { hrefRecherche } from '../lib/recherche.ts';
+
+const langagesRapides = ['JavaScript', 'Python'];
+---
+
+<Layout titre="Recherche" description="Cherche des repos GitHub par mot-clé, langage ou topic, sans la syntaxe compliquée de GitHub.">
+	<main class="mx-auto w-full max-w-360 px-10 pt-6">
+		<div class="flex items-baseline gap-3">
+			<h1 class="font-titre text-[40px] leading-tight font-bold">Recherche</h1>
+			<p id="statut" role="status" class="text-[13px] text-texte-secondaire">Chargement des repos…</p>
+		</div>
+
+		<!-- Version de départ des pastilles : le script les remplace selon l'adresse -->
+		<nav id="filtres" aria-label="Filtres par langage" class="mt-4 flex flex-wrap gap-3">
+			<Chip href="/recherche" actif>TOUT</Chip>
+			{langagesRapides.map((langage) => (
+				<Chip href={hrefRecherche({ langage })} couleur={couleurLangage(langage)}>{langage}</Chip>
+			))}
+		</nav>
+
+		<form id="formulaire-recherche" action="/recherche" method="get" role="search" class="mt-7">
+			<input type="hidden" name="langage" disabled />
+			<input type="hidden" name="topic" disabled />
+			<ChampRecherche name="q" label="Rechercher un repo, un topic ou un créateur" maxlength={100} />
+		</form>
+
+		<div class="mt-6">
+			<ul id="liste" class="flex flex-col gap-4" hidden></ul>
+
+			<!-- Chargement : trois cartes grisées, comme dans la maquette -->
+			<div id="chargement" aria-hidden="true" class="flex animate-pulse flex-col gap-4">
+				{[0, 1, 2].map(() => (
+					<div class="flex min-h-[200px] flex-col rounded-xl border border-bordure-defaut bg-fond-page p-4">
+						<div class="flex items-center justify-between">
+							<div class="h-5 w-48 rounded bg-fond-champ"></div>
+							<div class="h-7 w-24 rounded-md bg-fond-champ"></div>
+						</div>
+						<div class="mt-5 h-3 w-2/3 rounded bg-fond-champ"></div>
+						<div class="mt-3 h-3 w-1/2 rounded bg-fond-champ"></div>
+						<div class="mt-auto flex gap-3 pt-6">
+							<div class="h-4 w-24 rounded bg-fond-champ"></div>
+							<div class="h-4 w-16 rounded bg-fond-champ"></div>
+							<div class="h-5 w-12 rounded-full bg-fond-champ"></div>
+							<div class="h-5 w-12 rounded-full bg-fond-champ"></div>
+						</div>
+					</div>
+				))}
+			</div>
+
+			<div id="vide" hidden>
+				<EtatVide symbole="⌕" titre="Aucun repo trouvé" texte="Essaie un autre mot-clé ou retire un filtre.">
+					<Bouton href="/recherche" variante="secondaire">Effacer les filtres</Bouton>
+				</EtatVide>
+			</div>
+
+			<div id="erreur" hidden>
+				<EtatVide symbole="!" titre="Impossible de charger les repos" texte="">
+					<Bouton id="reessayer" variante="secondaire">Réessayer</Bouton>
+				</EtatVide>
+			</div>
+
+			<noscript>
+				<p class="rounded-xl border border-bordure-defaut bg-fond-panneau p-6 text-center text-sm text-texte-secondaire">
+					Active JavaScript pour voir les résultats de la recherche.
+				</p>
+			</noscript>
+		</div>
+
+		<div id="pagination" class="mt-[30px] flex justify-center"></div>
+	</main>
+
+	<!-- Modèles remplis par le script : __cle__ est remplacé par la valeur -->
+	<template id="modele-repo">
+		<CarteRepo
+			nom="__nom__"
+			href="__href__"
+			description="__description__"
+			miseAJour="__miseajour__"
+			langage="__langage__"
+			couleurLangage="__couleur__"
+			etoiles="__etoiles__"
+			topics={['__topic__']}
+			class="min-h-[200px]"
+		/>
+	</template>
+	<template id="modele-chip"><Chip href="__href__" couleur="__couleur__">__texte__</Chip></template>
+	<template id="modele-chip-actif"><Chip href="__href__" actif>__texte__</Chip></template>
+</Layout>
+
+<script>
+	import '../scripts/recherche.ts';
+</script>

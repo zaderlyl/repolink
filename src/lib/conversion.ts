@@ -46,6 +46,10 @@ export function formaterNombre(nombre: number): string {
 	return String(nombre);
 }
 
+// 48210 → « 48 210 repos » (« 1 repo » au singulier)
+export const formaterRepos = (nombre: number) =>
+	`${new Intl.NumberFormat('fr-FR').format(nombre)} ${nombre > 1 ? 'repos' : 'repo'}`;
+
 // « il y a 2 jours », « il y a 1 semaine »… `maintenant` sert aux tests
 export function ilYA(dateIso: string, maintenant: Date = new Date()): string {
 	const secondes = Math.max(0, Math.floor((maintenant.getTime() - new Date(dateIso).getTime()) / 1000));

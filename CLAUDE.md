@@ -9,7 +9,7 @@ npm run dev
 ```
 URL : http://localhost:4321
 
-Données de l'accueil (API GitHub) : créer un fichier `.env` avec `GITHUB_TOKEN=…` (token fine-grained en lecture seule sur les repos publics), puis lancer `npm run donnees`. Cela écrit `src/data/accueil.json` (ignoré par git).
+Données de l'accueil (API GitHub) : créer un fichier `.env` avec `GITHUB_TOKEN=…` (token fine-grained en lecture seule sur les repos publics), puis lancer `npm run donnees`. Cela écrit `src/data/accueil.json` et `src/data/explorer.json` (ignorés par git).
 
 ## Structure
 ```
@@ -36,3 +36,6 @@ README.md
 - Une branche par fonctionnalité, jamais de code directement sur `main`.
 - Commits au format `type: Message en français` (chore, feat, fix, docs, refactor, style).
 - Jamais de clé API ni de token dans git (voir `.env` dans `.gitignore`).
+
+## Idées pour plus tard
+- **Filtres multiples** sur la Recherche et les Good first issues : pouvoir choisir plusieurs langages et/ou plusieurs topics en même temps (aujourd'hui un seul de chaque). Il faudra des paramètres répétés dans l'adresse (`?langage=Go&langage=Rust`), des pastilles cumulables et un test de la façon dont GitHub combine plusieurs `language:` (ET ou OU) dans une requête. Le code à faire évoluer : `src/lib/recherche.ts` (`lireFiltres`, `construireRequete`, `hrefRecherche`) et `src/scripts/recherche.ts` (pastilles).
