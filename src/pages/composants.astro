@@ -29,6 +29,9 @@ import LigneCreateur from '../components/ui/ligne-createur.astro';
 import LigneParametre from '../components/ui/ligne-parametre.astro';
 import LigneInfo from '../components/ui/ligne-info.astro';
 import EntetePanneau from '../components/ui/entete-panneau.astro';
+import EtatVide from '../components/ui/etat-vide.astro';
+import Toast from '../components/ui/toast.astro';
+import MessageConfirmation from '../components/ui/message-confirmation.astro';
 
 // Activité d'exemple : 24 semaines de 5 jours, niveaux de 0 à 4 (calculés, pas de vraies données)
 const activite = Array.from({ length: 24 }, (_, semaine) =>
@@ -362,6 +365,36 @@ const variantes = ['primaire', 'secondaire', 'danger'] as const;
 				<LigneInfo label="Langages : JavaScript, CSS" href="/composants#langages" />
 				<LigneInfo label="github.com/camille-d" href="/composants#github" />
 			</div>
+		</section>
+
+		<section class="mt-12" aria-labelledby="etats">
+			<h2 id="etats" class="font-titre text-2xl font-bold">États</h2>
+
+			<h3 class="mt-6 text-sm font-semibold text-texte-secondaire">État vide</h3>
+			<EtatVide
+				class="mt-3 max-w-[480px]"
+				niveau="h3"
+				titre="Rien pour l'instant"
+				texte="Ajoute des repos à tes favoris pour les retrouver ici."
+			>
+				<Bouton href="/composants#explorer">Explorer</Bouton>
+			</EtatVide>
+
+			<h3 class="mt-8 text-sm font-semibold text-texte-secondaire">Toast : succès, puis erreur</h3>
+			<div class="mt-3 flex flex-wrap items-center gap-4">
+				<Toast>Repo ajouté aux favoris</Toast>
+				<Toast variante="erreur">Une erreur est survenue</Toast>
+			</div>
+
+			<h3 class="mt-8 text-sm font-semibold text-texte-secondaire">Message de confirmation</h3>
+			<MessageConfirmation
+				class="mt-3 max-w-[420px]"
+				niveau="h3"
+				titre="Connexion réussie"
+				texte="Tu peux maintenant ajouter des favoris et contacter des créateurs."
+			>
+				<Bouton href="/composants#explorer-repos">Explorer les repos</Bouton>
+			</MessageConfirmation>
 		</section>
 	</main>
 </Layout>
