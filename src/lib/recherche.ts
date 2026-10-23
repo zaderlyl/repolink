@@ -69,8 +69,9 @@ export function nombrePages(total: number): number {
 	return Math.max(1, Math.ceil(Math.min(total, MAX_RESULTATS) / RESULTATS_PAR_PAGE));
 }
 
-// Adresse de la page Recherche pour des filtres donnés (les valeurs par défaut ne sont pas écrites)
-export function hrefRecherche(filtres: Partial<Filtres> = {}): string {
+// Adresse de la page Recherche (ou d'une autre page qui lit les mêmes filtres, via `chemin`)
+// pour des filtres donnés. Les valeurs par défaut ne sont pas écrites.
+export function hrefRecherche(filtres: Partial<Filtres> = {}, chemin = '/recherche'): string {
 	const f = { ...FILTRES_VIDES, ...filtres };
 	const parametres = new URLSearchParams();
 	if (f.q) parametres.set('q', f.q);
@@ -78,5 +79,25 @@ export function hrefRecherche(filtres: Partial<Filtres> = {}): string {
 	if (f.topic) parametres.set('topic', f.topic);
 	if (f.page > 1) parametres.set('page', String(f.page));
 	const texte = parametres.toString();
-	return texte ? `/recherche?${texte}` : '/recherche';
+	return texte ? `${chemin}?${texte}` : chemin;
+}
+
+// --- Good first issues ---
+// Cette page ne garde que le langage et la page : le texte et le topic de la Recherche ne servent pas ici.
+
+export const CHEMIN_ISSUES = '/good-first-issues';
+
+export const hrefIssues = (filtres: Partial<Filtres> = {}) =>
+	hrefRecherche({ langage: filtres.langage, page: filtres.page }, CHEMIN_ISSUES);
+
+// Issues ouvertes, sans personne d'assigné, portant le label « good first issue », dans des repos non archivés.
+export function construireRequeteIssues(filtres: Filtres): string {
+	const morceaux = ['label:"good first issue"', 'state:open', 'is:issue', 'no:assignee', 'archived:false'];
+	if (filtres.langage) morceaux.push(`language:${valeur(filtres.langage)}`);
+	return morceaux.join(' ');
+}
+
+// Les plus récemment mises à jour d'abord
+export function construireOptionsIssues(filtres: Filtres): OptionsRecherche {
+	return { tri: 'updated', ordre: 'desc', page: filtres.page, parPage: RESULTATS_PAR_PAGE };
 }

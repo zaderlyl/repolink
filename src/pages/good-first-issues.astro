@@ -1,0 +1,82 @@
+---
+// Page « Good first issues » (maquette Figma : « Site - Good first issues »).
+// Comme la page Recherche : les filtres sont lus dans l'adresse (?langage=…&page=…) et les issues
+// viennent de l'API de GitHub dans le navigateur (src/scripts/good-first-issues.ts).
+import Layout from '../layouts/layout.astro';
+import Chip from '../components/ui/chip.astro';
+import EntetePanneau from '../components/ui/entete-panneau.astro';
+import LigneIssue from '../components/ui/ligne-issue.astro';
+import EtatVide from '../components/ui/etat-vide.astro';
+import Bouton from '../components/ui/bouton.astro';
+import { couleurLangage } from '../lib/conversion.ts';
+import { hrefIssues } from '../lib/recherche.ts';
+
+const langagesRapides = ['JavaScript', 'Python', 'CSS'];
+---
+
+<Layout
+	titre="Good first issues"
+	description="Des issues ouvertes que les mainteneurs ont repérées comme accessibles aux débutants."
+>
+	<main class="mx-auto w-full max-w-360 px-10 pt-6">
+		<h1 class="font-titre text-[40px] leading-tight font-bold">Good first issues</h1>
+
+		<!-- Version de départ des pastilles : le script les remplace selon l'adresse -->
+		<nav id="filtres" aria-label="Filtres par langage" class="mt-4 flex flex-wrap gap-3">
+			<Chip href="/good-first-issues" actif>TOUT</Chip>
+			{langagesRapides.map((langage) => (
+				<Chip href={hrefIssues({ langage })} couleur={couleurLangage(langage)}>{langage}</Chip>
+			))}
+		</nav>
+
+		<section id="panneau" aria-label="Issues ouvertes" class="mt-6 overflow-hidden rounded-xl border border-bordure-defaut bg-fond-page">
+			<EntetePanneau titre="Issues ouvertes" id="entete-panneau" />
+			<div id="liste" hidden></div>
+
+			<!-- Chargement : huit lignes grisées -->
+			<div id="chargement" aria-hidden="true" class="animate-pulse">
+				{[0, 1, 2, 3, 4, 5, 6, 7].map(() => (
+					<div class="flex h-[60px] items-center gap-3 border-t border-bordure-defaut px-5">
+						<div class="size-4 shrink-0 rounded-full bg-fond-champ"></div>
+						<div class="flex flex-1 flex-col gap-2">
+							<div class="h-3.5 w-80 max-w-full rounded bg-fond-champ"></div>
+							<div class="h-3 w-52 max-w-full rounded bg-fond-champ"></div>
+						</div>
+						<div class="h-[22px] w-[130px] rounded-full bg-fond-champ"></div>
+					</div>
+				))}
+			</div>
+		</section>
+
+		<div id="vide" hidden>
+			<EtatVide symbole="⌕" titre="Aucune issue trouvée" texte="Aucune good first issue ouverte pour ce langage pour l'instant.">
+				<Bouton href="/good-first-issues" variante="secondaire">Voir toutes les issues</Bouton>
+			</EtatVide>
+		</div>
+
+		<div id="erreur" hidden>
+			<EtatVide symbole="!" titre="Impossible de charger les issues" texte="">
+				<Bouton id="reessayer" variante="secondaire">Réessayer</Bouton>
+			</EtatVide>
+		</div>
+
+		<noscript>
+			<p class="mt-6 rounded-xl border border-bordure-defaut bg-fond-panneau p-6 text-center text-sm text-texte-secondaire">
+				Active JavaScript pour voir les good first issues.
+			</p>
+		</noscript>
+
+		<div id="pagination" class="mt-6 flex justify-center"></div>
+	</main>
+
+	<!-- Modèles remplis par le script : __cle__ est remplacé par la valeur -->
+	<template id="modele-issue">
+		<LigneIssue titre="__titre__" href="__href__" repo="__repo__" ouverte="__ouverte__" />
+	</template>
+	<template id="modele-chip"><Chip href="__href__" couleur="__couleur__">__texte__</Chip></template>
+	<template id="modele-chip-actif"><Chip href="__href__" actif>__texte__</Chip></template>
+</Layout>
+
+<script>
+	import '../scripts/good-first-issues.ts';
+</script>
