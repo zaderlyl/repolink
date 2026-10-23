@@ -1,0 +1,60 @@
+---
+// Page « À propos » (maquette Figma : « Site - À propos »).
+import Layout from '../layouts/layout.astro';
+import Bouton from '../components/ui/bouton.astro';
+
+const etapes = [
+	'Cherche un repo par langage, topic ou créateur.',
+	'Choisis une good first issue à ta portée.',
+	'Contribue, puis contacte un mentor.',
+];
+---
+
+<Layout titre="À propos" description="Pourquoi Repolink existe et comment l'utiliser pour trouver ta première contribution.">
+	<main class="mx-auto w-full max-w-360 px-10 pt-6">
+		<h1 class="font-titre text-[40px] leading-tight font-bold">À propos</h1>
+
+		<div class="mt-6 flex flex-col gap-4">
+			<section class="rounded-xl border border-bordure-defaut bg-fond-panneau p-8">
+				<h2 class="text-[22px] leading-7 font-semibold">Pourquoi Repolink ?</h2>
+				<p class="mt-4 max-w-[1000px] text-base leading-6 text-texte-secondaire">
+					Quand on débute, il est difficile de trouver un projet open source à sa taille, et encore plus
+					de rencontrer quelqu'un qui peut nous guider. Repolink simplifie la recherche de repos GitHub
+					et met en avant les petits créateurs, pour que chacun puisse progresser et être repéré.
+				</p>
+			</section>
+
+			<div class="grid gap-4 md:grid-cols-2">
+				<section class="rounded-xl border border-bordure-defaut bg-fond-panneau p-8">
+					<h2 class="text-[22px] leading-7 font-semibold">Comment ça marche</h2>
+					<ol class="mt-7 flex flex-col gap-[30px]">
+						{
+							etapes.map((etape, i) => (
+								<li class="flex items-center gap-4">
+									<span
+										aria-hidden="true"
+										class="grid size-8 shrink-0 place-items-center rounded-full border-2 border-accent-lien text-sm font-semibold text-accent-lien"
+									>
+										{i + 1}
+									</span>
+									<span class="text-base">{etape}</span>
+								</li>
+							))
+						}
+					</ol>
+				</section>
+
+				<section class="flex flex-col rounded-xl border border-bordure-defaut bg-fond-panneau p-8">
+					<h2 class="text-[22px] leading-7 font-semibold">Contact</h2>
+					<p class="mt-4 max-w-[600px] text-base leading-6 text-texte-secondaire">
+						Une idée, un bug, un projet à mettre en avant ? Écris-nous sur GitHub ou propose une pull
+						request.
+					</p>
+					<div class="mt-auto pt-8">
+						<Bouton href="/contact">Nous écrire</Bouton>
+					</div>
+				</section>
+			</div>
+		</div>
+	</main>
+</Layout>
