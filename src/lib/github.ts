@@ -28,6 +28,7 @@ export type RepoGithub = {
 	forks_count?: number;
 	subscribers_count?: number; // les « watchers » affichés par GitHub
 	private?: boolean;
+	fork?: boolean;
 };
 
 export type ContributeurGithub = {
@@ -187,4 +188,15 @@ export function recupererReposUtilisateur(pseudo: string, parPage = 30, token?: 
 // Événements publics récents (GitHub en garde 90 jours, 300 au plus, répartis en 3 pages de 100)
 export function recupererEvenements(pseudo: string, page = 1, token?: string) {
 	return requeteGithub<EvenementGithub[]>(`/users/${pseudo}/events/public`, { per_page: 100, page }, token);
+}
+
+// Tous les événements publics disponibles : jusqu'à 3 pages de 100, on s'arrête à la première page incomplète
+export async function recupererEvenementsRecents(pseudo: string, token?: string) {
+	const tous: EvenementGithub[] = [];
+	for (let page = 1; page <= 3; page++) {
+		const evenements = await recupererEvenements(pseudo, page, token);
+		tous.push(...evenements);
+		if (evenements.length < 100) break;
+	}
+	return tous;
 }

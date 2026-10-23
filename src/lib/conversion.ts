@@ -265,3 +265,20 @@ export function grilleActivite(
 	const semaines = Array.from({ length: nbSemaines }, (_, s) => parJour.slice(s * 7, s * 7 + 7).map(niveauActivite));
 	return { semaines, total };
 }
+
+// GitHub ne garde que les 300 derniers événements publics (et 90 jours). Pour quelqu'un de très actif, ces 300 événements
+// ne couvrent que quelques jours : on n'affiche alors que les semaines réellement connues, sans faire croire que le reste est vide.
+// `evenements` : tous ceux qu'on a reçus ; renvoie le nombre de semaines (de 1 à `max`) à montrer dans la grille.
+export function semainesCouvertes(evenements: EvenementGithub[], max = 13, maintenant: Date = new Date()): number {
+	if (evenements.length < EVENEMENTS_MAX || evenements.length === 0) return max;
+	const plusAncien = Math.min(...evenements.map((evenement) => new Date(evenement.created_at).getTime()));
+	const lundi = (date: Date) => {
+		const jour = Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+		return jour - ((new Date(jour).getUTCDay() + 6) % 7) * JOUR_MS;
+	};
+	const semaines = Math.round((lundi(maintenant) - lundi(new Date(plusAncien))) / (7 * JOUR_MS)) + 1;
+	return Math.min(max, Math.max(1, semaines));
+}
+
+// Nombre d'événements au-delà duquel GitHub tronque l'historique
+export const EVENEMENTS_MAX = 300;

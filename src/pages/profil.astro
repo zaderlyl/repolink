@@ -1,0 +1,93 @@
+---
+// Page « Profil créateur » (maquette Figma : « Site - Profil créateur »).
+// Une seule page pour tous les profils : le pseudo est lu dans l'adresse (?pseudo=…) et les données
+// viennent de l'API de GitHub dans le navigateur (src/scripts/profil.ts).
+// Les <template> sont les modèles que le script remplit : ils utilisent les vrais composants.
+import Layout from '../layouts/layout.astro';
+import Avatar from '../components/ui/avatar.astro';
+import Bouton from '../components/ui/bouton.astro';
+import CarteRepo from '../components/ui/carte-repo.astro';
+import EtatVide from '../components/ui/etat-vide.astro';
+import LigneInfo from '../components/ui/ligne-info.astro';
+---
+
+<Layout titre="Profil" description="Le profil d'un créateur : ses repos, ses langages et son activité récente sur GitHub.">
+	<main class="mx-auto w-full max-w-360 px-10 pt-6">
+		<!-- Titre de la page pour les lecteurs d'écran : le script y met le nom du créateur -->
+		<h1 id="titre-page" class="sr-only">Profil d'un créateur</h1>
+
+		<!-- Chargement : deux colonnes grisées -->
+		<div id="chargement" aria-hidden="true" class="grid animate-pulse gap-5 lg:grid-cols-[440px_1fr]">
+			<div class="h-[640px] rounded-xl bg-fond-panneau"></div>
+			<div class="flex flex-col gap-4">
+				<div class="h-64 rounded-xl bg-fond-panneau"></div>
+				<div class="h-40 rounded-xl bg-fond-panneau"></div>
+				<div class="h-40 rounded-xl bg-fond-panneau"></div>
+			</div>
+		</div>
+
+		<div id="contenu" hidden class="grid items-start gap-5 lg:grid-cols-[440px_1fr]">
+			<section aria-label="Profil" class="rounded-xl border border-bordure-defaut bg-fond-page p-[23px]">
+				<h2 class="text-center text-[22px] leading-7 font-medium">Profil</h2>
+				<div class="mt-[22px] flex justify-center"><span id="avatar-profil"><Avatar taille="xl" /></span></div>
+				<p id="nom" aria-hidden="true" class="mt-[17px] text-center text-2xl leading-8 font-medium"></p>
+				<p id="bio" hidden class="mt-2 text-center text-sm text-texte-secondaire"></p>
+				<ul id="infos" class="mt-8 flex flex-col gap-3"></ul>
+				<div class="mt-9">
+					<Bouton id="lien-contact" href="/" class="h-14 w-full">Mise en relation</Bouton>
+				</div>
+			</section>
+
+			<div class="min-w-0">
+				<section id="activite" aria-labelledby="titre-activite" class="rounded-xl border border-bordure-defaut bg-fond-page p-[23px]">
+					<h2 id="titre-activite" class="text-lg font-medium">Activité récente</h2>
+					<p id="resume-activite" class="mt-1 text-[13px] text-texte-secondaire"></p>
+					<div id="grille" class="mt-5 overflow-x-auto"></div>
+				</section>
+
+				<h2 class="mt-6 text-[22px] leading-7 font-medium">Repos du créateur</h2>
+				<ul id="liste-repos" class="mt-4 flex flex-col gap-4"></ul>
+				<p id="repos-vide" hidden class="mt-4 text-sm text-texte-secondaire"></p>
+			</div>
+		</div>
+
+		<div id="introuvable" hidden class="mt-6">
+			<EtatVide symbole="⌕" titre="Profil introuvable" texte="Ce profil a peut-être été supprimé, renommé, ou n’a jamais existé.">
+				<Bouton href="/recherche" variante="secondaire">Rechercher un repo</Bouton>
+			</EtatVide>
+		</div>
+
+		<div id="erreur" hidden class="mt-6">
+			<EtatVide symbole="!" titre="Impossible de charger le profil" texte="">
+				<Bouton id="reessayer" variante="secondaire">Réessayer</Bouton>
+			</EtatVide>
+		</div>
+
+		<noscript>
+			<p class="mt-6 rounded-xl border border-bordure-defaut bg-fond-panneau p-6 text-center text-sm text-texte-secondaire">
+				Active JavaScript pour voir ce profil.
+			</p>
+		</noscript>
+	</main>
+
+	<!-- Modèles remplis par le script : __cle__ est remplacé par la valeur -->
+	<template id="modele-avatar"><Avatar taille="xl" src="__src__" /></template>
+	<template id="modele-info"><li><LigneInfo label="__label__" href="__href__" /></li></template>
+	<template id="modele-repo">
+		<CarteRepo
+			nom="__nom__"
+			href="__href__"
+			description="__description__"
+			miseAJour="__miseajour__"
+			langage="__langage__"
+			couleurLangage="__couleur__"
+			etoiles="__etoiles__"
+			topics={['__topic__']}
+			class="min-h-[160px]"
+		/>
+	</template>
+</Layout>
+
+<script>
+	import '../scripts/profil.ts';
+</script>
