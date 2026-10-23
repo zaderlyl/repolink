@@ -1,8 +1,8 @@
 ---
 // Layout de base : il enveloppe toutes les pages du site.
-// Le footer y sera ajouté à l'étape 2.4.
 import '../styles/global.css';
 import Navbar from '../components/navbar.astro';
+import Footer from '../components/footer.astro';
 
 interface Props {
 	titre?: string;
@@ -29,8 +29,10 @@ const titreComplet = titre === 'Repolink' ? titre : `${titre} · Repolink`;
 		<link rel="icon" href="/favicon.ico" />
 		<title>{titreComplet}</title>
 	</head>
-	<body class="min-h-screen bg-fond-page text-texte-principal antialiased">
+	<body class="flex min-h-screen flex-col bg-fond-page text-texte-principal antialiased">
 		<Navbar />
 		<slot />
+		<!-- mt-auto : le footer reste en bas de page, même quand le contenu est court -->
+		<Footer />
 	</body>
 </html>
