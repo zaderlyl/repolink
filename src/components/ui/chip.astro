@@ -1,0 +1,40 @@
+---
+// Filtre cliquable avec une pastille de couleur (maquette Figma : « Chip »).
+// Avec `href`, c'est un lien (le filtre mène à une page) ; sans, c'est un bouton.
+// `couleur` : couleur de la pastille (par exemple celle d'un langage de programmation).
+// `actif` : le filtre est sélectionné (fond et texte bleus, pastille bleue).
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = {
+	actif?: boolean;
+	href?: string;
+	couleur?: string;
+} & HTMLAttributes<'button'>;
+
+const { actif = false, href, couleur, class: classe, ...reste } = Astro.props;
+
+const Balise = href ? 'a' : 'button';
+// Un lien utilise aria-current, un bouton utilise aria-pressed.
+const attributs = href
+	? { href, 'aria-current': actif ? 'true' : undefined }
+	: { type: 'button', 'aria-pressed': actif };
+---
+
+<Balise
+	class:list={[
+		'inline-flex h-8 items-center gap-2 rounded-2xl border px-3 text-sm font-medium transition-colors',
+		actif
+			? 'border-accent-lien bg-fond-topic text-accent-lien'
+			: 'border-bordure-defaut bg-fond-panneau text-texte-principal hover:border-texte-secondaire hover:bg-bordure-defaut',
+		classe,
+	]}
+	{...attributs}
+	{...reste}
+>
+	<span
+		aria-hidden="true"
+		class:list={['size-3.5 rounded-full', actif ? 'bg-accent-lien' : !couleur && 'bg-texte-secondaire']}
+		style={!actif && couleur ? `background-color: ${couleur}` : undefined}
+	></span>
+	<slot />
+</Balise>

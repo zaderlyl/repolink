@@ -1,0 +1,28 @@
+---
+// Pastille ronde d'un utilisateur (maquette Figma : « Avatar »).
+// Sans `src`, elle affiche le dégradé cyan et rose de la maquette ;
+// avec `src` (par exemple la photo de profil GitHub), elle affiche l'image.
+// `alt` : décrit l'image ; vide, l'avatar est décoratif (le nom est écrit à côté).
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = {
+	taille?: 's' | 'm' | 'l';
+	src?: string;
+	alt?: string;
+} & HTMLAttributes<'span'>;
+
+const { taille = 'm', src, alt = '', class: classe, ...reste } = Astro.props;
+
+const tailles = { s: 'size-6', m: 'size-10', l: 'size-16' };
+---
+
+<span
+	class:list={[
+		'inline-block shrink-0 overflow-hidden rounded-full bg-linear-to-r from-accent-cyan to-accent-rose',
+		tailles[taille],
+		classe,
+	]}
+	{...reste}
+>
+	{src && <img src={src} alt={alt} class="size-full object-cover" />}
+</span>

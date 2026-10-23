@@ -12,6 +12,9 @@ import ZoneTexte from '../components/ui/zone-texte.astro';
 import Selecteur from '../components/ui/selecteur.astro';
 import CaseACocher from '../components/ui/case-a-cocher.astro';
 import Toggle from '../components/ui/toggle.astro';
+import Chip from '../components/ui/chip.astro';
+import Pill from '../components/ui/pill.astro';
+import Avatar from '../components/ui/avatar.astro';
 
 const variantes = ['primaire', 'secondaire', 'danger'] as const;
 ---
@@ -104,6 +107,36 @@ const variantes = ['primaire', 'secondaire', 'danger'] as const;
 				<CaseACocher label="Cochée" name="case-2" checked />
 				<Toggle label="Désactivé" name="toggle-1" />
 				<Toggle label="Activé" name="toggle-2" checked />
+			</div>
+		</section>
+
+		<section class="mt-12" aria-labelledby="tags">
+			<h2 id="tags" class="font-titre text-2xl font-bold">Tags</h2>
+
+			<h3 class="mt-6 text-sm font-semibold text-texte-secondaire">
+				Chip : actif, puis normal avec la pastille d'un langage (le survol se voit à la souris)
+			</h3>
+			<div class="mt-3 flex flex-wrap items-center gap-3">
+				<Chip actif>TOUT</Chip>
+				<Chip couleur="#f1e05a">JavaScript</Chip>
+				<Chip couleur="#3572a5">Python</Chip>
+				<Chip couleur="#563d7c">CSS</Chip>
+				<Chip href="/">Lien</Chip>
+			</div>
+
+			<h3 class="mt-8 text-sm font-semibold text-texte-secondaire">Pill</h3>
+			<div class="mt-3 flex flex-wrap items-center gap-3">
+				<Pill variante="topic">topic</Pill>
+				<Pill variante="good-first-issue">good first issue</Pill>
+				<Pill variante="succes">3 good first issues</Pill>
+				<Pill variante="public">Public</Pill>
+			</div>
+
+			<h3 class="mt-8 text-sm font-semibold text-texte-secondaire">Avatar : S, M, L</h3>
+			<div class="mt-3 flex items-center gap-4">
+				<Avatar taille="s" />
+				<Avatar taille="m" />
+				<Avatar taille="l" />
 			</div>
 		</section>
 	</main>
