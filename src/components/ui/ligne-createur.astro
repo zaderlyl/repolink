@@ -20,6 +20,8 @@ type Props = {
 
 const { nom, pseudo, abonnes, detail, href, suivi = false, avatar, class: classe, ...reste } = Astro.props;
 const info = detail ?? `${abonnes} followers`;
+// Le pseudo s'affiche avec son « @ » ; on mémorise le créateur sans (src/scripts/favoris.ts)
+const login = pseudo.replace(/^@/, '');
 ---
 
 <article
@@ -38,7 +40,13 @@ const info = detail ?? `${abonnes} followers`;
 			<p class="text-xs leading-4 text-texte-secondaire">{pseudo} · {info}</p>
 		</div>
 	</div>
-	<Bouton variante={suivi ? 'secondaire' : 'primaire'} aria-pressed={suivi} class="relative z-10">
+	<Bouton
+		variante={suivi ? 'secondaire' : 'primaire'}
+		aria-pressed={suivi}
+		aria-label={`Suivre ${login}`}
+		data-createur={login}
+		class="relative z-10"
+	>
 		{suivi ? 'Suivi' : 'Suivre'}
 	</Bouton>
 </article>

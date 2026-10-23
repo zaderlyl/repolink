@@ -139,7 +139,7 @@ async function chargerCreateur(fiche: FicheRepo) {
 		const profil = versProfil(await recupererProfil(fiche.proprietaire));
 		const ligne = depuisModele('modele-createur', {
 			nom: profil.nom,
-			pseudo: `@${profil.pseudo}`,
+			pseudo: profil.pseudo,
 			abonnes: profil.abonnes,
 			href: hrefProfil(profil.pseudo),
 			avatar: fiche.avatar,
@@ -265,7 +265,7 @@ async function chargerOngletContributeurs(fiche: FicheRepo) {
 				item.append(
 					depuisModele('modele-contributeur', {
 						nom: contributeur.pseudo,
-						pseudo: `@${contributeur.pseudo}`,
+						pseudo: contributeur.pseudo,
 						detail: contributeur.contributions,
 						href: hrefProfil(contributeur.pseudo),
 						avatar: contributeur.avatar,
