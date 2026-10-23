@@ -1,0 +1,40 @@
+---
+// Page « Documentation » (maquette Figma : « Site - Documentation »).
+import Article from '../layouts/article.astro';
+
+const sections = [
+	{
+		id: 'premiers-pas',
+		titre: 'Premiers pas',
+		texte: 'Tu n’as pas besoin de compte pour chercher des repos. Saisis un mot-clé, un langage ou un topic dans la barre de recherche et parcours les résultats.',
+	},
+	{
+		id: 'rechercher-un-repo',
+		titre: 'Rechercher un repo',
+		texte: 'Utilise les filtres de langage et de topic, ou active « good first issue » pour ne voir que les projets qui accueillent les débutants.',
+	},
+	{
+		id: 'utiliser-les-filtres',
+		titre: 'Utiliser les filtres',
+		texte: 'Les filtres se combinent : par exemple JavaScript, accessibilité et good first issue. Les résultats sont triés par activité récente.',
+	},
+	{
+		id: 'creer-un-compte',
+		titre: 'Créer un compte',
+		texte: 'Connecte-toi avec GitHub pour enregistrer tes favoris, recevoir des recommandations et contacter des mentors.',
+	},
+	{
+		id: 'mentorat',
+		titre: 'Mentorat',
+		texte: 'Depuis le profil d’un créateur, envoie-lui un message pour lui demander conseil sur un repo ou sur ta première contribution.',
+	},
+];
+---
+
+<Article
+	titre="Documentation"
+	description="Tout ce qu’il faut savoir pour utiliser Repolink, de la première recherche à la prise de contact avec un mentor."
+	intro="Tout ce qu’il faut savoir pour utiliser Repolink, de la première recherche jusqu’à la prise de contact avec un mentor."
+	sections={sections}
+	sommaire="Documentation"
+/>

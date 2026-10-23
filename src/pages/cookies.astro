@@ -1,0 +1,35 @@
+---
+// Page « Cookies » (maquette Figma : « Site - Cookies »).
+// Les choix ne sont pas encore enregistrés : l'interrupteur et le bouton sont là pour la mise en page.
+import Article from '../layouts/article.astro';
+import LigneParametre from '../components/ui/ligne-parametre.astro';
+import Bouton from '../components/ui/bouton.astro';
+
+const sections = [
+	{
+		id: 'definition',
+		titre: 'Qu’est-ce qu’un cookie ?',
+		texte: 'Un cookie est un petit fichier enregistré dans ton navigateur pour mémoriser une information, comme ta préférence de thème.',
+	},
+	{
+		id: 'preferences',
+		titre: 'Gérer tes préférences',
+		texte: 'Les cookies essentiels sont toujours actifs. La mesure d’audience est facultative.',
+	},
+];
+---
+
+<Article
+	titre="Cookies"
+	description="Les cookies utilisés par Repolink et comment choisir ceux que tu acceptes."
+	intro="Repolink utilise très peu de cookies. Tu peux choisir ceux que tu acceptes."
+	sections={sections}
+>
+	<form class="mt-4 flex flex-col gap-3" aria-label="Préférences de cookies">
+		<LigneParametre type="toggle" label="Cookies essentiels" id="cookies-essentiels" name="essentiels" actif />
+		<LigneParametre type="toggle" label="Mesure d’audience" id="cookies-audience" name="audience" />
+		<div class="mt-2">
+			<Bouton>Enregistrer mes choix</Bouton>
+		</div>
+	</form>
+</Article>

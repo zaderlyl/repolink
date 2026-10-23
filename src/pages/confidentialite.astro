@@ -1,0 +1,34 @@
+---
+// Page « Politique de confidentialité » (maquette Figma : « Site - Confidentialité »).
+import Article from '../layouts/article.astro';
+
+const sections = [
+	{
+		id: 'donnees-collectees',
+		titre: 'Données collectées',
+		texte: 'Sans compte, aucune donnée personnelle n’est collectée. Avec une connexion GitHub, nous conservons ton pseudo et ta photo de profil publique.',
+	},
+	{
+		id: 'utilisation',
+		titre: 'Utilisation',
+		texte: 'Ces données servent uniquement à personnaliser les recommandations et à enregistrer tes favoris.',
+	},
+	{
+		id: 'droits',
+		titre: 'Tes droits',
+		texte: 'Tu peux demander la suppression de ton compte et de tes données à tout moment depuis les paramètres.',
+	},
+	{
+		id: 'conservation',
+		titre: 'Conservation',
+		texte: 'Les données sont supprimées 30 jours après la suppression du compte.',
+	},
+];
+---
+
+<Article
+	titre="Politique de confidentialité"
+	description="Les données que Repolink collecte, pourquoi, et comment les supprimer."
+	intro="Nous collectons le minimum de données nécessaires au fonctionnement du site."
+	sections={sections}
+/>
