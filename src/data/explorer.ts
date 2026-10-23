@@ -26,6 +26,4 @@ export const topicsExplorer = avecNombres(topicsParDefaut, donnees?.topics);
 export const hrefLangage = (nom: string) => `/recherche?langage=${encodeURIComponent(nom)}`;
 export const hrefTopic = (nom: string) => `/recherche?topic=${encodeURIComponent(nom)}`;
 
-// 48210 → « 48 210 repos » (« 1 repo » au singulier)
-export const formaterRepos = (nombre: number) =>
-	`${new Intl.NumberFormat('fr-FR').format(nombre)} ${nombre > 1 ? 'repos' : 'repo'}`;
+export { formaterRepos } from '../lib/conversion.ts';

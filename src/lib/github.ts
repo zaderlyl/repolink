@@ -118,6 +118,10 @@ async function appelerGithub<T>(url: URL, token?: string): Promise<T> {
 	if (reponse.status === 404) {
 		throw new ErreurGithub('introuvable', 'Introuvable sur GitHub.', 404);
 	}
+	// 422 : GitHub refuse la requête (trop d'opérateurs AND/OR, texte trop long…)
+	if (reponse.status === 422) {
+		throw new ErreurGithub('autre', 'GitHub n’a pas compris cette recherche. Essaie avec des mots plus simples.', 422);
+	}
 	throw new ErreurGithub('autre', `GitHub a répondu avec l'erreur ${reponse.status}.`, reponse.status);
 }
 

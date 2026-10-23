@@ -41,12 +41,14 @@ const valeur = (texte: string) => (/^[\w+#.-]+$/.test(texte) ? texte : `"${texte
 
 // Requête de recherche de repos au format GitHub.
 // Sans aucun filtre, on montre les repos qui accueillent les débutants (au moins une good first issue).
+// Sans texte, on écarte aussi les repos sans étoile (stars:>=10) : triés par date, ils ne montreraient que des dépôts vides.
 export function construireRequete(filtres: Filtres): string {
 	const morceaux: string[] = [];
 	if (filtres.q) morceaux.push(filtres.q);
 	if (filtres.langage) morceaux.push(`language:${valeur(filtres.langage)}`);
 	if (filtres.topic) morceaux.push(`topic:${valeur(filtres.topic)}`);
 	if (morceaux.length === 0) morceaux.push('good-first-issues:>0');
+	if (!filtres.q) morceaux.push('stars:>=10');
 	morceaux.push('archived:false');
 	return morceaux.join(' ');
 }
