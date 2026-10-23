@@ -1,0 +1,25 @@
+---
+// Bouton « Star » d'un repo (maquette Figma : « Bouton Star »).
+// `actif` : le repo est déjà en favori (le bouton affiche alors « ★ Starred »).
+// Le changement d'état au clic sera branché à l'étape 8 (interactions).
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = {
+	actif?: boolean;
+} & HTMLAttributes<'button'>;
+
+const { actif = false, class: classe, ...reste } = Astro.props;
+---
+
+<button
+	type="button"
+	aria-pressed={actif}
+	class:list={[
+		'inline-flex h-7 items-center rounded-md border border-bordure-defaut px-3.5 text-[13px] font-medium transition-colors hover:bg-bordure-defaut',
+		actif ? 'text-accent-etoile' : 'text-texte-principal',
+		classe,
+	]}
+	{...reste}
+>
+	{actif ? '★ Starred' : '☆ Star'}
+</button>

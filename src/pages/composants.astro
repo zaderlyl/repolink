@@ -3,6 +3,11 @@
 // comme la section « Composants » de la maquette Figma.
 // Chaque sous-étape de l'étape 3 y ajoute une section.
 import Layout from '../layouts/layout.astro';
+import Bouton from '../components/ui/bouton.astro';
+import BoutonIcone from '../components/ui/bouton-icone.astro';
+import BoutonStar from '../components/ui/bouton-star.astro';
+
+const variantes = ['primaire', 'secondaire', 'danger'] as const;
 ---
 
 <Layout titre="Composants" description="Démonstration des composants de l'interface Repolink.">
@@ -12,5 +17,43 @@ import Layout from '../layouts/layout.astro';
 			Tous les composants de l'interface, avec leurs états. Cette page sert à les voir et à les
 			tester ; elle suit la section « Composants » de la maquette Figma.
 		</p>
+
+		<section class="mt-12" aria-labelledby="boutons">
+			<h2 id="boutons" class="font-titre text-2xl font-bold">Boutons</h2>
+
+			<h3 class="mt-6 text-sm font-semibold text-texte-secondaire">Bouton : normal, puis désactivé</h3>
+			<div class="mt-3 flex flex-col gap-3">
+				{
+					variantes.map((variante) => (
+						<div class="flex items-center gap-4">
+							<span class="w-24 text-sm text-texte-secondaire">{variante}</span>
+							<Bouton variante={variante}>Bouton</Bouton>
+							<Bouton variante={variante} desactive>
+								Bouton
+							</Bouton>
+						</div>
+					))
+				}
+				<div class="flex items-center gap-4">
+					<span class="w-24 text-sm text-texte-secondaire">lien</span>
+					<Bouton href="/">Retour à l'accueil</Bouton>
+				</div>
+			</div>
+
+			<h3 class="mt-8 text-sm font-semibold text-texte-secondaire">Bouton icône</h3>
+			<div class="mt-3 flex items-center gap-3">
+				<BoutonIcone label="Étoile">☆</BoutonIcone>
+				<BoutonIcone label="Favori" actif>★</BoutonIcone>
+				<BoutonIcone label="Ajouter">+</BoutonIcone>
+				<BoutonIcone label="Précédent">‹</BoutonIcone>
+				<BoutonIcone label="Suivant">›</BoutonIcone>
+			</div>
+
+			<h3 class="mt-8 text-sm font-semibold text-texte-secondaire">Bouton Star</h3>
+			<div class="mt-3 flex items-center gap-3">
+				<BoutonStar />
+				<BoutonStar actif />
+			</div>
+		</section>
 	</main>
 </Layout>
