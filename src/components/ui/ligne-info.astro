@@ -1,0 +1,23 @@
+---
+// Ligne d'information cliquable d'un profil, avec un chevron › (maquette Figma : « Ligne info »).
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = {
+	label: string;
+	href: string;
+} & HTMLAttributes<'a'>;
+
+const { label, href, class: classe, ...reste } = Astro.props;
+---
+
+<a
+	href={href}
+	class:list={[
+		'flex h-[52px] items-center justify-between gap-4 rounded-md border border-bordure-defaut bg-fond-carte px-5 text-base transition-colors hover:border-accent-lien hover:bg-fond-panneau',
+		classe,
+	]}
+	{...reste}
+>
+	{label}
+	<span aria-hidden="true" class="text-lg text-texte-secondaire">›</span>
+</a>
