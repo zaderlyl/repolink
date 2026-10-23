@@ -9,6 +9,8 @@ npm run dev
 ```
 URL : http://localhost:4321
 
+Données de l'accueil (API GitHub) : créer un fichier `.env` avec `GITHUB_TOKEN=…` (token fine-grained en lecture seule sur les repos publics), puis lancer `npm run donnees`. Cela écrit `src/data/accueil.json` (ignoré par git).
+
 ## Structure
 ```
 src/

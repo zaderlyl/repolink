@@ -9,6 +9,7 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "donnees": "node --env-file-if-exists=.env scripts/preparer-donnees.ts",
     "astro": "astro"
   },
   "dependencies": {

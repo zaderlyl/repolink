@@ -1,6 +1,7 @@
-// Données factices de la page d'accueil.
-// Elles seront remplacées par les vraies données de l'API GitHub à l'étape 5 :
-// les types ci-dessous décrivent déjà la forme que la page attend.
+// Données de la page d'accueil.
+// Les vraies données viennent de src/data/accueil.json, écrit par « npm run donnees » (API GitHub).
+// Ce fichier est ignoré par git : quand il manque (premier clone, pas de token), les données factices
+// ci-dessous servent de secours pour que le site se construise quand même.
 
 export type Repo = {
 	nom: string; // « proprietaire/repo »
@@ -35,7 +36,7 @@ export type Profil = {
 export const hrefRepo = (nom: string) => `/repo/${nom}`;
 export const hrefProfil = (pseudo: string) => `/profil/${pseudo}`;
 
-export const repos: Repo[] = [
+const reposFactices: Repo[] = [
 	{
 		nom: 'lunaris/pixel-kit',
 		description: 'Kit de composants UI minimaliste en CSS pur, sans dépendance.',
@@ -78,7 +79,7 @@ export const repos: Repo[] = [
 	},
 ];
 
-export const issues: Issue[] = [
+const issuesFactices: Issue[] = [
 	{ titre: "Corriger l'alignement du menu sur mobile", repo: 'lunaris/pixel-kit', ouverte: 'il y a 2 jours' },
 	{ titre: 'Ajouter des tests pour le parseur de dates', repo: 'ada-dev/study-planner', ouverte: 'il y a 3 jours' },
 	{ titre: 'Traduire le README en français', repo: 'nomad/api-starter', ouverte: 'il y a 5 jours' },
@@ -94,7 +95,7 @@ export const langages: Langage[] = [
 	{ nom: 'Go', couleur: '#00add8' },
 ];
 
-export const profils: Profil[] = [
+const profilsFactices: Profil[] = [
 	{
 		nom: 'Camille Durand',
 		pseudo: 'camille-d',
@@ -114,6 +115,17 @@ export const profils: Profil[] = [
 		bio: "Étudiante en MMI, je documente mes projets JavaScript et j'apprends en public.",
 	},
 ];
+
+type DonneesAccueil = { genereLe: string; repos: Repo[]; issues: Issue[]; profils: Profil[] };
+
+// import.meta.glob ne plante pas quand le fichier est absent : il renvoie simplement une liste vide
+const fichiers = import.meta.glob<{ default: DonneesAccueil }>('./accueil.json', { eager: true });
+const donnees = Object.values(fichiers)[0]?.default;
+
+// Une liste vide ou absente dans le JSON retombe sur les données factices
+export const repos: Repo[] = donnees?.repos?.length ? donnees.repos : reposFactices;
+export const issues: Issue[] = donnees?.issues?.length ? donnees.issues : issuesFactices;
+export const profils: Profil[] = donnees?.profils?.length ? donnees.profils : profilsFactices;
 
 // Activité d'exemple : 24 semaines de 5 jours, niveaux de 0 à 4.
 // La `graine` change le dessin d'un profil à l'autre. Ce sera remplacé par les vraies contributions.
