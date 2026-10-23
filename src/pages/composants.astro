@@ -20,6 +20,16 @@ import Onglet from '../components/ui/onglet.astro';
 import Pagination from '../components/ui/pagination.astro';
 import CarteRepo from '../components/ui/carte-repo.astro';
 import LigneIssue from '../components/ui/ligne-issue.astro';
+import GrilleContributions from '../components/ui/grille-contributions.astro';
+import CarteProfil from '../components/ui/carte-profil.astro';
+import CarteCategorie from '../components/ui/carte-categorie.astro';
+import CarteArticle from '../components/ui/carte-article.astro';
+import CarteMiseEnRelation from '../components/ui/carte-mise-en-relation.astro';
+
+// Activité d'exemple : 24 semaines de 5 jours, niveaux de 0 à 4 (calculés, pas de vraies données)
+const activite = Array.from({ length: 24 }, (_, semaine) =>
+	Array.from({ length: 5 }, (_, jour) => ((semaine * 7 + jour * 13) % 11) % 5),
+);
 
 // Les liens de démo restent sur cette page
 const adressePage = (n: number) => `/composants?page=${n}`;
@@ -254,6 +264,65 @@ const variantes = ['primaire', 'secondaire', 'danger'] as const;
 					repo="nomad/api-starter"
 					ouverte="il y a 5 jours"
 				/>
+			</div>
+		</section>
+
+		<section class="mt-12" aria-labelledby="autres-cartes">
+			<h2 id="autres-cartes" class="font-titre text-2xl font-bold">Profils, catégories et articles</h2>
+
+			<h3 class="mt-6 text-sm font-semibold text-texte-secondaire">Grille de contributions</h3>
+			<GrilleContributions semaines={activite} class="mt-3" />
+
+			<h3 class="mt-8 text-sm font-semibold text-texte-secondaire">Carte profil</h3>
+			<div class="mt-3 grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+				<CarteProfil
+					nom="Camille Durand"
+					pseudo="@camille-d"
+					abonnes="128"
+					bio="Dev front passionnée d'accessibilité. Je cherche des contributeurs pour mes outils CSS."
+					href="/composants#camille"
+					niveaux={activite}
+				/>
+				<CarteProfil
+					nom="Yanis Moreau"
+					pseudo="@yanis-m"
+					abonnes="342"
+					bio="Backend Python. Mentor open source, je réponds aux débutants chaque semaine."
+					href="/composants#yanis"
+					niveaux={activite}
+				/>
+			</div>
+
+			<h3 class="mt-8 text-sm font-semibold text-texte-secondaire">Carte catégorie</h3>
+			<div class="mt-3 grid gap-4 md:grid-cols-4">
+				<CarteCategorie nom="JavaScript" compte="48 210 repos" href="/composants#js" couleur="#f1e05a" />
+				<CarteCategorie nom="Python" compte="41 880 repos" href="/composants#python" couleur="#3572a5" />
+				<CarteCategorie nom="TypeScript" compte="36 450 repos" href="/composants#ts" couleur="#3178c6" />
+				<CarteCategorie nom="CSS" compte="22 300 repos" href="/composants#css" couleur="#563d7c" />
+			</div>
+
+			<h3 class="mt-8 text-sm font-semibold text-texte-secondaire">Carte article</h3>
+			<div class="mt-3 grid gap-4 md:grid-cols-3">
+				<CarteArticle
+					titre="Choisir sa première good first issue"
+					resume="Trois critères simples pour ne pas se tromper de projet quand on débute."
+					tag="Guide"
+					date="12 oct. 2026 · 5 min de lecture"
+					href="/composants#article-1"
+				/>
+				<CarteArticle
+					titre="Apprendre Git sans stress"
+					resume="Les cinq commandes qui suffisent pour contribuer à un projet."
+					tag="Tutoriel"
+					date="8 oct. 2026 · 4 min de lecture"
+					href="/composants#article-2"
+				/>
+			</div>
+
+			<h3 class="mt-8 text-sm font-semibold text-texte-secondaire">Carte mise en relation</h3>
+			<div class="mt-3 grid gap-4 md:grid-cols-3">
+				<CarteMiseEnRelation nom="Camille Durand" href="/composants#contact-1" tags={['JavaScript', 'Mentor']} />
+				<CarteMiseEnRelation nom="Yanis Moreau" href="/composants#contact-2" tags={['Python', 'Débutant']} />
 			</div>
 		</section>
 	</main>

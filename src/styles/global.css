@@ -49,6 +49,12 @@
   /* Labels */
   --color-label-good-first-issue: #7057ff;
 
+  /* Grille de contributions : du plus faible (1) au plus fort (4) ; le niveau 0 utilise fond-panneau */
+  --color-contribution-1: #0e4429;
+  --color-contribution-2: #006d32;
+  --color-contribution-3: #26a641;
+  --color-contribution-4: #39d353;
+
   /* Divers */
   --color-blanc: #ffffff;
 }
