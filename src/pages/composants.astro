@@ -15,6 +15,12 @@ import Toggle from '../components/ui/toggle.astro';
 import Chip from '../components/ui/chip.astro';
 import Pill from '../components/ui/pill.astro';
 import Avatar from '../components/ui/avatar.astro';
+import Onglets from '../components/ui/onglets.astro';
+import Onglet from '../components/ui/onglet.astro';
+import Pagination from '../components/ui/pagination.astro';
+
+// Les liens de démo restent sur cette page
+const adressePage = (n: number) => `/composants?page=${n}`;
 
 const variantes = ['primaire', 'secondaire', 'danger'] as const;
 ---
@@ -137,6 +143,28 @@ const variantes = ['primaire', 'secondaire', 'danger'] as const;
 				<Avatar taille="s" />
 				<Avatar taille="m" />
 				<Avatar taille="l" />
+			</div>
+		</section>
+
+		<section class="mt-12" aria-labelledby="navigation">
+			<h2 id="navigation" class="font-titre text-2xl font-bold">Navigation</h2>
+
+			<h3 class="mt-6 text-sm font-semibold text-texte-secondaire">Onglets (le survol se voit à la souris)</h3>
+			<Onglets label="Sections du repo (démo)" class="mt-3 w-fit">
+				<Onglet href="/composants" actif>Aperçu</Onglet>
+				<Onglet href="/composants#issues">Issues</Onglet>
+				<Onglet href="/composants#contributeurs">Contributeurs</Onglet>
+				<Onglet href="/composants#similaires">Similaires</Onglet>
+			</Onglets>
+
+			<h3 class="mt-8 text-sm font-semibold text-texte-secondaire">
+				Pagination : page 1, 2 et 3 sur 3, puis page 5 sur 12
+			</h3>
+			<div class="mt-3 flex flex-col gap-4">
+				<Pagination courante={1} total={3} href={adressePage} label="Pagination (démo 1)" />
+				<Pagination courante={2} total={3} href={adressePage} label="Pagination (démo 2)" />
+				<Pagination courante={3} total={3} href={adressePage} label="Pagination (démo 3)" />
+				<Pagination courante={5} total={12} href={adressePage} label="Pagination (démo 4)" />
 			</div>
 		</section>
 	</main>

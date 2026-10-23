@@ -1,0 +1,82 @@
+---
+// Pagination d'une liste (maquette Figma : « Pagination »).
+// `courante` : numéro de la page affichée ; `total` : nombre de pages ;
+// `href` : fonction qui donne l'adresse d'une page, par exemple (n) => `/recherche?page=${n}`.
+// « Préc. » est grisé sur la première page et « Suiv. » sur la dernière.
+// Au-delà de 5 pages, on garde la première, la dernière et celles autour de la courante.
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = {
+	courante: number;
+	total: number;
+	href: (page: number) => string;
+	label?: string;
+} & HTMLAttributes<'nav'>;
+
+const { courante, total, href, label = 'Pagination', class: classe, ...reste } = Astro.props;
+
+const debut = Math.max(2, courante - 1);
+const fin = Math.min(total - 1, courante + 1);
+const autour = Array.from({ length: Math.max(0, fin - debut + 1) }, (_, i) => debut + i);
+const elements: (number | '…')[] =
+	total <= 5
+		? Array.from({ length: total }, (_, i) => i + 1)
+		: [1, ...(debut > 2 ? ['…' as const] : []), ...autour, ...(fin < total - 1 ? ['…' as const] : []), total];
+
+const boutonPage = 'inline-flex size-8 items-center justify-center rounded-md text-sm font-medium transition-colors';
+const boutonFleche = 'inline-flex h-8 items-center rounded-md px-2.5 text-sm font-medium transition-colors';
+---
+
+<nav aria-label={label} class={classe} {...reste}>
+	<ul class="flex items-center gap-1">
+		<li>
+			{
+				courante > 1 ? (
+					<a href={href(courante - 1)} class:list={[boutonFleche, 'hover:bg-bordure-defaut']}>
+						‹ Préc.
+					</a>
+				) : (
+					<span aria-disabled="true" class:list={[boutonFleche, 'text-texte-secondaire opacity-50']}>
+						‹ Préc.
+					</span>
+				)
+			}
+		</li>
+
+		{
+			elements.map((element) => (
+				<li>
+					{element === '…' ? (
+						<span class:list={[boutonPage, 'text-texte-secondaire']}>…</span>
+					) : element === courante ? (
+						<span
+							aria-current="page"
+							aria-label={`Page ${element}`}
+							class:list={[boutonPage, 'bg-bouton-page-active text-blanc']}
+						>
+							{element}
+						</span>
+					) : (
+						<a href={href(element)} aria-label={`Page ${element}`} class:list={[boutonPage, 'hover:bg-bordure-defaut']}>
+							{element}
+						</a>
+					)}
+				</li>
+			))
+		}
+
+		<li>
+			{
+				courante < total ? (
+					<a href={href(courante + 1)} class:list={[boutonFleche, 'hover:bg-bordure-defaut']}>
+						Suiv. ›
+					</a>
+				) : (
+					<span aria-disabled="true" class:list={[boutonFleche, 'text-texte-secondaire opacity-50']}>
+						Suiv. ›
+					</span>
+				)
+			}
+		</li>
+	</ul>
+</nav>

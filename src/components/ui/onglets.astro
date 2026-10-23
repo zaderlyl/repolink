@@ -1,0 +1,20 @@
+---
+// Barre qui regroupe des onglets, avec un trait gris dessous (maquette Figma : « Onglets »).
+// Exemple :
+//   <Onglets label="Sections du repo">
+//     <Onglet href="/repo" actif>Aperçu</Onglet>
+//     <Onglet href="/repo/issues">Issues</Onglet>
+//   </Onglets>
+// `label` décrit la navigation pour les lecteurs d'écran.
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = {
+	label: string;
+} & HTMLAttributes<'nav'>;
+
+const { label, class: classe, ...reste } = Astro.props;
+---
+
+<nav aria-label={label} class:list={['flex border-b border-bordure-defaut', classe]} {...reste}>
+	<slot />
+</nav>
