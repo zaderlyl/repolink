@@ -1,7 +1,8 @@
 // Client de l'API publique de GitHub (https://docs.github.com/fr/rest).
 // Sans token, GitHub accepte 60 requêtes par heure et par visiteur (10 par minute pour la recherche) :
-// la gestion de cette limite et le cache viennent ensuite (étape 5.2).
+// les réponses sont donc mises en cache 10 minutes (src/lib/cache.ts).
 // Ce fichier ne lit jamais de token tout seul : celui du build est passé par `options.token`.
+import { avecCache } from './cache.ts';
 
 const URL_API = 'https://api.github.com';
 
@@ -75,7 +76,8 @@ export class ErreurGithub extends Error {
 }
 
 // Appel générique : renvoie le JSON ou lève une ErreurGithub.
-export async function requeteGithub<T>(
+// Sans token (les visiteurs), la réponse passe par le cache ; avec un token (le build), elle est toujours fraîche.
+export function requeteGithub<T>(
 	chemin: string,
 	parametres: Record<string, string | number | undefined> = {},
 	token?: string,
@@ -85,6 +87,11 @@ export async function requeteGithub<T>(
 		if (valeur !== undefined) url.searchParams.set(cle, String(valeur));
 	}
 
+	if (token) return appelerGithub<T>(url, token);
+	return avecCache(url.toString(), () => appelerGithub<T>(url));
+}
+
+async function appelerGithub<T>(url: URL, token?: string): Promise<T> {
 	const entetes: Record<string, string> = {
 		Accept: 'application/vnd.github+json',
 		'X-GitHub-Api-Version': '2022-11-28',
