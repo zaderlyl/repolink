@@ -30,6 +30,10 @@ async function charger() {
 }
 
 function montrerIntrouvable() {
+	// Le titre de la page change mais reste caché à l'écran : l'écran « Créateur introuvable » a déjà le sien
+	const titre = $('titre-contacter');
+	titre.textContent = 'Créateur introuvable';
+	titre.classList.add('sr-only');
 	$('formulaire-zone').hidden = true;
 	$('introuvable').hidden = false;
 }

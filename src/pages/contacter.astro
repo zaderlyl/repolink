@@ -14,8 +14,10 @@ const objets = ['Demande de mentorat', 'Question sur un projet', 'Proposition de
 
 <Layout titre="Contacter un créateur" description="Écris à un créateur pour lui demander conseil ou lui proposer de travailler ensemble.">
 	<main class="mx-auto w-full max-w-360 px-10 pt-6">
+		<!-- Le titre reste en dehors des deux zones : il n'y a qu'un seul h1 sur la page -->
+		<h1 id="titre-contacter" class="font-titre text-[40px] leading-tight font-bold">Écrire à <span id="nom-createur">un créateur</span></h1>
+
 		<div id="formulaire-zone">
-			<h1 class="font-titre text-[40px] leading-tight font-bold">Écrire à <span id="nom-createur">un créateur</span></h1>
 			<p class="mt-2 max-w-[700px] text-base text-texte-secondaire">
 				Présente-toi en quelques lignes et dis ce que tu aimerais apprendre ou construire.
 			</p>
@@ -41,7 +43,6 @@ const objets = ['Demande de mentorat', 'Question sur un projet', 'Proposition de
 		</div>
 
 		<div id="introuvable" hidden>
-			<h1 class="sr-only">Créateur introuvable</h1>
 			<EtatVide symbole="⌕" titre="Créateur introuvable" texte="Ce profil a peut-être été supprimé, renommé, ou n’a jamais existé.">
 				<Bouton href="/recherche" variante="secondaire">Rechercher un repo</Bouton>
 			</EtatVide>
