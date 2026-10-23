@@ -11,6 +11,25 @@ npm run dev
 
 URL : http://localhost:4321
 
+## Données de l'accueil (token GitHub)
+
+L'accueil affiche de vrais repos, issues et profils récupérés avec l'API de GitHub. Sans token, le site se construit quand même avec des données d'exemple.
+
+1. Créer un token sur GitHub : *Settings → Developer settings → Fine-grained tokens*, accès « Public repositories (read-only) », aucune permission.
+2. Copier le modèle puis y coller le token :
+   ```bash
+   cp .env.example .env
+   ```
+   ```
+   GITHUB_TOKEN=ton_token_ici
+   ```
+3. Lancer la préparation des données :
+   ```bash
+   npm run donnees
+   ```
+
+Cela écrit `src/data/accueil.json`. Le fichier `.env` et ce JSON sont ignorés par git : le token ne doit jamais être commité.
+
 ## Stack
 
 - [Astro](https://astro.build) : pages et composants
