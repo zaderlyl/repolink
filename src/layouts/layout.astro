@@ -3,6 +3,7 @@
 import '../styles/global.css';
 import Navbar from '../components/navbar.astro';
 import Footer from '../components/footer.astro';
+import Toast from '../components/ui/toast.astro';
 
 interface Props {
 	titre?: string;
@@ -34,5 +35,14 @@ const titreComplet = titre === 'Repolink' ? titre : `${titre} · Repolink`;
 		<slot />
 		<!-- mt-auto : le footer reste en bas de page, même quand le contenu est court -->
 		<Footer />
+
+			<!-- Notifications : src/scripts/toasts.ts y ajoute des toasts (sous la navbar, à droite, comme dans la maquette) -->
+			<div
+				id="zone-toasts"
+				class="pointer-events-none fixed top-[100px] right-10 z-50 flex flex-col items-end gap-3"
+			>
+			</div>
+			<template id="modele-toast-succes"><Toast>__message__</Toast></template>
+			<template id="modele-toast-erreur"><Toast variante="erreur">__message__</Toast></template>
 	</body>
 </html>
