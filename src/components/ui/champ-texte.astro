@@ -1,0 +1,38 @@
+---
+// Champ de texte avec son libellé (maquette Figma : « Champ de texte »).
+// États : normal, survol, focus (bordure bleue) et erreur (bordure rouge + message).
+// `id` est obligatoire : il relie le libellé au champ.
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = {
+	id: string;
+	label: string;
+	erreur?: string;
+} & HTMLAttributes<'input'>;
+
+const { id, label, erreur, class: classe, ...reste } = Astro.props;
+const idErreur = `${id}-erreur`;
+---
+
+<div class:list={['flex flex-col gap-1.5', classe]}>
+	<label for={id} class="text-[13px] font-medium">{label}</label>
+	<input
+		id={id}
+		aria-invalid={erreur ? 'true' : undefined}
+		aria-describedby={erreur ? idErreur : undefined}
+		class:list={[
+			'h-9 w-full rounded-md border bg-fond-page px-3 text-sm text-texte-principal placeholder:text-texte-secondaire focus:outline-none focus:ring-1',
+			erreur
+				? 'border-accent-danger ring-1 ring-accent-danger'
+				: 'border-bordure-defaut hover:border-texte-secondaire focus:border-accent-lien focus:ring-accent-lien',
+		]}
+		{...reste}
+	/>
+	{
+		erreur && (
+			<p id={idErreur} class="text-xs text-accent-danger">
+				{erreur}
+			</p>
+		)
+	}
+</div>

@@ -1,0 +1,26 @@
+---
+// Message de réussite en pleine page, par exemple après la connexion (maquette Figma : « Message de confirmation »).
+// Le bouton d'action se met dans le contenu : <MessageConfirmation titre="…" texte="…"><Bouton>…</Bouton></MessageConfirmation>
+// `niveau` : h1 par défaut (c'est le titre principal de sa page) ; h2 ou h3 s'il est dans une page qui a déjà un h1.
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = {
+	titre: string;
+	texte: string;
+	niveau?: 'h1' | 'h2' | 'h3';
+} & HTMLAttributes<'div'>;
+
+const { titre, texte, niveau = 'h1', class: classe, ...reste } = Astro.props;
+const Titre = niveau;
+---
+
+<div role="status" class:list={['flex flex-col items-center gap-3 text-center', classe]} {...reste}>
+	<span
+		aria-hidden="true"
+		class="grid size-18 place-items-center rounded-full bg-bouton-primaire text-[32px] font-semibold text-blanc"
+		>✓</span
+	>
+	<Titre class="font-titre text-2xl font-bold">{titre}</Titre>
+	<p class="max-w-85 text-sm text-texte-secondaire">{texte}</p>
+	<slot />
+</div>

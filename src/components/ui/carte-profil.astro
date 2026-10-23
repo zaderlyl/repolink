@@ -1,0 +1,48 @@
+---
+// Carte d'un créateur (maquette Figma : « Carte profil »).
+// Toute la carte est cliquable grâce au bouton « Voir le profil » dont le lien s'étire (after:absolute).
+// `niveaux` : activité récente (voir <GrilleContributions>).
+import type { HTMLAttributes } from 'astro/types';
+import Avatar from './avatar.astro';
+import Bouton from './bouton.astro';
+import GrilleContributions from './grille-contributions.astro';
+
+type Props = {
+	nom: string;
+	pseudo: string;
+	abonnes: string;
+	bio: string;
+	href: string;
+	niveaux: number[][];
+	avatar?: string;
+} & HTMLAttributes<'article'>;
+
+const { nom, pseudo, abonnes, bio, href, niveaux, avatar, class: classe, ...reste } = Astro.props;
+---
+
+<article
+	class:list={[
+		'relative flex flex-col rounded-xl border border-bordure-defaut bg-fond-page p-5 transition-colors hover:border-accent-lien hover:bg-fond-panneau',
+		classe,
+	]}
+	{...reste}
+>
+	<div class="flex items-center gap-3">
+		<Avatar taille="l" src={avatar} />
+		<div>
+			<h3 class="text-lg font-semibold">{nom}</h3>
+			<p class="text-[13px] text-texte-secondaire">{pseudo} · {abonnes} followers</p>
+		</div>
+	</div>
+
+	<p class="mt-4 text-[13px] text-texte-secondaire">{bio}</p>
+
+	<!-- La grille mesure 403 px : sur une carte plus étroite, elle est coupée au bord au lieu de déborder -->
+	<div class="mt-6 overflow-hidden">
+		<GrilleContributions semaines={niveaux} class="w-fit" />
+	</div>
+
+	<Bouton href={href} aria-label={`Voir le profil de ${nom}`} class="mt-3 w-[150px] self-start after:absolute after:inset-0">
+		Voir le profil
+	</Bouton>
+</article>

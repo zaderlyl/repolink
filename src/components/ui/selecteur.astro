@@ -1,0 +1,43 @@
+---
+// Liste déroulante (maquette Figma : « Sélecteur »).
+// On utilise le <select> natif : il s'ouvre et se commande au clavier sans JavaScript.
+// `options` : liste de textes, ou d'objets { valeur, texte }.
+import type { HTMLAttributes } from 'astro/types';
+
+type Option = string | { valeur: string; texte: string };
+
+type Props = {
+	id: string;
+	label: string;
+	options: Option[];
+	valeur?: string;
+} & HTMLAttributes<'select'>;
+
+const { id, label, options, valeur, class: classe, ...reste } = Astro.props;
+
+const liste = options.map((o) => (typeof o === 'string' ? { valeur: o, texte: o } : o));
+---
+
+<div class:list={['flex flex-col gap-1.5', classe]}>
+	<label for={id} class="text-[13px] font-medium">{label}</label>
+	<div class="relative">
+		<select
+			id={id}
+			class="h-9 w-full appearance-none rounded-md border border-bordure-defaut bg-fond-champ pr-8 pl-3 text-sm text-texte-principal hover:border-texte-secondaire focus:border-accent-lien focus:ring-1 focus:ring-accent-lien focus:outline-none"
+			{...reste}
+		>
+			{
+				liste.map((o) => (
+					<option value={o.valeur} selected={o.valeur === valeur}>
+						{o.texte}
+					</option>
+				))
+			}
+		</select>
+		<span
+			aria-hidden="true"
+			class="pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-xs text-texte-secondaire"
+			>▾</span
+		>
+	</div>
+</div>

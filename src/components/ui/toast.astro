@@ -1,0 +1,31 @@
+---
+// Petite notification (maquette Figma : « Toast »), par exemple « Repo ajouté aux favoris ».
+// Variantes : succes (bordure verte) et erreur (bordure rouge).
+// Le message se met dans le contenu. Un succès est annoncé poliment (role="status"),
+// une erreur tout de suite (role="alert"). Son apparition et sa disparition viendront à l'étape 8.
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = {
+	variante?: 'succes' | 'erreur';
+} & HTMLAttributes<'div'>;
+
+const { variante = 'succes', class: classe, ...reste } = Astro.props;
+
+const variantes = {
+	succes: { bordure: 'border-accent-succes', pastille: 'bg-accent-succes' },
+	erreur: { bordure: 'border-accent-danger', pastille: 'bg-accent-danger' },
+};
+---
+
+<div
+	role={variante === 'erreur' ? 'alert' : 'status'}
+	class:list={[
+		'inline-flex items-center gap-2.5 rounded-lg border bg-fond-carte px-4 py-3.5 text-sm leading-[17px] font-medium',
+		variantes[variante].bordure,
+		classe,
+	]}
+	{...reste}
+>
+	<span aria-hidden="true" class:list={['size-2.5 shrink-0 rounded-full', variantes[variante].pastille]}></span>
+	<slot />
+</div>

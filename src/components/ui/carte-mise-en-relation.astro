@@ -1,0 +1,44 @@
+---
+// Carte d'un créateur à contacter (maquette Figma : « Carte mise en relation »).
+// La maquette n'affiche pas le nom : il est écrit pour les lecteurs d'écran (sr-only).
+// Toute la carte est cliquable grâce au bouton « Contacter » dont le lien s'étire.
+import type { HTMLAttributes } from 'astro/types';
+import Avatar from './avatar.astro';
+import Bouton from './bouton.astro';
+import Pill from './pill.astro';
+
+type Props = {
+	nom: string;
+	href: string;
+	tags?: string[];
+	avatar?: string;
+	libelle?: string;
+} & HTMLAttributes<'article'>;
+
+const { nom, href, tags = [], avatar, libelle = 'Contacter', class: classe, ...reste } = Astro.props;
+---
+
+<article
+	class:list={[
+		'relative flex min-h-64 flex-col justify-between gap-6 rounded-xl border border-bordure-defaut bg-fond-carte p-6 transition-colors hover:border-accent-lien hover:bg-fond-panneau',
+		classe,
+	]}
+	{...reste}
+>
+	<h3 class="sr-only">{nom}</h3>
+	<div class="flex items-start justify-between gap-4">
+		<Avatar taille="l" src={avatar} />
+		<ul class="flex flex-wrap justify-end gap-2" aria-label="Domaines">
+			{
+				tags.map((tag) => (
+					<li>
+						<Pill variante="topic">{tag}</Pill>
+					</li>
+				))
+			}
+		</ul>
+	</div>
+	<Bouton href={href} aria-label={`${libelle} ${nom}`} class="self-start after:absolute after:inset-0">
+		{libelle}
+	</Bouton>
+</article>

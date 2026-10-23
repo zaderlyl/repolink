@@ -1,0 +1,28 @@
+---
+// Un onglet de navigation (maquette Figma : « Onglet »).
+// À placer dans <Onglets> : chaque onglet est un lien vers une page.
+// `actif` : l'onglet de la page courante (texte en gras, trait orange).
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = {
+	href: string;
+	actif?: boolean;
+} & HTMLAttributes<'a'>;
+
+const { href, actif = false, class: classe, ...reste } = Astro.props;
+---
+
+<a
+	href={href}
+	aria-current={actif ? 'page' : undefined}
+	class:list={[
+		'inline-flex border-b-2 px-4 py-3 text-sm leading-[17px] transition-colors',
+		actif
+			? 'border-accent-onglet font-semibold text-texte-principal'
+			: 'border-transparent text-texte-secondaire hover:border-bordure-defaut hover:text-texte-principal',
+		classe,
+	]}
+	{...reste}
+>
+	<slot />
+</a>

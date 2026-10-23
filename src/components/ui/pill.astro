@@ -1,0 +1,30 @@
+---
+// Petite étiquette arrondie (maquette Figma : « Pill »).
+// Variantes : topic (bleu), good-first-issue (violet), succes (vert), public (contour gris).
+// Le texte se met dans le contenu : <Pill variante="topic">css</Pill>
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = {
+	variante?: 'topic' | 'good-first-issue' | 'succes' | 'public';
+} & HTMLAttributes<'span'>;
+
+const { variante = 'topic', class: classe, ...reste } = Astro.props;
+
+const variantes = {
+	topic: 'bg-fond-topic text-accent-lien',
+	'good-first-issue': 'bg-label-good-first-issue text-blanc',
+	succes: 'bg-fond-succes text-accent-succes',
+	public: 'border border-bordure-defaut text-texte-secondaire',
+};
+---
+
+<span
+	class:list={[
+		'inline-flex h-5.5 items-center rounded-full px-2.5 text-xs font-medium whitespace-nowrap',
+		variantes[variante],
+		classe,
+	]}
+	{...reste}
+>
+	<slot />
+</span>

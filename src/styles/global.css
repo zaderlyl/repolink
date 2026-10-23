@@ -43,11 +43,23 @@
   --color-bouton-primaire: #238636;
   --color-bouton-primaire-bordure: #3fa050;
   --color-bouton-primaire-survol: #2ea043;
+  --color-bouton-danger-survol: #da3633;
   --color-bouton-page-active: #1f6feb;
 
   /* Labels */
   --color-label-good-first-issue: #7057ff;
 
+  /* Grille de contributions : du plus faible (1) au plus fort (4) ; le niveau 0 utilise fond-panneau */
+  --color-contribution-1: #0e4429;
+  --color-contribution-2: #006d32;
+  --color-contribution-3: #26a641;
+  --color-contribution-4: #39d353;
+
   /* Divers */
   --color-blanc: #ffffff;
+}
+
+/* Thème sombre pour les éléments natifs du navigateur (liste déroulante, barres de défilement) */
+:root {
+  color-scheme: dark;
 }

@@ -1,0 +1,26 @@
+---
+// Bouton carré de 32 px avec un symbole (maquette Figma : « Bouton icône »).
+// Le symbole se met dans le contenu : <BoutonIcone label="Page suivante">›</BoutonIcone>
+// `label` est lu par les lecteurs d'écran, car le symbole seul ne dit rien.
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = {
+	label: string;
+	actif?: boolean;
+} & HTMLAttributes<'button'>;
+
+const { label, actif = false, class: classe, ...reste } = Astro.props;
+---
+
+<button
+	type="button"
+	aria-label={label}
+	class:list={[
+		'inline-flex size-8 items-center justify-center rounded-md border border-bordure-defaut bg-fond-champ text-base font-medium transition-colors hover:bg-bordure-defaut',
+		actif ? 'text-accent-etoile' : 'text-texte-principal',
+		classe,
+	]}
+	{...reste}
+>
+	<slot />
+</button>

@@ -1,0 +1,33 @@
+---
+// Message affiché quand une liste est vide (maquette Figma : « État vide »).
+// Le bouton d'action se met dans le contenu : <EtatVide titre="…" texte="…"><Bouton>Explorer</Bouton></EtatVide>
+// `niveau` : niveau du titre (h2 par défaut) pour garder une structure de titres cohérente.
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = {
+	titre: string;
+	texte: string;
+	symbole?: string;
+	niveau?: 'h2' | 'h3';
+} & HTMLAttributes<'div'>;
+
+const { titre, texte, symbole = '☆', niveau = 'h2', class: classe, ...reste } = Astro.props;
+const Titre = niveau;
+---
+
+<div
+	class:list={[
+		'flex min-h-65 flex-col items-center justify-center gap-3 rounded-xl border border-bordure-defaut bg-fond-panneau p-6 text-center',
+		classe,
+	]}
+	{...reste}
+>
+	<span
+		aria-hidden="true"
+		class="grid size-16 place-items-center rounded-full border border-bordure-defaut bg-fond-page text-2xl text-texte-secondaire"
+		>{symbole}</span
+	>
+	<Titre class="text-lg font-semibold">{titre}</Titre>
+	<p class="max-w-85 text-sm text-texte-secondaire">{texte}</p>
+	<slot />
+</div>

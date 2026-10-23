@@ -1,0 +1,33 @@
+---
+// Une issue dans une liste (maquette Figma : « Ligne issue »).
+// Toute la ligne est cliquable (le lien du titre s'étire dessus). Un trait la sépare de la ligne
+// du dessus : à placer dans un conteneur qui a sa propre bordure (panneau, liste).
+import type { HTMLAttributes } from 'astro/types';
+import Pill from './pill.astro';
+
+type Props = {
+	titre: string;
+	href: string;
+	repo: string;
+	ouverte: string;
+} & HTMLAttributes<'article'>;
+
+const { titre, href, repo, ouverte, class: classe, ...reste } = Astro.props;
+---
+
+<article
+	class:list={[
+		'relative flex items-center gap-3 border-t border-bordure-defaut px-5 py-[11px] transition-colors hover:bg-fond-panneau',
+		classe,
+	]}
+	{...reste}
+>
+	<span aria-hidden="true" class="size-4 shrink-0 rounded-full border-2 border-accent-succes"></span>
+	<div class="flex min-w-0 flex-1 flex-col gap-1">
+		<h3 class="text-[15px] leading-[18px] font-semibold">
+			<a href={href} class="after:absolute after:inset-0">{titre}</a>
+		</h3>
+		<p class="text-xs leading-[15px] text-texte-secondaire">{repo} · ouverte {ouverte}</p>
+	</div>
+	<Pill variante="good-first-issue" class="min-w-[130px] justify-center">good first issue</Pill>
+</article>

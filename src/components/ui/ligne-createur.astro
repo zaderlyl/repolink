@@ -1,0 +1,41 @@
+---
+// Ligne d'un créateur dans une liste (maquette Figma : « Ligne créateur »).
+// La ligne mène au profil (le lien du nom s'étire dessus) ; le bouton Suivre / Suivi passe au-dessus.
+// `suivi` : l'utilisateur suit déjà ce créateur (le bouton devient « Suivi », en secondaire).
+// Le changement d'état au clic sera branché à l'étape 8 (interactions).
+import type { HTMLAttributes } from 'astro/types';
+import Avatar from './avatar.astro';
+import Bouton from './bouton.astro';
+
+type Props = {
+	nom: string;
+	pseudo: string;
+	abonnes: string;
+	href: string;
+	suivi?: boolean;
+	avatar?: string;
+} & HTMLAttributes<'article'>;
+
+const { nom, pseudo, abonnes, href, suivi = false, avatar, class: classe, ...reste } = Astro.props;
+---
+
+<article
+	class:list={[
+		'relative flex h-16 items-center justify-between gap-4 rounded-lg border border-bordure-defaut bg-fond-panneau px-3 transition-colors hover:border-accent-lien',
+		classe,
+	]}
+	{...reste}
+>
+	<div class="flex items-center gap-3">
+		<Avatar taille="m" src={avatar} />
+		<div class="flex flex-col gap-0.5">
+			<h3 class="text-sm leading-4 font-semibold">
+				<a href={href} class="after:absolute after:inset-0">{nom}</a>
+			</h3>
+			<p class="text-xs leading-4 text-texte-secondaire">{pseudo} · {abonnes} followers</p>
+		</div>
+	</div>
+	<Bouton variante={suivi ? 'secondaire' : 'primaire'} aria-pressed={suivi} class="relative z-10">
+		{suivi ? 'Suivi' : 'Suivre'}
+	</Bouton>
+</article>

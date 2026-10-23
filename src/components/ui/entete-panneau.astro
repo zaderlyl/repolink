@@ -1,0 +1,27 @@
+---
+// Bandeau de titre en haut d'un panneau (maquette Figma : « En-tête de panneau »).
+// `lienTexte` et `lienHref` : le lien à droite, par exemple « Voir tout » (facultatif).
+// `niveau` : niveau du titre (h2 par défaut) pour garder une structure de titres cohérente.
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = {
+	titre: string;
+	lienTexte?: string;
+	lienHref?: string;
+	niveau?: 'h2' | 'h3';
+} & HTMLAttributes<'div'>;
+
+const { titre, lienTexte, lienHref, niveau = 'h2', class: classe, ...reste } = Astro.props;
+const Titre = niveau;
+---
+
+<div class:list={['flex h-12 items-center justify-between bg-fond-panneau px-5', classe]} {...reste}>
+	<Titre class="text-base font-semibold">{titre}</Titre>
+	{
+		lienTexte && lienHref && (
+			<a href={lienHref} class="text-[13px] font-medium text-accent-lien hover:underline">
+				{lienTexte}
+			</a>
+		)
+	}
+</div>
