@@ -4,7 +4,14 @@ import { ErreurGithub, rechercherRepos, recupererReposUtilisateur } from '../lib
 import type { RepoGithub } from '../lib/github.ts';
 import { couleurLangage } from '../lib/conversion.ts';
 import { purgerCache } from '../lib/cache.ts';
-import { construireRequeteRecommandation, langagesPrincipaux, melanger, NB_PAR_LANGAGE } from '../lib/recommandations.ts';
+import {
+	construireRequeteRecommandation,
+	langagesARecommander,
+	langagesPrincipaux,
+	melanger,
+	NB_PAR_LANGAGE,
+} from '../lib/recommandations.ts';
+import { lirePreferences } from '../lib/preferences.ts';
 import { estPseudoValide, hrefRecherche, lirePseudo } from '../lib/recherche.ts';
 import { lireSession, nettoyerPseudo } from '../lib/session.ts';
 import { $, creerCarteRepo, depuisModele, messageErreur, montrer } from './commun.ts';
@@ -60,13 +67,15 @@ async function analyser(pseudo: string) {
 	bouton.textContent = 'Analyse…';
 	try {
 		const repos = await recupererReposUtilisateur(pseudo, 100);
-		const langages = langagesPrincipaux(repos);
+		// Les langages favoris des Paramètres passent d'abord, puis ceux qu'on détecte dans ses repos
+		const preferences = lirePreferences(stockage());
+		const langages = langagesARecommander(preferences.langages, langagesPrincipaux(repos));
 		afficherCompetences(langages, pseudo);
 
 		// Une recherche par langage (3 au plus) : GitHub accepte 10 recherches par minute sans token
 		const listes: RepoGithub[][] = [];
 		for (const langage of langages) {
-			const resultat = await rechercherRepos(construireRequeteRecommandation(langage, pseudo), {
+			const resultat = await rechercherRepos(construireRequeteRecommandation(langage, pseudo, preferences), {
 				tri: 'updated',
 				ordre: 'desc',
 				parPage: NB_PAR_LANGAGE + 2, // un peu de marge si un repo est déjà pris par un autre langage

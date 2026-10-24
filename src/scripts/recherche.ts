@@ -5,11 +5,21 @@ import { rechercherRepos } from '../lib/github.ts';
 import type { RepoGithub, ResultatRecherche } from '../lib/github.ts';
 import { formaterRepos } from '../lib/conversion.ts';
 import { purgerCache } from '../lib/cache.ts';
+import { lirePreferences } from '../lib/preferences.ts';
 import { construireOptions, construireRequete, hrefRecherche, lireFiltres, nombrePages } from '../lib/recherche.ts';
 import type { Filtres } from '../lib/recherche.ts';
 import { $, afficherPagination, afficherPastilles, creerCarteRepo, messageErreur, montrer } from './commun.ts';
 
 const LANGAGES_RAPIDES = ['JavaScript', 'Python'];
+
+// Les préférences (page Paramètres) sont dans le stockage du navigateur ; s'il est bloqué, on garde les valeurs par défaut
+function stockage(): Storage | null {
+	try {
+		return globalThis.localStorage ?? null;
+	} catch {
+		return null;
+	}
+}
 const ZONES = ['liste', 'chargement', 'vide', 'erreur'];
 
 function afficherFiltres(filtres: Filtres) {
@@ -61,7 +71,7 @@ async function charger() {
 
 	let resultat: ResultatRecherche<RepoGithub>;
 	try {
-		resultat = await rechercherRepos(construireRequete(filtres), construireOptions(filtres));
+		resultat = await rechercherRepos(construireRequete(filtres, lirePreferences(stockage())), construireOptions(filtres));
 	} catch (erreur) {
 		$('statut').textContent = '';
 		document.querySelector('#erreur p')!.textContent = messageErreur(erreur);

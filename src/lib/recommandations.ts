@@ -1,6 +1,8 @@
 // Recommandations « Pour toi » : on regarde les langages des repos d'une personne puis on cherche, dans ces langages,
 // des repos qui accueillent les débutants. Ces fonctions ne font aucun appel réseau.
 import type { RepoGithub } from './github.ts';
+import { dateLimiteActif, PREFERENCES_PAR_DEFAUT } from './preferences.ts';
+import type { Niveau, Preferences } from './preferences.ts';
 
 export const NB_LANGAGES = 3; // les « compétences détectées »
 export const NB_PAR_LANGAGE = 2; // repos recommandés pour chaque langage
@@ -22,9 +24,39 @@ export function langagesPrincipaux(repos: RepoGithub[], max = NB_LANGAGES): stri
 
 const entre = (texte: string) => (/^[\w+#.-]+$/.test(texte) ? texte : `"${texte}"`);
 
-// Un repo qui a des issues pour débutants, ni géant ni inconnu (10 à 5000 étoiles), actif et pas à la personne elle-même
-export function construireRequeteRecommandation(langage: string, pseudo: string): string {
-	return `language:${entre(langage)} good-first-issues:>0 stars:10..5000 archived:false -user:${pseudo}`;
+// Ce que le niveau demande à un repo : des issues pour débutants, ou des issues « help wanted » pour aller plus loin,
+// dans des projets de plus en plus grands (étoiles).
+const CRITERES_NIVEAU: Record<Niveau, string> = {
+	debutant: 'good-first-issues:>0 stars:10..5000',
+	intermediaire: 'help-wanted-issues:>0 stars:10..20000',
+	avance: 'help-wanted-issues:>0 stars:>=100',
+};
+
+// Un repo adapté au niveau, dans ce langage, pas à la personne elle-même ; les préférences ajoutent « actif » et « sans archivés »
+export function construireRequeteRecommandation(
+	langage: string,
+	pseudo: string,
+	preferences: Preferences = PREFERENCES_PAR_DEFAUT,
+	maintenant: Date = new Date(),
+): string {
+	const morceaux = [`language:${entre(langage)}`, CRITERES_NIVEAU[preferences.niveau]];
+	if (preferences.masquerArchives) morceaux.push('archived:false');
+	if (preferences.projetsActifs) morceaux.push(`pushed:>${dateLimiteActif(maintenant)}`);
+	morceaux.push(`-user:${pseudo}`);
+	return morceaux.join(' ');
+}
+
+// Les langages à explorer : d'abord les favoris choisis dans les Paramètres, puis ceux détectés chez la personne, sans doublon
+export function langagesARecommander(favoris: string[], detectes: string[], max = NB_LANGAGES): string[] {
+	const vus = new Set<string>();
+	const resultat: string[] = [];
+	for (const langage of [...favoris, ...detectes]) {
+		const cle = langage.toLowerCase();
+		if (vus.has(cle)) continue;
+		vus.add(cle);
+		resultat.push(langage);
+	}
+	return resultat.slice(0, max);
 }
 
 // Mélange les listes une à une (un repo du 1er langage, un du 2e, un du 3e, puis on recommence), sans doublon,

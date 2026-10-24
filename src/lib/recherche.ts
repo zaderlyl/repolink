@@ -2,6 +2,8 @@
 // et construction de la requête de l'API de GitHub. Ces fonctions ne font aucun appel réseau.
 import type { OptionsRecherche } from './github.ts';
 import type { OngletRepo } from './adresses.ts';
+import { dateLimiteActif, PREFERENCES_PAR_DEFAUT } from './preferences.ts';
+import type { Preferences } from './preferences.ts';
 
 export const RESULTATS_PAR_PAGE = 10;
 // GitHub ne donne jamais plus de 1000 résultats pour une recherche
@@ -43,14 +45,20 @@ const valeur = (texte: string) => (/^[\w+#.-]+$/.test(texte) ? texte : `"${texte
 // Requête de recherche de repos au format GitHub.
 // Sans aucun filtre, on montre les repos qui accueillent les débutants (au moins une good first issue).
 // Sans texte, on écarte aussi les repos sans étoile (stars:>=10) : triés par date, ils ne montreraient que des dépôts vides.
-export function construireRequete(filtres: Filtres): string {
+// Les préférences (page Paramètres) ajoutent « projets actifs » (mis à jour ces 90 derniers jours) et « sans archivés ».
+export function construireRequete(
+	filtres: Filtres,
+	preferences: Preferences = PREFERENCES_PAR_DEFAUT,
+	maintenant: Date = new Date(),
+): string {
 	const morceaux: string[] = [];
 	if (filtres.q) morceaux.push(filtres.q);
 	if (filtres.langage) morceaux.push(`language:${valeur(filtres.langage)}`);
 	if (filtres.topic) morceaux.push(`topic:${valeur(filtres.topic)}`);
 	if (morceaux.length === 0) morceaux.push('good-first-issues:>0');
 	if (!filtres.q) morceaux.push('stars:>=10');
-	morceaux.push('archived:false');
+	if (preferences.masquerArchives) morceaux.push('archived:false');
+	if (preferences.projetsActifs) morceaux.push(`pushed:>${dateLimiteActif(maintenant)}`);
 	return morceaux.join(' ');
 }
 

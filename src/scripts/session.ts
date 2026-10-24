@@ -48,6 +48,9 @@ document.addEventListener('click', (evenement) => {
 	if ((evenement.target as Element).closest('[data-deconnexion]')) deconnecter();
 });
 
+// Une déconnexion ou une suppression de données venue d'ailleurs sur la même page (page Paramètres) : on s'aligne
+window.addEventListener('session-changee', rafraichirNavbar);
+
 // Connexion ou déconnexion dans un autre onglet : on s'aligne
 window.addEventListener('storage', (evenement) => {
 	if (evenement.key !== 'repolink:session') return;

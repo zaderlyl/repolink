@@ -1,0 +1,116 @@
+---
+// Page « Paramètres » (maquettes Figma : « Site - Paramètres », « Paramètres - Compte » et « Paramètres - Thème »).
+// Trois sections (?section=preferences, compte ou theme). Tout est gardé dans le navigateur (src/lib/preferences.ts) :
+// les préférences servent à la Recherche et à « Pour toi ». Le script est src/scripts/parametres.ts.
+import Layout from '../layouts/layout.astro';
+import Bouton from '../components/ui/bouton.astro';
+import CaseACocher from '../components/ui/case-a-cocher.astro';
+import ChampTexte from '../components/ui/champ-texte.astro';
+import LigneParametre from '../components/ui/ligne-parametre.astro';
+import Selecteur from '../components/ui/selecteur.astro';
+import { langages } from '../data/explorer-categories.ts';
+import { NIVEAUX } from '../lib/preferences.ts';
+
+const niveaux = NIVEAUX.map(({ id, texte }) => ({ valeur: id, texte }));
+---
+
+<Layout titre="Paramètres" description="Tes préférences de recherche, ton compte et le thème du site.">
+	<main class="mx-auto w-full max-w-360 px-10 pt-6">
+		<h1 class="font-titre text-[40px] leading-tight font-bold">Paramètres</h1>
+
+		<div class="mt-[18px] grid items-start gap-5 lg:grid-cols-[320px_1fr]">
+			<!-- Menu : la section courante est mise en évidence par le script -->
+			<nav id="menu" aria-label="Sections des paramètres" class="flex flex-col gap-4">
+				<LigneParametre label="Préférences" href="/parametres" courant data-section="preferences" />
+				<LigneParametre label="Compte" href="/parametres?section=compte" data-section="compte" />
+				<LigneParametre label="Thème" href="/parametres?section=theme" data-section="theme" />
+			</nav>
+
+			<div>
+				<!-- Préférences -->
+				<section id="section-preferences" aria-labelledby="titre-preferences" class="rounded-xl border border-bordure-defaut bg-fond-panneau p-[23px]">
+					<h2 id="titre-preferences" class="text-[22px] leading-7">Préférences</h2>
+					<div class="mt-6 flex flex-wrap gap-x-[175px] gap-y-4">
+						<!-- Langages favoris : liste déroulante à cases à cocher (un <select multiple> serait peu agréable) -->
+						<div class="flex w-80 flex-col gap-1.5">
+							<span id="etiquette-langages" class="text-[13px] font-medium">Langages favoris</span>
+							<details id="menu-langages" class="relative">
+								<summary
+									aria-labelledby="etiquette-langages resume-langages"
+									class="flex h-9 cursor-pointer list-none items-center justify-between rounded-md border border-bordure-defaut bg-fond-champ px-3 text-sm hover:border-texte-secondaire focus-visible:border-accent-lien focus-visible:ring-1 focus-visible:ring-accent-lien focus-visible:outline-none [&::-webkit-details-marker]:hidden"
+								>
+									<span id="resume-langages">Aucun</span>
+									<span aria-hidden="true" class="text-xs text-texte-secondaire">▾</span>
+								</summary>
+								<ul class="absolute z-10 mt-1 grid max-h-72 w-full grid-cols-2 gap-x-2 gap-y-2.5 overflow-auto rounded-md border border-bordure-defaut bg-fond-champ p-3">
+									{langages.map((langage) => (
+										<li>
+											<CaseACocher name="langage" value={langage.nom} label={langage.nom} data-langage />
+										</li>
+									))}
+								</ul>
+							</details>
+						</div>
+						<Selecteur id="preference-niveau" name="niveau" label="Niveau" options={niveaux} class="w-80" />
+					</div>
+					<div class="mt-5 flex flex-col gap-3">
+						<CaseACocher id="preference-actifs" name="actifs" label="Afficher uniquement les projets actifs" />
+						<CaseACocher id="preference-archives" name="archives" label="Masquer les repos archivés" />
+					</div>
+					<p class="mt-5 text-[13px] text-texte-secondaire">
+						Ces choix servent à la Recherche et à « Pour toi ». Un projet est actif s'il a été mis à jour ces 90 derniers jours.
+						Ils sont enregistrés dans ce navigateur.
+					</p>
+				</section>
+
+				<!-- Compte -->
+				<section id="section-compte" aria-labelledby="titre-compte" hidden class="rounded-xl border border-bordure-defaut bg-fond-panneau p-[23px]">
+					<h2 id="titre-compte" class="text-[22px] leading-7">Compte</h2>
+					<div class="mt-6 flex flex-wrap gap-x-[175px] gap-y-6">
+						<div class="w-80">
+							<ChampTexte id="compte-pseudo" name="pseudo" label="Pseudo GitHub" placeholder="@pseudo" readonly />
+							<p id="compte-non-connecte" hidden class="mt-2 text-[13px] text-texte-secondaire">
+								Tu n'es pas connecté. <a href="/connexion" class="text-accent-lien hover:underline">Se connecter</a>
+							</p>
+						</div>
+						<div class="flex flex-col items-start gap-4">
+							<Bouton id="bouton-deconnecter" variante="danger" data-deconnexion>Se déconnecter</Bouton>
+							<Bouton id="bouton-supprimer" variante="danger" aria-expanded="false" aria-controls="confirmation">Supprimer mon compte</Bouton>
+						</div>
+					</div>
+					<div id="confirmation" hidden class="mt-6 max-w-[640px] rounded-lg border border-accent-danger p-4">
+						<p class="text-sm">
+							Il n'y a pas de compte sur un serveur : cela efface de ce navigateur ta connexion, tes favoris, tes créateurs suivis et tes préférences.
+							C'est définitif.
+						</p>
+						<div class="mt-4 flex gap-3">
+							<Bouton id="bouton-confirmer" variante="danger">Oui, tout supprimer</Bouton>
+							<Bouton id="bouton-annuler" variante="secondaire">Annuler</Bouton>
+						</div>
+					</div>
+				</section>
+
+				<!-- Thème -->
+				<section id="section-theme" aria-labelledby="titre-theme" hidden class="rounded-xl border border-bordure-defaut bg-fond-panneau p-[23px]">
+					<h2 id="titre-theme" class="text-[22px] leading-7">Thème</h2>
+					<div class="mt-6 grid gap-4 md:grid-cols-2">
+						<LigneParametre type="toggle" id="theme-clair" name="theme" label="Clair (bientôt)" desactive />
+						<LigneParametre type="toggle" id="theme-sombre" name="theme" label="Sombre" actif />
+						<LigneParametre type="toggle" id="theme-auto" name="theme" label="Automatique (bientôt)" desactive />
+					</div>
+					<p class="mt-5 text-[13px] text-texte-secondaire">Seul le thème sombre est disponible pour l'instant.</p>
+				</section>
+			</div>
+		</div>
+
+		<noscript>
+			<p class="mt-6 rounded-xl border border-bordure-defaut bg-fond-panneau p-6 text-center text-sm text-texte-secondaire">
+				Active JavaScript pour modifier tes paramètres.
+			</p>
+		</noscript>
+	</main>
+</Layout>
+
+<script>
+	import '../scripts/parametres.ts';
+</script>
