@@ -1,7 +1,7 @@
 ---
 // Page « Contact » (maquette Figma : « Site - Contact »).
-// Le formulaire est vérifié par le navigateur (champs obligatoires, e-mail valide) mais rien n'est envoyé :
-// une fois valide, on va sur la page « Message envoyé ».
+// Le formulaire est vérifié par src/scripts/formulaire.ts (champs obligatoires, e-mail valide, message assez long) :
+// les erreurs s'affichent sous les champs. Rien n'est envoyé : une fois valide, on va sur la page « Message envoyé ».
 import Layout from '../layouts/layout.astro';
 import Bouton from '../components/ui/bouton.astro';
 import ChampTexte from '../components/ui/champ-texte.astro';
@@ -20,6 +20,7 @@ const sujets = ['Question générale', 'Signaler un bug', 'Proposer un projet', 
 
 		<form
 			id="formulaire-contact"
+			novalidate
 			class="mt-8 flex max-w-[640px] flex-col gap-4 rounded-xl border border-bordure-defaut bg-fond-page p-[23px]"
 		>
 			<ChampTexte id="contact-nom" name="nom" label="Nom" placeholder="Ton nom" autocomplete="name" required class="w-80" />
@@ -51,10 +52,10 @@ const sujets = ['Question générale', 'Signaler un bug', 'Proposer un projet', 
 </Layout>
 
 <script>
-	// Le navigateur a déjà vérifié les champs : on n'arrive ici que si le formulaire est valide.
-	// Pas d'envoi réel ni de données dans l'adresse : on affiche simplement la page de confirmation.
-	document.getElementById('formulaire-contact')?.addEventListener('submit', (evenement) => {
-		evenement.preventDefault();
-		window.location.assign('/message-envoye');
-	});
+	import { validerFormulaire } from '../scripts/formulaire.ts';
+
+	// Les champs sont vérifiés avant d'arriver ici. Pas d'envoi réel ni de données dans l'adresse :
+	// on affiche simplement la page de confirmation.
+	const formulaire = document.getElementById('formulaire-contact') as HTMLFormElement | null;
+	if (formulaire) validerFormulaire(formulaire, () => window.location.assign('/message-envoye'));
 </script>

@@ -47,7 +47,7 @@ import Pill from '../components/ui/pill.astro';
 					<Pill variante="public" id="visibilite">Public</Pill>
 				</div>
 				<div class="flex items-center gap-2">
-					<BoutonStar />
+					<BoutonStar id="star-repo" />
 					<Bouton id="lien-fork" href="/" variante="secondaire" target="_blank" rel="noopener noreferrer">Fork</Bouton>
 					<Bouton id="lien-github" href="/" target="_blank" rel="noopener noreferrer">Voir sur GitHub</Bouton>
 				</div>
@@ -159,10 +159,10 @@ import Pill from '../components/ui/pill.astro';
 		<LigneIssue titre="__titre__" href="__href__" repo="__repo__" ouverte="__ouverte__" />
 	</template>
 	<template id="modele-createur">
-		<LigneCreateur nom="__nom__" pseudo="__pseudo__" abonnes="__abonnes__" href="__href__" avatar="__avatar__" />
+		<LigneCreateur nom="__nom__" pseudo="@__pseudo__" abonnes="__abonnes__" href="__href__" avatar="__avatar__" />
 	</template>
 	<template id="modele-contributeur">
-		<LigneCreateur nom="__nom__" pseudo="__pseudo__" detail="__detail__" href="__href__" avatar="__avatar__" />
+		<LigneCreateur nom="__nom__" pseudo="@__pseudo__" detail="__detail__" href="__href__" avatar="__avatar__" />
 	</template>
 	<template id="modele-repo">
 		<CarteRepo

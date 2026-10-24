@@ -385,6 +385,11 @@ const variantes = ['primaire', 'secondaire', 'danger'] as const;
 				<Toast>Repo ajouté aux favoris</Toast>
 				<Toast variante="erreur">Une erreur est survenue</Toast>
 			</div>
+			<!-- Essai du vrai système de notifications (src/scripts/toasts.ts) -->
+			<div class="mt-4 flex flex-wrap items-center gap-3">
+				<Bouton variante="secondaire" id="essai-toast-succes">Afficher un toast de succès</Bouton>
+				<Bouton variante="secondaire" id="essai-toast-erreur">Afficher un toast d’erreur</Bouton>
+			</div>
 
 			<h3 class="mt-8 text-sm font-semibold text-texte-secondaire">Message de confirmation</h3>
 			<MessageConfirmation
@@ -398,3 +403,10 @@ const variantes = ['primaire', 'secondaire', 'danger'] as const;
 		</section>
 	</main>
 </Layout>
+
+<script>
+	import { afficherToast } from '../scripts/toasts.ts';
+
+	document.getElementById('essai-toast-succes')?.addEventListener('click', () => afficherToast('Repo ajouté aux favoris'));
+	document.getElementById('essai-toast-erreur')?.addEventListener('click', () => afficherToast('Une erreur est survenue', 'erreur'));
+</script>

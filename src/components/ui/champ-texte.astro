@@ -2,7 +2,10 @@
 // Champ de texte avec son libellé (maquette Figma : « Champ de texte »).
 // États : normal, survol, focus (bordure bleue) et erreur (bordure rouge + message).
 // `id` est obligatoire : il relie le libellé au champ.
+// La bordure rouge s'applique dès que le champ porte aria-invalid="true" : avec la prop `erreur` (rendu à la construction)
+// comme avec src/scripts/formulaire.ts, qui pose aria-invalid et le message au moment de la validation.
 import type { HTMLAttributes } from 'astro/types';
+import { CLASSE_MESSAGE_ERREUR } from '../../lib/champs.ts';
 
 type Props = {
 	id: string;
@@ -20,17 +23,12 @@ const idErreur = `${id}-erreur`;
 		id={id}
 		aria-invalid={erreur ? 'true' : undefined}
 		aria-describedby={erreur ? idErreur : undefined}
-		class:list={[
-			'h-9 w-full rounded-md border bg-fond-page px-3 text-sm text-texte-principal placeholder:text-texte-secondaire focus:outline-none focus:ring-1',
-			erreur
-				? 'border-accent-danger ring-1 ring-accent-danger'
-				: 'border-bordure-defaut hover:border-texte-secondaire focus:border-accent-lien focus:ring-accent-lien',
-		]}
+		class="h-9 w-full rounded-md border border-bordure-defaut bg-fond-page px-3 text-sm text-texte-principal placeholder:text-texte-secondaire hover:border-texte-secondaire focus:border-accent-lien focus:ring-1 focus:ring-accent-lien focus:outline-none aria-invalid:border-accent-danger! aria-invalid:ring-1 aria-invalid:ring-accent-danger!"
 		{...reste}
 	/>
 	{
 		erreur && (
-			<p id={idErreur} class="text-xs text-accent-danger">
+			<p id={idErreur} class={CLASSE_MESSAGE_ERREUR}>
 				{erreur}
 			</p>
 		)

@@ -3,22 +3,18 @@
 // Avec `href`, il devient un lien qui a l'apparence d'un bouton.
 // Le texte se met dans le contenu : <Bouton variante="danger">Supprimer</Bouton>
 import type { HTMLAttributes } from 'astro/types';
+import { VARIANTES_BOUTON } from '../../lib/boutons.ts';
+import type { VarianteBouton } from '../../lib/boutons.ts';
 
 type Props = {
-	variante?: 'primaire' | 'secondaire' | 'danger';
+	variante?: VarianteBouton;
 	href?: string;
 	desactive?: boolean;
 } & HTMLAttributes<'button'>;
 
 const { variante = 'primaire', href, desactive = false, class: classe, ...reste } = Astro.props;
 
-const variantes = {
-	primaire:
-		'border-bouton-primaire-bordure bg-bouton-primaire text-blanc hover:bg-bouton-primaire-survol',
-	secondaire: 'border-bordure-defaut bg-fond-champ text-texte-principal hover:bg-bordure-defaut',
-	danger:
-		'border-bordure-defaut bg-fond-champ text-accent-danger hover:bg-bouton-danger-survol hover:text-blanc',
-};
+const variantes = VARIANTES_BOUTON;
 
 // Lien : on n'a pas d'attribut « disabled », on utilise aria-disabled et on sort du tab.
 const Balise = href ? 'a' : 'button';

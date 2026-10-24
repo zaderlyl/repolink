@@ -66,6 +66,9 @@ function afficherEntete(fiche: FicheRepo) {
 	repo.textContent = fiche.nomCourt;
 	repo.href = hrefRepo(fiche.nom);
 
+	// Le bouton Star devient interactif dès qu'il sait de quel repo il s'agit (src/scripts/favoris.ts le repère)
+	$('star-repo').dataset.repo = fiche.nom;
+
 	$('visibilite').textContent = fiche.publique ? 'Public' : 'Privé';
 	$<HTMLAnchorElement>('lien-github').href = fiche.urlGithub;
 	$<HTMLAnchorElement>('lien-fork').href = `${fiche.urlGithub}/fork`;
@@ -136,7 +139,7 @@ async function chargerCreateur(fiche: FicheRepo) {
 		const profil = versProfil(await recupererProfil(fiche.proprietaire));
 		const ligne = depuisModele('modele-createur', {
 			nom: profil.nom,
-			pseudo: `@${profil.pseudo}`,
+			pseudo: profil.pseudo,
 			abonnes: profil.abonnes,
 			href: hrefProfil(profil.pseudo),
 			avatar: fiche.avatar,
@@ -262,7 +265,7 @@ async function chargerOngletContributeurs(fiche: FicheRepo) {
 				item.append(
 					depuisModele('modele-contributeur', {
 						nom: contributeur.pseudo,
-						pseudo: `@${contributeur.pseudo}`,
+						pseudo: contributeur.pseudo,
 						detail: contributeur.contributions,
 						href: hrefProfil(contributeur.pseudo),
 						avatar: contributeur.avatar,
