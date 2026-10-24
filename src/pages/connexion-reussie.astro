@@ -1,0 +1,36 @@
+---
+// Page « Connexion réussie » (maquette Figma : « Site - Connexion réussie »), affichée après la connexion.
+// Sans connexion, la page renvoie vers /connexion.
+import Layout from '../layouts/layout.astro';
+import Bouton from '../components/ui/bouton.astro';
+import MessageConfirmation from '../components/ui/message-confirmation.astro';
+---
+
+<Layout titre="Connexion réussie" description="Tu es connecté avec ton pseudo GitHub.">
+	<main class="flex flex-1 items-center justify-center px-10 py-16">
+		<MessageConfirmation id="message-connexion" titre="Connexion réussie" texte="Tu es connecté.">
+			<Bouton href="/explorer" class="mt-8">Explorer les repos</Bouton>
+		</MessageConfirmation>
+	</main>
+</Layout>
+
+<script>
+	import { lireSession } from '../lib/session.ts';
+
+	function stockage(): Storage | null {
+		try {
+			return globalThis.localStorage ?? null;
+		} catch {
+			return null;
+		}
+	}
+
+	// Pas de session : on n'a rien à confirmer, on va se connecter
+	const session = lireSession(stockage());
+	if (!session) {
+		window.location.replace('/connexion');
+	} else {
+		const texte = document.querySelector('#message-connexion p');
+		if (texte) texte.textContent = `Tu es connecté en tant que @${session.pseudo}.`;
+	}
+</script>

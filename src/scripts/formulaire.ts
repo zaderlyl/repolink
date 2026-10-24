@@ -24,7 +24,7 @@ function message(champ: Champ): string {
 }
 
 // Montre ou retire l'erreur d'un champ : aria-invalid (contour rouge), message relié au champ par aria-describedby
-function afficherErreur(champ: Champ, texte: string) {
+export function afficherErreur(champ: Champ, texte: string) {
 	const idMessage = `${champ.id}-erreur`;
 	let element = document.getElementById(idMessage);
 

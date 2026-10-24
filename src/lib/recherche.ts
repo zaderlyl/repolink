@@ -109,6 +109,9 @@ export function construireOptionsIssues(filtres: Filtres): OptionsRecherche {
 // (sinon l'adresse de l'API remonterait d'un dossier : /repos/../etc).
 const NOM_REPO_VALIDE = /^[a-zA-Z0-9-]{1,39}\/(?!\.{1,2}$)[\w.-]{1,100}$/;
 const PSEUDO_VALIDE = /^[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,38})$/;
+
+// Un pseudo GitHub : lettres, chiffres et tirets, 39 caractères au plus, sans tiret au début
+export const estPseudoValide = (pseudo: string) => PSEUDO_VALIDE.test(pseudo);
 const ONGLETS: OngletRepo[] = ['apercu', 'issues', 'contributeurs', 'similaires'];
 
 // « proprietaire/repo » lu dans ?nom=… ; vide si l'adresse est absente ou invalide

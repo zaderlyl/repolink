@@ -11,19 +11,26 @@ type Props = {
 	id: string;
 	label: string;
 	erreur?: string;
+	// Grande version (page Connexion) : champ de 64 px de haut au texte plus gros
+	grand?: boolean;
+	// Le libellé reste lu par les lecteurs d'écran mais n'est pas affiché (le texte d'exemple suffit à l'œil)
+	libelleCache?: boolean;
 } & HTMLAttributes<'input'>;
 
-const { id, label, erreur, class: classe, ...reste } = Astro.props;
+const { id, label, erreur, grand = false, libelleCache = false, class: classe, ...reste } = Astro.props;
 const idErreur = `${id}-erreur`;
 ---
 
 <div class:list={['flex flex-col gap-1.5', classe]}>
-	<label for={id} class="text-[13px] font-medium">{label}</label>
+	<label for={id} class:list={['text-[13px] font-medium', libelleCache && 'sr-only']}>{label}</label>
 	<input
 		id={id}
 		aria-invalid={erreur ? 'true' : undefined}
 		aria-describedby={erreur ? idErreur : undefined}
-		class="h-9 w-full rounded-md border border-bordure-defaut bg-fond-page px-3 text-sm text-texte-principal placeholder:text-texte-secondaire hover:border-texte-secondaire focus:border-accent-lien focus:ring-1 focus:ring-accent-lien focus:outline-none aria-invalid:border-accent-danger! aria-invalid:ring-1 aria-invalid:ring-accent-danger!"
+		class:list={[
+			'w-full rounded-md border border-bordure-defaut bg-fond-page text-texte-principal placeholder:text-texte-secondaire hover:border-texte-secondaire focus:border-accent-lien focus:ring-1 focus:ring-accent-lien focus:outline-none aria-invalid:border-accent-danger! aria-invalid:ring-1 aria-invalid:ring-accent-danger!',
+			grand ? 'h-16 px-6 text-xl' : 'h-9 px-3 text-sm',
+		]}
 		{...reste}
 	/>
 	{

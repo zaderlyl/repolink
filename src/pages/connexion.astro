@@ -1,0 +1,62 @@
+---
+// Page « Connexion » (maquette Figma : « Site - Connexion »).
+// Connexion par pseudo : on vérifie que le pseudo existe sur GitHub puis on le garde dans le navigateur
+// (src/lib/session.ts). Il n'y a ni mot de passe ni serveur : « Se connecter avec GitHub » (OAuth) demanderait un serveur.
+import Layout from '../layouts/layout.astro';
+import Bouton from '../components/ui/bouton.astro';
+import ChampTexte from '../components/ui/champ-texte.astro';
+---
+
+<Layout titre="Connexion" description="Connecte-toi avec ton pseudo GitHub pour retrouver tes favoris et tes recommandations.">
+	<main class="mx-auto flex w-full max-w-360 flex-1 justify-center px-10 pt-[78px] pb-16">
+		<section class="h-fit w-full max-w-[560px] rounded-xl border border-bordure-defaut bg-fond-panneau p-12">
+			<h1 class="text-center font-titre text-[40px] leading-tight font-bold">Connexion</h1>
+
+			<!-- Connecté : le formulaire laisse la place à ce message -->
+			<div id="deja-connecte" hidden class="mt-12 text-center">
+				<p class="text-base">Tu es connecté en tant que <strong id="pseudo-connecte" class="font-semibold"></strong>.</p>
+				<div class="mt-8 flex justify-center gap-3">
+					<Bouton href="/explorer">Explorer les repos</Bouton>
+					<Bouton variante="secondaire" data-deconnexion>Se déconnecter</Bouton>
+				</div>
+			</div>
+
+			<div id="zone-connexion">
+				<!-- Le vrai bouton GitHub (OAuth) demande un petit serveur : il viendra plus tard. -->
+				<div class="mt-12">
+					<Bouton
+						desactive
+						aria-describedby="aide-github"
+						class="h-16 w-full text-xl font-normal"
+						type="button"
+					>
+						Se connecter avec GitHub
+					</Bouton>
+					<p id="aide-github" class="mt-2 text-center text-[13px] text-texte-secondaire">Bientôt disponible : utilise ton pseudo pour l'instant.</p>
+				</div>
+
+				<p class="mt-8 text-center text-base text-texte-secondaire">ou</p>
+
+				<form id="formulaire-connexion" novalidate class="mt-8 flex flex-col gap-6">
+					<ChampTexte
+						id="connexion-pseudo"
+						name="pseudo"
+						label="Pseudo GitHub"
+						placeholder="Pseudo GitHub"
+						grand
+						libelleCache
+						autocomplete="username"
+						autocapitalize="none"
+						spellcheck={false}
+						required
+					/>
+					<Bouton type="submit" id="bouton-continuer" class="h-16 w-full">Continuer</Bouton>
+				</form>
+			</div>
+		</section>
+	</main>
+</Layout>
+
+<script>
+	import '../scripts/connexion.ts';
+</script>

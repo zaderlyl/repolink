@@ -45,9 +45,10 @@ const titreComplet = titre === 'Repolink' ? titre : `${titre} · Repolink`;
 			<template id="modele-toast-succes"><Toast>__message__</Toast></template>
 			<template id="modele-toast-erreur"><Toast variante="erreur">__message__</Toast></template>
 
-			<!-- Boutons Star : actifs sur toutes les pages -->
+			<!-- Boutons Star, Suivre et état de connexion de la navbar : actifs sur toutes les pages -->
 			<script>
 				import '../scripts/favoris.ts';
+				import '../scripts/session.ts';
 			</script>
 	</body>
 </html>
