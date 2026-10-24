@@ -1,0 +1,94 @@
+---
+// Page « Favoris » (maquettes Figma : « Site - Favoris », « Favoris (vide) », « Favoris - Repos » et « Favoris - Créateurs »).
+// Elle montre les repos étoilés et les créateurs suivis, gardés dans le navigateur (src/lib/favoris.ts) ;
+// leurs détails viennent de l'API de GitHub (src/scripts/favoris-page.ts).
+import Layout from '../layouts/layout.astro';
+import Bouton from '../components/ui/bouton.astro';
+import BoutonStar from '../components/ui/bouton-star.astro';
+import CarteRepo from '../components/ui/carte-repo.astro';
+import ChampRecherche from '../components/ui/champ-recherche.astro';
+import Chip from '../components/ui/chip.astro';
+import EtatVide from '../components/ui/etat-vide.astro';
+import LigneCreateur from '../components/ui/ligne-createur.astro';
+---
+
+<Layout titre="Favoris" description="Les repos que tu as étoilés et les créateurs que tu suis, retrouvés au même endroit.">
+	<main class="mx-auto w-full max-w-360 px-10 pt-6">
+		<h1 class="font-titre text-[40px] leading-tight font-bold">Favoris</h1>
+
+		<!-- Version de départ des pastilles : le script les remplace selon l'adresse (?type=repos ou createurs) -->
+		<nav id="types" aria-label="Type de favoris" class="mt-4 flex flex-wrap gap-3">
+			<Chip href="/favoris" actif>TOUT</Chip>
+			<Chip href="/favoris?type=repos">Repos</Chip>
+			<Chip href="/favoris?type=createurs">Créateurs</Chip>
+		</nav>
+
+		<form id="formulaire-filtre" role="search" class="mt-7">
+			<ChampRecherche id="filtre-favoris" name="q" label="Filtrer mes favoris" placeholder="Recherche" autocomplete="off" />
+		</form>
+
+		<p id="note" hidden class="mt-4 text-[13px] text-texte-secondaire"></p>
+
+		<div id="chargement" aria-hidden="true" class="mt-6 flex animate-pulse flex-col gap-4">
+			{[0, 1, 2].map(() => <div class="h-[160px] rounded-xl bg-fond-panneau"></div>)}
+		</div>
+
+		<div id="contenu" hidden>
+			<section id="section-repos" aria-labelledby="titre-repos" class="mt-6" hidden>
+				<h2 id="titre-repos" class="text-[22px] leading-7 font-semibold">Repos</h2>
+				<ul id="liste-repos" class="mt-4 flex flex-col gap-4"></ul>
+			</section>
+			<section id="section-createurs" aria-labelledby="titre-createurs" class="mt-6" hidden>
+				<h2 id="titre-createurs" class="text-[22px] leading-7 font-semibold">Créateurs</h2>
+				<ul id="liste-createurs" class="mt-4 flex flex-col gap-4"></ul>
+			</section>
+			<p id="aucun-resultat" hidden class="mt-6 text-sm text-texte-secondaire"></p>
+		</div>
+
+		<div id="vide" hidden class="mt-6 flex justify-center">
+			<EtatVide symbole="☆" titre="Rien pour l'instant" texte="" class="w-full max-w-[466px]">
+				<Bouton href="/explorer">Explorer</Bouton>
+			</EtatVide>
+		</div>
+
+		<noscript>
+			<p class="mt-6 rounded-xl border border-bordure-defaut bg-fond-panneau p-6 text-center text-sm text-texte-secondaire">
+				Active JavaScript pour voir tes favoris.
+			</p>
+		</noscript>
+	</main>
+
+	<!-- Modèles remplis par le script : __cle__ est remplacé par la valeur -->
+	<template id="modele-chip"><Chip href="__href__" couleur="#8b949e">__texte__</Chip></template>
+	<template id="modele-chip-actif"><Chip href="__href__" actif>__texte__</Chip></template>
+	<template id="modele-repo">
+		<CarteRepo
+			nom="__nom__"
+			href="__href__"
+			description="__description__"
+			miseAJour="__miseajour__"
+			langage="__langage__"
+			couleurLangage="__couleur__"
+			etoiles="__etoiles__"
+			topics={['__topic__']}
+			class="min-h-[160px]"
+		/>
+	</template>
+	<!-- Un favori dont GitHub ne répond pas (repo supprimé, limite atteinte) : on garde le nom et le bouton pour pouvoir le retirer -->
+	<template id="modele-indisponible">
+		<article class="relative flex items-center justify-between gap-4 rounded-xl border border-bordure-defaut bg-fond-page p-4">
+			<div class="min-w-0">
+				<h3><a href="__href__" class="font-semibold text-accent-lien hover:underline">__nom__</a></h3>
+				<p class="mt-1 text-[13px] text-texte-secondaire">Informations indisponibles pour le moment.</p>
+			</div>
+			<BoutonStar repo="__nom__" actif />
+		</article>
+	</template>
+	<template id="modele-createur">
+		<LigneCreateur nom="__nom__" pseudo="@__pseudo__" abonnes="__abonnes__" href="__href__" avatar="__avatar__" suivi />
+	</template>
+</Layout>
+
+<script>
+	import '../scripts/favoris-page.ts';
+</script>

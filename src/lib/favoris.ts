@@ -55,3 +55,19 @@ export const couleurStar = (actif: boolean) => (actif ? COULEUR_STAR_ACTIF : COU
 export const libelleSuivre = (actif: boolean) => (actif ? 'Suivi' : 'Suivre');
 // « Suivre » est un bouton primaire (vert), « Suivi » un bouton secondaire (gris) : voir src/lib/boutons.ts
 export const varianteSuivre = (actif: boolean) => (actif ? 'secondaire' : 'primaire') as 'primaire' | 'secondaire';
+
+// Les noms d'une liste, du plus récemment ajouté au plus ancien (pour la page Favoris)
+export function nomsRecents(favoris: Favoris): string[] {
+	return Object.entries(favoris)
+		.sort((a, b) => (a[1] < b[1] ? 1 : a[1] > b[1] ? -1 : 0))
+		.map(([nom]) => nom);
+}
+
+// Un texte correspond à la recherche si tous ses mots y figurent, sans tenir compte des majuscules ni des accents
+const sansAccents = (texte: string) => texte.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase();
+
+export function correspond(texte: string, recherche: string): boolean {
+	const mots = sansAccents(recherche).split(/\s+/).filter(Boolean);
+	const cible = sansAccents(texte);
+	return mots.every((mot) => cible.includes(mot));
+}
