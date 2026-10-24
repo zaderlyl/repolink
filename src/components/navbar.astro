@@ -10,6 +10,10 @@ const liens = [
 // Le lien de la page courante est mis en évidence (y compris pour ses sous-pages)
 const chemin = Astro.url.pathname;
 const estActif = (href: string) => chemin === href || chemin.startsWith(`${href}/`);
+
+// Même apparence pour « Connexion » et « Déconnexion »
+const classeBoutonNav =
+	'inline-flex h-9 w-[130px] items-center justify-center rounded-md border border-bordure-defaut bg-fond-carte px-4 text-sm font-semibold transition-colors hover:bg-bordure-defaut';
 ---
 
 <header class="mx-auto w-full max-w-360 px-10 pt-4">
@@ -36,13 +40,17 @@ const estActif = (href: string) => chemin === href || chemin.startsWith(`${href}
 		</ul>
 
 		<div class="flex items-center gap-6">
+			<!-- Connecté (voir src/scripts/session.ts) : « Connexion » laisse la place à « Déconnexion » et l'avatar prend la photo GitHub -->
+			<a id="lien-connexion" href="/connexion" class={classeBoutonNav}>Connexion</a>
+			<button id="bouton-deconnexion" type="button" data-deconnexion hidden class={classeBoutonNav}>Déconnexion</button>
 			<a
-				href="/connexion"
-				class="inline-flex h-9 w-[130px] items-center justify-center rounded-md border border-bordure-defaut bg-fond-carte px-4 text-sm font-semibold transition-colors hover:bg-bordure-defaut"
+				id="lien-mon-profil"
+				href="/mon-profil"
+				aria-label="Mon profil"
+				class="block size-10 overflow-hidden rounded-full bg-accent-violet"
 			>
-				Connexion
+				<img id="avatar-navbar" alt="" hidden class="size-full object-cover" />
 			</a>
-			<a href="/mon-profil" aria-label="Mon profil" class="block size-10 rounded-full bg-accent-violet"></a>
 		</div>
 	</nav>
 </header>

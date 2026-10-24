@@ -1,0 +1,56 @@
+---
+// Page « Contacter un créateur » (maquette Figma : « Site - Contacter un créateur »).
+// Le créateur est lu dans l'adresse (?pseudo=…) ; son nom vient de l'API de GitHub (src/scripts/contacter.ts).
+// Comme la page Contact : le formulaire est vérifié par src/scripts/formulaire.ts (erreurs sous les champs)
+// mais rien n'est envoyé, une fois valide on va sur la page « Message envoyé ».
+import Layout from '../layouts/layout.astro';
+import Bouton from '../components/ui/bouton.astro';
+import EtatVide from '../components/ui/etat-vide.astro';
+import Selecteur from '../components/ui/selecteur.astro';
+import ZoneTexte from '../components/ui/zone-texte.astro';
+
+const objets = ['Demande de mentorat', 'Question sur un projet', 'Proposition de collaboration', 'Autre'];
+---
+
+<Layout titre="Contacter un créateur" description="Écris à un créateur pour lui demander conseil ou lui proposer de travailler ensemble.">
+	<main class="mx-auto w-full max-w-360 px-10 pt-6">
+		<!-- Le titre reste en dehors des deux zones : il n'y a qu'un seul h1 sur la page -->
+		<h1 id="titre-contacter" class="font-titre text-[40px] leading-tight font-bold">Écrire à <span id="nom-createur">un créateur</span></h1>
+
+		<div id="formulaire-zone">
+			<p class="mt-2 max-w-[700px] text-base text-texte-secondaire">
+				Présente-toi en quelques lignes et dis ce que tu aimerais apprendre ou construire.
+			</p>
+
+			<form
+				id="formulaire-createur"
+				novalidate
+				class="mt-8 flex max-w-[640px] flex-col gap-4 rounded-xl border border-bordure-defaut bg-fond-page p-[23px]"
+			>
+				<Selecteur id="contacter-objet" name="objet" label="Objet" options={objets} class="w-80" />
+				<ZoneTexte
+					id="contacter-message"
+					name="message"
+					label="Message"
+					placeholder="Bonjour, j’ai découvert ton projet et…"
+					required
+					minlength={10}
+					class="w-80"
+				/>
+				<div class="pt-1.5">
+					<Bouton type="submit">Envoyer le message</Bouton>
+				</div>
+			</form>
+		</div>
+
+		<div id="introuvable" hidden>
+			<EtatVide symbole="⌕" titre="Créateur introuvable" texte="Ce profil a peut-être été supprimé, renommé, ou n’a jamais existé.">
+				<Bouton href="/recherche" variante="secondaire">Rechercher un repo</Bouton>
+			</EtatVide>
+		</div>
+	</main>
+</Layout>
+
+<script>
+	import '../scripts/contacter.ts';
+</script>

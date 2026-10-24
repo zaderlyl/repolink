@@ -1,0 +1,15 @@
+---
+// Page « Mon profil » (maquette Figma : « Site - Mon profil »).
+// Le profil de la personne connectée (src/lib/session.ts) : même mise en page que le profil d'un créateur,
+// avec ses favoris et les paramètres du compte. Sans connexion, la page renvoie vers /connexion (src/scripts/mon-profil.ts).
+import Layout from '../layouts/layout.astro';
+import ProfilVue from '../components/profil-vue.astro';
+---
+
+<Layout titre="Mon profil" description="Ton profil Repolink : tes langages, ton activité, tes repos et tes favoris.">
+	<ProfilVue moi />
+</Layout>
+
+<script>
+	import '../scripts/mon-profil.ts';
+</script>

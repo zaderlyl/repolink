@@ -1,6 +1,9 @@
 // Filtres de la page Recherche : lecture de l'adresse (?q=…&langage=…&topic=…&page=…)
 // et construction de la requête de l'API de GitHub. Ces fonctions ne font aucun appel réseau.
 import type { OptionsRecherche } from './github.ts';
+import type { OngletRepo } from './adresses.ts';
+import { dateLimiteActif, PREFERENCES_PAR_DEFAUT } from './preferences.ts';
+import type { Preferences } from './preferences.ts';
 
 export const RESULTATS_PAR_PAGE = 10;
 // GitHub ne donne jamais plus de 1000 résultats pour une recherche
@@ -42,14 +45,20 @@ const valeur = (texte: string) => (/^[\w+#.-]+$/.test(texte) ? texte : `"${texte
 // Requête de recherche de repos au format GitHub.
 // Sans aucun filtre, on montre les repos qui accueillent les débutants (au moins une good first issue).
 // Sans texte, on écarte aussi les repos sans étoile (stars:>=10) : triés par date, ils ne montreraient que des dépôts vides.
-export function construireRequete(filtres: Filtres): string {
+// Les préférences (page Paramètres) ajoutent « projets actifs » (mis à jour ces 90 derniers jours) et « sans archivés ».
+export function construireRequete(
+	filtres: Filtres,
+	preferences: Preferences = PREFERENCES_PAR_DEFAUT,
+	maintenant: Date = new Date(),
+): string {
 	const morceaux: string[] = [];
 	if (filtres.q) morceaux.push(filtres.q);
 	if (filtres.langage) morceaux.push(`language:${valeur(filtres.langage)}`);
 	if (filtres.topic) morceaux.push(`topic:${valeur(filtres.topic)}`);
 	if (morceaux.length === 0) morceaux.push('good-first-issues:>0');
 	if (!filtres.q) morceaux.push('stars:>=10');
-	morceaux.push('archived:false');
+	if (preferences.masquerArchives) morceaux.push('archived:false');
+	if (preferences.projetsActifs) morceaux.push(`pushed:>${dateLimiteActif(maintenant)}`);
 	return morceaux.join(' ');
 }
 
@@ -100,4 +109,44 @@ export function construireRequeteIssues(filtres: Filtres): string {
 // Les plus récemment mises à jour d'abord
 export function construireOptionsIssues(filtres: Filtres): OptionsRecherche {
 	return { tri: 'updated', ordre: 'desc', page: filtres.page, parPage: RESULTATS_PAR_PAGE };
+}
+
+// --- Fiche repo et profil créateur ---
+
+// Le propriétaire est un pseudo GitHub (lettres, chiffres, tirets) ; le repo ne peut pas s'appeler « . » ni « .. »
+// (sinon l'adresse de l'API remonterait d'un dossier : /repos/../etc).
+const NOM_REPO_VALIDE = /^[a-zA-Z0-9-]{1,39}\/(?!\.{1,2}$)[\w.-]{1,100}$/;
+const PSEUDO_VALIDE = /^[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,38})$/;
+
+// Un pseudo GitHub : lettres, chiffres et tirets, 39 caractères au plus, sans tiret au début
+export const estPseudoValide = (pseudo: string) => PSEUDO_VALIDE.test(pseudo);
+const ONGLETS: OngletRepo[] = ['apercu', 'issues', 'contributeurs', 'similaires'];
+
+// « proprietaire/repo » lu dans ?nom=… ; vide si l'adresse est absente ou invalide
+export function lireNomRepo(parametres: URLSearchParams): string {
+	const nom = (parametres.get('nom') ?? '').trim();
+	return NOM_REPO_VALIDE.test(nom) ? nom : '';
+}
+
+// Pseudo GitHub lu dans ?pseudo=… ; vide si l'adresse est absente ou invalide
+export function lirePseudo(parametres: URLSearchParams): string {
+	const pseudo = (parametres.get('pseudo') ?? '').trim();
+	return PSEUDO_VALIDE.test(pseudo) ? pseudo : '';
+}
+
+export function lireOnglet(parametres: URLSearchParams): OngletRepo {
+	const onglet = parametres.get('onglet') as OngletRepo | null;
+	return onglet && ONGLETS.includes(onglet) ? onglet : 'apercu';
+}
+
+// Les good first issues ouvertes d'un seul repo
+export const construireRequeteIssuesRepo = (nomRepo: string) =>
+	`repo:${nomRepo} label:"good first issue" state:open is:issue`;
+
+// Repos similaires : mêmes deux premiers topics, sinon même langage. Chaîne vide si on n'a rien pour comparer.
+export function construireRequeteSimilaires(repo: { nom: string; topics: string[]; langage: string }): string {
+	const topics = repo.topics.filter((topic) => NOM_VALIDE.test(topic)).slice(0, 2);
+	const criteres = topics.length > 0 ? topics.map((topic) => `topic:${valeur(topic)}`) : repo.langage !== 'Autre' ? [`language:${valeur(repo.langage)}`] : [];
+	if (criteres.length === 0) return '';
+	return [...criteres, `-repo:${repo.nom}`, 'stars:>=10', 'archived:false'].join(' ');
 }

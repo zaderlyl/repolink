@@ -3,14 +3,23 @@
 // ainsi les cartes et les pastilles gardent exactement le style des composants.
 import { rechercherRepos } from '../lib/github.ts';
 import type { RepoGithub, ResultatRecherche } from '../lib/github.ts';
-import { formaterRepos, versRepo } from '../lib/conversion.ts';
+import { formaterRepos } from '../lib/conversion.ts';
 import { purgerCache } from '../lib/cache.ts';
-import { hrefRepo } from '../lib/adresses.ts';
+import { lirePreferences } from '../lib/preferences.ts';
 import { construireOptions, construireRequete, hrefRecherche, lireFiltres, nombrePages } from '../lib/recherche.ts';
 import type { Filtres } from '../lib/recherche.ts';
-import { $, afficherPagination, afficherPastilles, depuisModele, messageErreur, montrer } from './commun.ts';
+import { $, afficherPagination, afficherPastilles, creerCarteRepo, messageErreur, montrer } from './commun.ts';
 
 const LANGAGES_RAPIDES = ['JavaScript', 'Python'];
+
+// Les préférences (page Paramètres) sont dans le stockage du navigateur ; s'il est bloqué, on garde les valeurs par défaut
+function stockage(): Storage | null {
+	try {
+		return globalThis.localStorage ?? null;
+	} catch {
+		return null;
+	}
+}
 const ZONES = ['liste', 'chargement', 'vide', 'erreur'];
 
 function afficherFiltres(filtres: Filtres) {
@@ -47,34 +56,8 @@ function afficherRepos(repos: RepoGithub[]) {
 	const liste = $('liste');
 	liste.replaceChildren();
 	for (const repoGithub of repos) {
-		// Le nombre de good first issues n'est pas dans la réponse : l'obtenir demanderait une requête par repo,
-		// ce que la limite de GitHub ne permet pas. La carte n'affiche donc pas cette pastille ici.
-		const repo = versRepo(repoGithub);
-		const carte = depuisModele('modele-repo', {
-			nom: repo.nom,
-			href: hrefRepo(repo.nom),
-			description: repo.description,
-			miseajour: repo.miseAJour,
-			langage: repo.langage,
-			couleur: repo.couleurLangage,
-			etoiles: repo.etoiles,
-		});
-
-		// La liste des topics du modèle contient une seule pastille : on la copie pour chaque topic
-		const listeTopics = carte.querySelector('ul[aria-label="Topics"]');
-		const modeleTopic = listeTopics?.firstElementChild;
-		if (listeTopics && modeleTopic) {
-			listeTopics.replaceChildren();
-			for (const topic of repo.topics) {
-				const pastille = modeleTopic.cloneNode(true) as HTMLElement;
-				(pastille.firstElementChild ?? pastille).textContent = topic;
-				listeTopics.append(pastille);
-			}
-			if (repo.topics.length === 0) listeTopics.remove();
-		}
-
 		const item = document.createElement('li');
-		item.append(carte);
+		item.append(creerCarteRepo(repoGithub));
 		liste.append(item);
 	}
 }
@@ -88,7 +71,7 @@ async function charger() {
 
 	let resultat: ResultatRecherche<RepoGithub>;
 	try {
-		resultat = await rechercherRepos(construireRequete(filtres), construireOptions(filtres));
+		resultat = await rechercherRepos(construireRequete(filtres, lirePreferences(stockage())), construireOptions(filtres));
 	} catch (erreur) {
 		$('statut').textContent = '';
 		document.querySelector('#erreur p')!.textContent = messageErreur(erreur);

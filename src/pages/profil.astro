@@ -1,0 +1,15 @@
+---
+// Page « Profil créateur » (maquette Figma : « Site - Profil créateur »).
+// Une seule page pour tous les profils : le pseudo est lu dans l'adresse (?pseudo=…) et les données
+// viennent de l'API de GitHub dans le navigateur (src/scripts/profil.ts).
+import Layout from '../layouts/layout.astro';
+import ProfilVue from '../components/profil-vue.astro';
+---
+
+<Layout titre="Profil" description="Le profil d'un créateur : ses repos, ses langages et son activité récente sur GitHub.">
+	<ProfilVue />
+</Layout>
+
+<script>
+	import '../scripts/profil.ts';
+</script>

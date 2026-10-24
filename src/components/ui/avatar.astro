@@ -6,14 +6,14 @@
 import type { HTMLAttributes } from 'astro/types';
 
 type Props = {
-	taille?: 's' | 'm' | 'l';
+	taille?: 's' | 'm' | 'l' | 'xl';
 	src?: string;
 	alt?: string;
 } & HTMLAttributes<'span'>;
 
 const { taille = 'm', src, alt = '', class: classe, ...reste } = Astro.props;
 
-const tailles = { s: 'size-6', m: 'size-10', l: 'size-16' };
+const tailles = { s: 'size-6', m: 'size-10', l: 'size-16', xl: 'size-50' };
 ---
 
 <span

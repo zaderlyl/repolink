@@ -1,0 +1,65 @@
+---
+// Page « Mise en relation » (maquettes Figma : « Site - Mise en relation » et « Mise en relation - Débutants »).
+// Deux vues (?type=mentors ou debutants) : des personnes à contacter, repérées avec l'API de GitHub
+// (src/lib/mise-en-relation.ts, src/scripts/mise-en-relation.ts). Chaque carte mène à la page « Contacter ».
+import Layout from '../layouts/layout.astro';
+import Bouton from '../components/ui/bouton.astro';
+import CarteMiseEnRelation from '../components/ui/carte-mise-en-relation.astro';
+import ChampRecherche from '../components/ui/champ-recherche.astro';
+import Chip from '../components/ui/chip.astro';
+import EtatVide from '../components/ui/etat-vide.astro';
+---
+
+<Layout titre="Mise en relation" description="Trouve des mentors pour t'aider ou des débutants à accompagner, et contacte-les.">
+	<main class="mx-auto w-full max-w-360 px-10 pt-6">
+		<h1 class="font-titre text-[40px] leading-tight font-bold">Mise en relation</h1>
+
+		<!-- Version de départ des pastilles : le script les remplace selon l'adresse -->
+		<nav id="types" aria-label="Type de personnes" class="mt-4 flex flex-wrap gap-3">
+			<Chip href="/mise-en-relation" actif>Mentors</Chip>
+			<Chip href="/mise-en-relation?type=debutants">Débutants</Chip>
+		</nav>
+
+		<form id="formulaire-filtre" role="search" class="mt-7">
+			<ChampRecherche id="filtre-personnes" name="q" label="Filtrer par pseudo ou langage" placeholder="Recherche" autocomplete="off" />
+		</form>
+
+		<p id="note" class="mt-4 text-[13px] text-texte-secondaire"></p>
+
+		<div id="chargement" aria-hidden="true" class="mt-6 grid animate-pulse gap-6 md:grid-cols-2 lg:grid-cols-3">
+			{[0, 1, 2, 3, 4, 5].map(() => <div class="h-64 rounded-xl bg-fond-panneau"></div>)}
+		</div>
+
+		<div id="contenu" hidden>
+			<ul id="liste-personnes" class="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3"></ul>
+			<p id="aucun-resultat" hidden class="mt-6 text-sm text-texte-secondaire"></p>
+		</div>
+
+		<div id="vide" hidden class="mt-6 flex justify-center">
+			<EtatVide symbole="?" titre="Personne pour l'instant" texte="GitHub n'a rien trouvé pour ces critères. Réessaie plus tard." class="w-full max-w-[466px]" />
+		</div>
+
+		<div id="erreur" hidden class="mt-6 flex justify-center">
+			<EtatVide symbole="!" titre="Impossible de charger les personnes" texte="" class="w-full max-w-[466px]">
+				<Bouton id="reessayer" variante="secondaire">Réessayer</Bouton>
+			</EtatVide>
+		</div>
+
+		<noscript>
+			<p class="mt-6 rounded-xl border border-bordure-defaut bg-fond-panneau p-6 text-center text-sm text-texte-secondaire">
+				Active JavaScript pour voir les personnes à contacter.
+			</p>
+		</noscript>
+	</main>
+
+	<!-- Modèles remplis par le script : __cle__ est remplacé par la valeur -->
+	<template id="modele-chip"><Chip href="__href__">__texte__</Chip></template>
+	<template id="modele-chip-actif"><Chip href="__href__" actif>__texte__</Chip></template>
+	<template id="modele-personne">
+		<CarteMiseEnRelation nom="__nom__" href="__href__" avatar="__avatar__" tags={['__langage__', '__role__']} />
+	</template>
+</Layout>
+
+<script>
+	import '../scripts/mise-en-relation.ts';
+</script>

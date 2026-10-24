@@ -28,7 +28,7 @@ const { label = 'Rechercher', class: classe, ...reste } = Astro.props;
 		type="search"
 		aria-label={label}
 		placeholder="Recherche"
-		class="h-14 w-full rounded-md border border-bordure-defaut bg-fond-page pr-4 pl-15 text-xl text-texte-principal placeholder:text-texte-secondaire hover:border-texte-secondaire focus:border-accent-lien focus:ring-1 focus:ring-accent-lien focus:outline-none"
+		class="h-14 w-full rounded-md border border-bordure-defaut bg-fond-page pr-4 pl-15 text-xl text-texte-principal placeholder:text-texte-secondaire hover:border-texte-secondaire focus:border-accent-lien focus:ring-1 focus:ring-accent-lien focus:outline-none aria-invalid:border-accent-danger! aria-invalid:ring-1 aria-invalid:ring-accent-danger!"
 		{...reste}
 	/>
 </div>
