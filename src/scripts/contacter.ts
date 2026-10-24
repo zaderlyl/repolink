@@ -4,6 +4,7 @@ import { ErreurGithub, recupererProfil } from '../lib/github.ts';
 import { versProfil } from '../lib/conversion.ts';
 import { lirePseudo } from '../lib/recherche.ts';
 import { $ } from './commun.ts';
+import { validerFormulaire } from './formulaire.ts';
 
 const formulaire = $<HTMLFormElement>('formulaire-createur');
 const message = $<HTMLTextAreaElement>('contacter-message');
@@ -38,11 +39,8 @@ function montrerIntrouvable() {
 	$('introuvable').hidden = false;
 }
 
-// Le navigateur a déjà vérifié les champs : on n'arrive ici que si le formulaire est valide.
-// Pas d'envoi réel ni de données dans l'adresse : on affiche simplement la page de confirmation.
-formulaire.addEventListener('submit', (evenement) => {
-	evenement.preventDefault();
-	window.location.assign('/message-envoye');
-});
+// Les champs sont vérifiés avant d'arriver ici. Pas d'envoi réel ni de données dans l'adresse :
+// on affiche simplement la page de confirmation.
+validerFormulaire(formulaire, () => window.location.assign('/message-envoye'));
 
 charger();

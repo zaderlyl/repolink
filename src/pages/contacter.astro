@@ -1,8 +1,8 @@
 ---
 // Page « Contacter un créateur » (maquette Figma : « Site - Contacter un créateur »).
 // Le créateur est lu dans l'adresse (?pseudo=…) ; son nom vient de l'API de GitHub (src/scripts/contacter.ts).
-// Comme la page Contact : le formulaire est vérifié par le navigateur mais rien n'est envoyé,
-// une fois valide on va sur la page « Message envoyé ».
+// Comme la page Contact : le formulaire est vérifié par src/scripts/formulaire.ts (erreurs sous les champs)
+// mais rien n'est envoyé, une fois valide on va sur la page « Message envoyé ».
 import Layout from '../layouts/layout.astro';
 import Bouton from '../components/ui/bouton.astro';
 import EtatVide from '../components/ui/etat-vide.astro';
@@ -24,6 +24,7 @@ const objets = ['Demande de mentorat', 'Question sur un projet', 'Proposition de
 
 			<form
 				id="formulaire-createur"
+				novalidate
 				class="mt-8 flex max-w-[640px] flex-col gap-4 rounded-xl border border-bordure-defaut bg-fond-page p-[23px]"
 			>
 				<Selecteur id="contacter-objet" name="objet" label="Objet" options={objets} class="w-80" />
