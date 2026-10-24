@@ -1,0 +1,88 @@
+---
+// Page « Pour toi » (maquettes Figma : « Site - Pour toi » et « Pour toi (saisie) »).
+// On saisit un pseudo GitHub, on détecte ses langages (« compétences ») et on recommande des repos pour débutants
+// dans ces langages. Tout se fait dans le navigateur avec l'API de GitHub (src/scripts/pour-toi.ts).
+import Layout from '../layouts/layout.astro';
+import Bouton from '../components/ui/bouton.astro';
+import CarteRepo from '../components/ui/carte-repo.astro';
+import Chip from '../components/ui/chip.astro';
+import ChampRecherche from '../components/ui/champ-recherche.astro';
+import EtatVide from '../components/ui/etat-vide.astro';
+---
+
+<Layout titre="Pour toi" description="Des repos adaptés à tes langages, repérés à partir de ton pseudo GitHub.">
+	<main class="mx-auto w-full max-w-360 px-10 pt-6">
+		<h1 class="font-titre text-[40px] leading-tight font-bold">Pour toi</h1>
+
+		<form id="formulaire-pour-toi" novalidate role="search" class="mt-3.5 flex flex-wrap items-start gap-4">
+			<ChampRecherche
+				id="pour-toi-pseudo"
+				name="pseudo"
+				label="Ton pseudo GitHub"
+				placeholder="Pseudo GitHub"
+				autocomplete="username"
+				autocapitalize="none"
+				spellcheck={false}
+				required
+				class="min-w-64 flex-1"
+			/>
+			<Bouton type="submit" id="bouton-analyser" class="h-14 w-full text-sm sm:w-[244px]">Analyser</Bouton>
+		</form>
+
+		<!-- Avant l'analyse : une phrase pour dire quoi faire -->
+		<p id="accueil" class="mt-8 max-w-[700px] text-base text-texte-secondaire">
+			Saisis ton pseudo GitHub : on repère les langages de tes repos, puis on te propose des repos qui accueillent les débutants.
+		</p>
+
+		<div id="resultats" hidden>
+			<section aria-labelledby="titre-competences" class="mt-7">
+				<h2 id="titre-competences" class="text-lg">Compétences détectées</h2>
+				<ul id="competences" class="mt-3 flex flex-wrap gap-3"></ul>
+				<p id="competences-vide" hidden class="mt-3 text-sm text-texte-secondaire"></p>
+			</section>
+
+			<section aria-labelledby="titre-reco" class="mt-7">
+				<h2 id="titre-reco" class="text-[22px] leading-7">Recommandations</h2>
+				<ul id="liste-reco" class="mt-3 flex flex-col gap-4"></ul>
+				<p id="reco-vide" hidden class="mt-4 text-sm text-texte-secondaire"></p>
+			</section>
+		</div>
+
+		<!-- Chargement : trois cartes grisées -->
+		<div id="chargement" hidden aria-hidden="true" class="mt-8 flex animate-pulse flex-col gap-4">
+			{[0, 1, 2].map(() => <div class="h-[200px] rounded-xl bg-fond-panneau"></div>)}
+		</div>
+
+		<div id="erreur" hidden class="mt-8">
+			<EtatVide symbole="!" titre="Impossible de lancer l'analyse" texte="">
+				<Bouton id="reessayer" variante="secondaire">Réessayer</Bouton>
+			</EtatVide>
+		</div>
+
+		<noscript>
+			<p class="mt-8 rounded-xl border border-bordure-defaut bg-fond-panneau p-6 text-center text-sm text-texte-secondaire">
+				Active JavaScript pour recevoir des recommandations.
+			</p>
+		</noscript>
+	</main>
+
+	<!-- Modèles remplis par le script : __cle__ est remplacé par la valeur -->
+	<template id="modele-competence"><li><Chip href="__href__" couleur="__couleur__">__texte__</Chip></li></template>
+	<template id="modele-repo">
+		<CarteRepo
+			nom="__nom__"
+			href="__href__"
+			description="__description__"
+			miseAJour="__miseajour__"
+			langage="__langage__"
+			couleurLangage="__couleur__"
+			etoiles="__etoiles__"
+			topics={['__topic__']}
+			class="min-h-[200px]"
+		/>
+	</template>
+</Layout>
+
+<script>
+	import '../scripts/pour-toi.ts';
+</script>
