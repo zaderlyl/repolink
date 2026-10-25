@@ -8,16 +8,17 @@ import CarteMiseEnRelation from '../components/ui/carte-mise-en-relation.astro';
 import ChampRecherche from '../components/ui/champ-recherche.astro';
 import Chip from '../components/ui/chip.astro';
 import EtatVide from '../components/ui/etat-vide.astro';
+import { lien } from '../lib/adresses.ts';
 ---
 
 <Layout titre="Mise en relation" description="Trouve des mentors pour t'aider ou des débutants à accompagner, et contacte-les.">
-	<main class="mx-auto w-full max-w-360 px-10 pt-6">
+	<main id="principal" tabindex="-1" class="mx-auto w-full max-w-360 px-4 sm:px-10 pt-6">
 		<h1 class="font-titre text-[40px] leading-tight font-bold">Mise en relation</h1>
 
 		<!-- Version de départ des pastilles : le script les remplace selon l'adresse -->
 		<nav id="types" aria-label="Type de personnes" class="mt-4 flex flex-wrap gap-3">
-			<Chip href="/mise-en-relation" actif>Mentors</Chip>
-			<Chip href="/mise-en-relation?type=debutants">Débutants</Chip>
+			<Chip href={lien('/mise-en-relation')} actif>Mentors</Chip>
+			<Chip href={lien('/mise-en-relation?type=debutants')}>Débutants</Chip>
 		</nav>
 
 		<form id="formulaire-filtre" role="search" class="mt-7">
@@ -31,6 +32,7 @@ import EtatVide from '../components/ui/etat-vide.astro';
 		</div>
 
 		<div id="contenu" hidden>
+			<h2 class="sr-only">Personnes à contacter</h2>
 			<ul id="liste-personnes" class="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3"></ul>
 			<p id="aucun-resultat" hidden class="mt-6 text-sm text-texte-secondaire"></p>
 		</div>

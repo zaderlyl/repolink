@@ -11,12 +11,12 @@ const [aLaUne, ...autres] = articles;
 ---
 
 <Layout titre="Blog" description="Guides, tutoriels et témoignages pour réussir ta première contribution open source.">
-	<main class="mx-auto w-full max-w-360 px-10 pt-6">
+	<main id="principal" tabindex="-1" class="mx-auto w-full max-w-360 px-4 sm:px-10 pt-6">
 		<h1 class="font-titre text-[40px] leading-tight font-bold">Blog</h1>
 
 		<article class="relative mt-4 flex h-70 overflow-hidden rounded-xl border border-bordure-defaut bg-fond-page transition-colors hover:border-accent-lien">
 			<div aria-hidden="true" class="w-[560px] shrink-0 bg-linear-to-r from-[#0e0e3a] to-[#0e4f62]"></div>
-			<div class="flex flex-1 flex-col items-start justify-center px-10">
+			<div class="flex flex-1 flex-col items-start justify-center px-4 sm:px-10">
 				<Pill variante="good-first-issue">À la une</Pill>
 				<h2 class="mt-5 max-w-[720px] font-titre text-[32px] leading-tight font-bold">{aLaUne.titre}</h2>
 				<p class="mt-8 max-w-[680px] text-[15px] leading-6 text-texte-secondaire">{aLaUne.resume}</p>

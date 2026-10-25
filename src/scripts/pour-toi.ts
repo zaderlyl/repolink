@@ -14,8 +14,9 @@ import {
 import { lirePreferences } from '../lib/preferences.ts';
 import { estPseudoValide, hrefRecherche, lirePseudo } from '../lib/recherche.ts';
 import { lireSession, nettoyerPseudo } from '../lib/session.ts';
-import { $, creerCarteRepo, depuisModele, messageErreur, montrer } from './commun.ts';
+import { $, afficherErreurPage, creerCarteRepo, depuisModele, montrer } from './commun.ts';
 import { afficherErreur, validerFormulaire } from './formulaire.ts';
+import { lien } from '../lib/adresses.ts';
 
 const ZONES = ['accueil', 'chargement', 'resultats', 'erreur'];
 const formulaire = $<HTMLFormElement>('formulaire-pour-toi');
@@ -85,14 +86,14 @@ async function analyser(pseudo: string) {
 		afficherRecommandations(melanger(listes), langages.length > 0);
 		montrer(ZONES, 'resultats');
 		// L'adresse garde le pseudo : on peut recharger ou partager la page
-		history.replaceState(null, '', `/pour-toi?pseudo=${pseudo}`);
+		history.replaceState(null, '', lien(`/pour-toi?pseudo=${pseudo}`));
 	} catch (erreur) {
 		if (erreur instanceof ErreurGithub && erreur.type === 'introuvable') {
 			montrer(ZONES, 'accueil');
 			afficherErreur(champ, 'Ce pseudo n’existe pas sur GitHub.');
 			champ.focus();
 		} else {
-			document.querySelector('#erreur p')!.textContent = messageErreur(erreur);
+			afficherErreurPage(erreur);
 			montrer(ZONES, 'erreur');
 		}
 	} finally {

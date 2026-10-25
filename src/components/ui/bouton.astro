@@ -10,6 +10,9 @@ type Props = {
 	variante?: VarianteBouton;
 	href?: string;
 	desactive?: boolean;
+	// Pour un lien qui s'ouvre dans un autre onglet (avec `href`)
+	target?: string;
+	rel?: string;
 } & HTMLAttributes<'button'>;
 
 const { variante = 'primaire', href, desactive = false, class: classe, ...reste } = Astro.props;
@@ -20,7 +23,7 @@ const variantes = VARIANTES_BOUTON;
 const Balise = href ? 'a' : 'button';
 const attributs = href
 	? { href, 'aria-disabled': desactive || undefined, tabindex: desactive ? -1 : undefined }
-	: { type: 'button', disabled: desactive };
+	: { type: 'button' as const, disabled: desactive };
 ---
 
 <Balise

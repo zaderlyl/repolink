@@ -4,6 +4,7 @@ import '../styles/global.css';
 import Navbar from '../components/navbar.astro';
 import Footer from '../components/footer.astro';
 import Toast from '../components/ui/toast.astro';
+import { lien } from '../lib/adresses.ts';
 
 interface Props {
 	titre?: string;
@@ -26,11 +27,17 @@ const titreComplet = titre === 'Repolink' ? titre : `${titre} · Repolink`;
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="description" content={description} />
 		<meta name="generator" content={Astro.generator} />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
+		<link rel="icon" type="image/svg+xml" href={lien('/favicon.svg')} />
+		<link rel="icon" href={lien('/favicon.ico')} />
 		<title>{titreComplet}</title>
 	</head>
 	<body class="flex min-h-screen flex-col bg-fond-page text-texte-principal antialiased">
+		<!-- Lien d'évitement : visible seulement au clavier, il saute la navigation -->
+		<a
+			href="#principal"
+			class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:rounded-md focus:bg-fond-carte focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:ring-2 focus:ring-accent-lien focus:outline-none"
+			>Aller au contenu</a
+		>
 		<Navbar />
 		<slot />
 		<!-- mt-auto : le footer reste en bas de page, même quand le contenu est court -->
@@ -39,7 +46,7 @@ const titreComplet = titre === 'Repolink' ? titre : `${titre} · Repolink`;
 			<!-- Notifications : src/scripts/toasts.ts y ajoute des toasts (sous la navbar, à droite, comme dans la maquette) -->
 			<div
 				id="zone-toasts"
-				class="pointer-events-none fixed top-[100px] right-10 z-50 flex flex-col items-end gap-3"
+				class="pointer-events-none fixed top-[100px] right-4 sm:right-10 z-50 flex flex-col items-end gap-3"
 			>
 			</div>
 			<template id="modele-toast-succes"><Toast>__message__</Toast></template>

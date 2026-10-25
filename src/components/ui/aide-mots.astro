@@ -1,0 +1,32 @@
+---
+// Petit lexique replié pour les débutants : explique les mots de GitHub vus sur les cartes (star, topic, good first issue).
+// Un <details> : fermé par défaut pour ne pas encombrer, ouvert d'un clic ou au clavier.
+import type { HTMLAttributes } from 'astro/types';
+
+type Props = HTMLAttributes<'details'>;
+
+const { class: classe, ...reste } = Astro.props;
+
+const mots = [
+	{ mot: 'Star', sens: 'Une étoile, c’est un « j’aime » sur GitHub : tu gardes le repo dans tes favoris.' },
+	{ mot: 'Topic', sens: 'Un mot-clé qui décrit le sujet d’un repo, par exemple « cli » ou « api ».' },
+	{ mot: 'Good first issue', sens: 'Une tâche que les mainteneurs jugent accessible à quelqu’un qui débute dans le projet.' },
+];
+---
+
+<details class:list={['rounded-md text-[13px] text-texte-secondaire', classe]} {...reste}>
+	<summary class="inline-flex cursor-pointer list-none items-center gap-2 rounded-md py-1 hover:text-texte-principal focus-visible:ring-2 focus-visible:ring-accent-lien focus-visible:outline-none [&::-webkit-details-marker]:hidden">
+		<span aria-hidden="true" class="inline-flex size-4 items-center justify-center rounded-full border border-texte-secondaire text-[11px]">?</span>
+		C’est quoi une star, un topic, une good first issue ?
+	</summary>
+	<dl class="mt-2 grid gap-2 rounded-lg border border-bordure-defaut bg-fond-panneau p-4 md:grid-cols-3">
+		{
+			mots.map(({ mot, sens }) => (
+				<div>
+					<dt class="font-semibold text-texte-principal">{mot}</dt>
+					<dd class="mt-0.5">{sens}</dd>
+				</div>
+			))
+		}
+	</dl>
+</details>

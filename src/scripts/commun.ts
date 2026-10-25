@@ -3,7 +3,8 @@
 import { ErreurGithub } from '../lib/github.ts';
 import type { RepoGithub } from '../lib/github.ts';
 import { couleurLangage, versRepo } from '../lib/conversion.ts';
-import { hrefRepo } from '../lib/adresses.ts';
+import { hrefRepo, lien } from '../lib/adresses.ts';
+import { lireToken } from '../lib/token.ts';
 import { CLASSES_PAGINATION, elementsPagination } from '../lib/pagination.ts';
 import { nombrePages } from '../lib/recherche.ts';
 
@@ -46,15 +47,41 @@ export function montrer(zones: string[], visible: string) {
 	for (const id of zones) $(id).hidden = id !== visible;
 }
 
+// Le token personnel enregistré dans Paramètres, s'il existe
+function aUnToken(): boolean {
+	try {
+		return lireToken(globalThis.localStorage ?? null) !== null;
+	} catch {
+		return false;
+	}
+}
+
+// Sans token, la limite de 60 requêtes par heure est vite atteinte : on propose d'en ajouter un
+const estLimiteSansToken = (erreur: unknown) => erreur instanceof ErreurGithub && erreur.type === 'limite' && !aUnToken();
+
 export function messageErreur(erreur: unknown): string {
 	if (erreur instanceof ErreurGithub) {
+		let texte = erreur.message;
 		if (erreur.type === 'limite' && erreur.reinitialisation) {
 			const heure = erreur.reinitialisation.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
-			return `GitHub limite le nombre de recherches. Réessaie vers ${heure}.`;
+			texte = `GitHub limite le nombre de requêtes. Réessaie vers ${heure}.`;
 		}
-		return erreur.message;
+		return estLimiteSansToken(erreur) ? `${texte} Pour en avoir davantage, ajoute ton token GitHub dans Paramètres.` : texte;
 	}
 	return 'Une erreur est survenue. Réessaie dans un instant.';
+}
+
+// Remplit la zone d'erreur d'une page (#erreur) ; quand le token peut aider, un lien mène aux Paramètres
+export function afficherErreurPage(erreur: unknown) {
+	const paragraphe = document.querySelector('#erreur p')!;
+	paragraphe.textContent = messageErreur(erreur);
+	if (estLimiteSansToken(erreur) || (erreur instanceof ErreurGithub && erreur.type === 'jeton')) {
+		const lienParametres = document.createElement('a');
+		lienParametres.href = lien('/parametres?section=compte');
+		lienParametres.className = 'text-accent-lien hover:underline';
+		lienParametres.textContent = 'Ouvrir les Paramètres';
+		paragraphe.append(' ', lienParametres);
+	}
 }
 
 // --- Pastilles de filtre ---

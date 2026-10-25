@@ -3,6 +3,7 @@
 // Quand le fichier manque (premier clone, pas de token), les nombres d'exemple servent de secours.
 import { langages as langagesParDefaut, topics as topicsParDefaut } from './explorer-categories.ts';
 import type { Categorie } from './explorer-categories.ts';
+import { lien } from '../lib/adresses.ts';
 
 export type { Categorie };
 
@@ -23,7 +24,7 @@ export const langagesExplorer = avecNombres(langagesParDefaut, donnees?.langages
 export const topicsExplorer = avecNombres(topicsParDefaut, donnees?.topics);
 
 // Adresses de la page Recherche (étape 6.3) : le langage ou le topic arrive dans l'adresse
-export const hrefLangage = (nom: string) => `/recherche?langage=${encodeURIComponent(nom)}`;
-export const hrefTopic = (nom: string) => `/recherche?topic=${encodeURIComponent(nom)}`;
+export const hrefLangage = (nom: string) => lien(`/recherche?langage=${encodeURIComponent(nom)}`);
+export const hrefTopic = (nom: string) => lien(`/recherche?topic=${encodeURIComponent(nom)}`);
 
 export { formaterRepos } from '../lib/conversion.ts';

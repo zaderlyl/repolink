@@ -9,14 +9,16 @@ import ChampRecherche from '../components/ui/champ-recherche.astro';
 import CarteRepo from '../components/ui/carte-repo.astro';
 import EtatVide from '../components/ui/etat-vide.astro';
 import Bouton from '../components/ui/bouton.astro';
+import AideMots from '../components/ui/aide-mots.astro';
 import { couleurLangage } from '../lib/conversion.ts';
 import { hrefRecherche } from '../lib/recherche.ts';
+import { lien } from '../lib/adresses.ts';
 
 const langagesRapides = ['JavaScript', 'Python'];
 ---
 
 <Layout titre="Recherche" description="Cherche des repos GitHub par mot-clé, langage ou topic, sans la syntaxe compliquée de GitHub.">
-	<main class="mx-auto w-full max-w-360 px-10 pt-6">
+	<main id="principal" tabindex="-1" class="mx-auto w-full max-w-360 px-4 sm:px-10 pt-6">
 		<div class="flex items-baseline gap-3">
 			<h1 class="font-titre text-[40px] leading-tight font-bold">Recherche</h1>
 			<p id="statut" role="status" class="text-[13px] text-texte-secondaire">Chargement des repos…</p>
@@ -24,19 +26,22 @@ const langagesRapides = ['JavaScript', 'Python'];
 
 		<!-- Version de départ des pastilles : le script les remplace selon l'adresse -->
 		<nav id="filtres" aria-label="Filtres par langage" class="mt-4 flex flex-wrap gap-3">
-			<Chip href="/recherche" actif>TOUT</Chip>
+			<Chip href={lien('/recherche')} actif>TOUT</Chip>
 			{langagesRapides.map((langage) => (
 				<Chip href={hrefRecherche({ langage })} couleur={couleurLangage(langage)}>{langage}</Chip>
 			))}
 		</nav>
 
-		<form id="formulaire-recherche" action="/recherche" method="get" role="search" class="mt-7">
+		<form id="formulaire-recherche" action={lien('/recherche')} method="get" role="search" class="mt-7">
 			<input type="hidden" name="langage" disabled />
 			<input type="hidden" name="topic" disabled />
 			<ChampRecherche name="q" label="Rechercher un repo, un topic ou un créateur" maxlength={100} />
 		</form>
 
+		<AideMots class="mt-4" />
+
 		<div class="mt-6">
+			<h2 class="sr-only">Résultats</h2>
 			<ul id="liste" class="flex flex-col gap-4" hidden></ul>
 
 			<!-- Chargement : trois cartes grisées, comme dans la maquette -->
@@ -61,7 +66,7 @@ const langagesRapides = ['JavaScript', 'Python'];
 
 			<div id="vide" hidden>
 				<EtatVide symbole="⌕" titre="Aucun repo trouvé" texte="Essaie un autre mot-clé ou retire un filtre.">
-					<Bouton href="/recherche" variante="secondaire">Effacer les filtres</Bouton>
+					<Bouton href={lien('/recherche')} variante="secondaire">Effacer les filtres</Bouton>
 				</EtatVide>
 			</div>
 

@@ -1,8 +1,10 @@
 // Client de l'API publique de GitHub (https://docs.github.com/fr/rest).
 // Sans token, GitHub accepte 60 requêtes par heure et par visiteur (10 par minute pour la recherche) :
-// les réponses sont donc mises en cache 10 minutes (src/lib/cache.ts).
-// Ce fichier ne lit jamais de token tout seul : celui du build est passé par `options.token`.
+// les réponses sont donc mises en cache 1 heure (src/lib/cache.ts).
+// Deux tokens possibles : celui du build, passé par `options.token`, et celui, facultatif, que la personne a collé dans
+// Paramètres (src/lib/token.ts) : il est lu dans son navigateur et donne 5000 requêtes par heure.
 import { avecCache } from './cache.ts';
+import { lireToken } from './token.ts';
 
 const URL_API = 'https://api.github.com';
 
@@ -79,7 +81,7 @@ export type OptionsRecherche = {
 	token?: string;
 };
 
-type TypeErreur = 'reseau' | 'limite' | 'introuvable' | 'autre';
+type TypeErreur = 'reseau' | 'limite' | 'introuvable' | 'jeton' | 'autre';
 
 // Erreur lisible par les pages : `type` dit quoi afficher, `reinitialisation` dit quand réessayer.
 export class ErreurGithub extends Error {
@@ -97,7 +99,8 @@ export class ErreurGithub extends Error {
 }
 
 // Appel générique : renvoie le JSON ou lève une ErreurGithub.
-// Sans token (les visiteurs), la réponse passe par le cache ; avec un token (le build), elle est toujours fraîche.
+// Avec le token du build, la réponse est toujours fraîche. Sinon elle passe par le cache, avec le token de la personne s'il existe.
+// Les données sont publiques : une réponse obtenue avec ou sans token est la même, le cache peut donc être partagé.
 export function requeteGithub<T>(
 	chemin: string,
 	parametres: Record<string, string | number | undefined> = {},
@@ -109,7 +112,17 @@ export function requeteGithub<T>(
 	}
 
 	if (token) return appelerGithub<T>(url, token);
-	return avecCache(url.toString(), () => appelerGithub<T>(url));
+	const jeton = jetonDuVisiteur();
+	return avecCache(url.toString(), () => appelerGithub<T>(url, jeton ?? undefined));
+}
+
+// Le token que la personne a enregistré dans Paramètres ; pas de navigateur (build Node) ou pas de token : null
+function jetonDuVisiteur(): string | null {
+	try {
+		return lireToken(globalThis.localStorage ?? null);
+	} catch {
+		return null;
+	}
 }
 
 async function appelerGithub<T>(url: URL, token?: string): Promise<T> {
@@ -130,6 +143,10 @@ async function appelerGithub<T>(url: URL, token?: string): Promise<T> {
 	if (reponse.status === 204) return [] as unknown as T;
 	if (reponse.ok) return (await reponse.json()) as T;
 
+	// 401 : GitHub refuse le token (mal copié, expiré ou supprimé)
+	if (reponse.status === 401) {
+		throw new ErreurGithub('jeton', 'GitHub refuse ton token (invalide ou expiré). Remplace-le ou retire-le dans Paramètres.', 401);
+	}
 	// GitHub répond 403 ou 429 quand la limite est atteinte : x-ratelimit-remaining vaut alors 0
 	const restantes = reponse.headers.get('x-ratelimit-remaining');
 	if ((reponse.status === 403 || reponse.status === 429) && restantes === '0') {

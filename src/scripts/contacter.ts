@@ -5,6 +5,7 @@ import { versProfil } from '../lib/conversion.ts';
 import { lirePseudo } from '../lib/recherche.ts';
 import { $ } from './commun.ts';
 import { validerFormulaire } from './formulaire.ts';
+import { lien } from '../lib/adresses.ts';
 
 const formulaire = $<HTMLFormElement>('formulaire-createur');
 const message = $<HTMLTextAreaElement>('contacter-message');
@@ -41,6 +42,6 @@ function montrerIntrouvable() {
 
 // Les champs sont vérifiés avant d'arriver ici. Pas d'envoi réel ni de données dans l'adresse :
 // on affiche simplement la page de confirmation.
-validerFormulaire(formulaire, () => window.location.assign('/message-envoye'));
+validerFormulaire(formulaire, () => window.location.assign(lien('/message-envoye')));
 
 charger();

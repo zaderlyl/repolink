@@ -1,36 +1,41 @@
 ---
+import { lien } from '../lib/adresses.ts';
 // Barre de navigation en haut de chaque page (maquette Figma : composant « Navbar »).
-// Les pages vers lesquelles elle pointe seront créées aux étapes suivantes.
+// `connecte` : lien montré seulement quand quelqu'un est connecté (src/scripts/session.ts).
+// Dès 1280 px les liens sont au centre de la barre ; en dessous, ils passent dans un menu déplié par le bouton « Menu ».
 const liens = [
-	{ texte: 'Recherche', href: '/recherche' },
-	{ texte: 'Explorer', href: '/explorer' },
-	{ texte: 'À propos', href: '/a-propos' },
+	{ texte: 'Recherche', href: lien('/recherche') },
+	{ texte: 'Explorer', href: lien('/explorer') },
+	{ texte: 'Pour toi', href: lien('/pour-toi'), connecte: true },
+	{ texte: 'Favoris', href: lien('/favoris'), connecte: true },
+	{ texte: 'Mise en relation', href: lien('/mise-en-relation') },
+	{ texte: 'À propos', href: lien('/a-propos') },
 ];
 
 // Le lien de la page courante est mis en évidence (y compris pour ses sous-pages)
 const chemin = Astro.url.pathname;
-const estActif = (href: string) => chemin === href || chemin.startsWith(`${href}/`);
+const estActif = (href: string) => chemin === lien(href) || chemin.startsWith(`${lien(href)}/`);
 
 // Même apparence pour « Connexion » et « Déconnexion »
 const classeBoutonNav =
 	'inline-flex h-9 w-[130px] items-center justify-center rounded-md border border-bordure-defaut bg-fond-carte px-4 text-sm font-semibold transition-colors hover:bg-bordure-defaut';
 ---
 
-<header class="mx-auto w-full max-w-360 px-10 pt-4">
+<header class="mx-auto w-full max-w-360 px-4 pt-4 sm:px-10">
 	<nav
 		aria-label="Navigation principale"
-		class="relative flex h-14 items-center justify-between rounded-md border border-bordure-defaut bg-fond-panneau pr-6 pl-10"
+		class="relative flex h-14 items-center justify-between rounded-md border border-bordure-defaut bg-fond-panneau pr-4 pl-4 xl:pr-6 xl:pl-10"
 	>
-		<a href="/" class="transition-colors hover:text-accent-lien">Repolink</a>
+		<a href={lien('/')} class="transition-colors hover:text-accent-lien">Repolink</a>
 
-		<ul class="absolute left-1/2 flex -translate-x-1/2 items-center gap-[70px]">
+		<ul class="absolute left-1/2 hidden -translate-x-1/2 items-center gap-8 xl:flex">
 			{
-				liens.map(({ texte, href }) => (
-					<li>
+				liens.map(({ texte, href, connecte }) => (
+					<li hidden={connecte} data-connecte={connecte ? '' : undefined}>
 						<a
 							href={href}
 							aria-current={estActif(href) ? 'page' : undefined}
-							class:list={['transition-colors hover:text-accent-lien', estActif(href) && 'text-accent-lien']}
+							class:list={['whitespace-nowrap transition-colors hover:text-accent-lien', estActif(href) && 'text-accent-lien']}
 						>
 							{texte}
 						</a>
@@ -39,18 +44,61 @@ const classeBoutonNav =
 			}
 		</ul>
 
-		<div class="flex items-center gap-6">
+		<div class="hidden items-center gap-6 xl:flex">
 			<!-- Connecté (voir src/scripts/session.ts) : « Connexion » laisse la place à « Déconnexion » et l'avatar prend la photo GitHub -->
-			<a id="lien-connexion" href="/connexion" class={classeBoutonNav}>Connexion</a>
+			<a id="lien-connexion" href={lien('/connexion')} class={classeBoutonNav}>Connexion</a>
 			<button id="bouton-deconnexion" type="button" data-deconnexion hidden class={classeBoutonNav}>Déconnexion</button>
-			<a
-				id="lien-mon-profil"
-				href="/mon-profil"
-				aria-label="Mon profil"
-				class="block size-10 overflow-hidden rounded-full bg-accent-violet"
-			>
-				<img id="avatar-navbar" alt="" hidden class="size-full object-cover" />
-			</a>
+			<!-- Menu de l'avatar : Mon profil et Paramètres (se ferme avec Échap ou en cliquant ailleurs, voir session.ts) -->
+			<details id="menu-avatar" data-menu hidden class="relative">
+				<summary
+					id="bouton-menu-avatar"
+					aria-label="Mon compte"
+					class="block size-10 cursor-pointer list-none overflow-hidden rounded-full bg-accent-violet focus-visible:ring-2 focus-visible:ring-accent-lien focus-visible:outline-none [&::-webkit-details-marker]:hidden"
+				>
+					<img id="avatar-navbar" alt="" hidden class="size-full object-cover" />
+				</summary>
+				<ul class="absolute right-0 z-20 mt-2 w-48 rounded-md border border-bordure-defaut bg-fond-panneau p-1 text-sm shadow-lg">
+					<li><a id="lien-mon-profil" href={lien('/mon-profil')} class="block rounded px-3 py-2 transition-colors hover:bg-bordure-defaut">Mon profil</a></li>
+					<li><a href={lien('/parametres')} class="block rounded px-3 py-2 transition-colors hover:bg-bordure-defaut">Paramètres</a></li>
+				</ul>
+			</details>
 		</div>
+
+		<!-- Menu des petits écrans : les liens, la connexion et le compte dans un panneau sous la barre -->
+		<details id="menu-mobile" data-menu class="xl:hidden">
+			<summary
+				aria-label="Menu"
+				class="flex size-10 cursor-pointer list-none items-center justify-center rounded-md border border-bordure-defaut bg-fond-carte hover:bg-bordure-defaut focus-visible:ring-2 focus-visible:ring-accent-lien focus-visible:outline-none [&::-webkit-details-marker]:hidden"
+			>
+				<svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" class="size-5">
+					<path d="M4 6h16M4 12h16M4 18h16"></path>
+				</svg>
+			</summary>
+			<div class="absolute inset-x-0 top-full z-30 mt-2 rounded-md border border-bordure-defaut bg-fond-panneau p-2 shadow-lg">
+				<ul class="flex flex-col">
+					{
+						liens.map(({ texte, href, connecte }) => (
+							<li hidden={connecte} data-connecte={connecte ? '' : undefined}>
+								<a
+									href={href}
+									aria-current={estActif(href) ? 'page' : undefined}
+									class:list={['block rounded px-3 py-3 transition-colors hover:bg-bordure-defaut', estActif(href) && 'text-accent-lien']}
+								>
+									{texte}
+								</a>
+							</li>
+						))
+					}
+				</ul>
+				<ul class="mt-2 flex flex-col border-t border-bordure-defaut pt-2">
+					<li data-deconnecte><a href={lien('/connexion')} class="block rounded px-3 py-3 transition-colors hover:bg-bordure-defaut">Connexion</a></li>
+					<li hidden data-connecte><a href={lien('/mon-profil')} class="block rounded px-3 py-3 transition-colors hover:bg-bordure-defaut">Mon profil</a></li>
+					<li hidden data-connecte><a href={lien('/parametres')} class="block rounded px-3 py-3 transition-colors hover:bg-bordure-defaut">Paramètres</a></li>
+					<li hidden data-connecte>
+						<button type="button" data-deconnexion class="block w-full rounded px-3 py-3 text-left transition-colors hover:bg-bordure-defaut">Déconnexion</button>
+					</li>
+				</ul>
+			</div>
+		</details>
 	</nav>
 </header>

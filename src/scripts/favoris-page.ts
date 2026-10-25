@@ -8,12 +8,13 @@ import { hrefProfil, hrefRepo } from '../lib/adresses.ts';
 import { formaterNombre } from '../lib/conversion.ts';
 import { purgerCache } from '../lib/cache.ts';
 import { $, creerCarteRepo, depuisModele, messageErreur } from './commun.ts';
+import { lien } from '../lib/adresses.ts';
 
 type Vue = 'tout' | 'repos' | 'createurs';
 const VUES: { id: Vue; texte: string; href: string }[] = [
-	{ id: 'tout', texte: 'TOUT', href: '/favoris' },
-	{ id: 'repos', texte: 'Repos', href: '/favoris?type=repos' },
-	{ id: 'createurs', texte: 'Créateurs', href: '/favoris?type=createurs' },
+	{ id: 'tout', texte: 'TOUT', href: lien('/favoris') },
+	{ id: 'repos', texte: 'Repos', href: lien('/favoris?type=repos') },
+	{ id: 'createurs', texte: 'Créateurs', href: lien('/favoris?type=createurs') },
 ];
 // Chaque favori coûte une requête à GitHub (60 par heure sans token) : on affiche les plus récents
 const MAX_PAR_LISTE = 30;
