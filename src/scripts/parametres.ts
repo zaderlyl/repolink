@@ -1,12 +1,14 @@
 // Page Paramètres : trois sections (?section=preferences | compte | theme) et des réglages gardés dans le navigateur.
 //   - Préférences : langages favoris, niveau, projets actifs, repos archivés (src/lib/preferences.ts), enregistrés à chaque changement ;
-//   - Compte : pseudo de la connexion, déconnexion, suppression de toutes les données locales ;
+//   - Compte : pseudo de la connexion, déconnexion, suppression de toutes les données locales, token GitHub facultatif ;
 //   - Thème : seul « Sombre » existe pour l'instant.
 import { CONTOUR, CONTOUR_COURANT } from '../lib/menu.ts';
 import { ecrirePreferences, lirePreferences, resumeLangages } from '../lib/preferences.ts';
 import type { Niveau, Preferences } from '../lib/preferences.ts';
 import { effacerToutesLesDonnees } from '../lib/donnees.ts';
 import { lireSession } from '../lib/session.ts';
+import { ecrireToken, effacerToken, estTokenValide, finDeToken, lireToken, nettoyerToken } from '../lib/token.ts';
+import { afficherErreur } from './formulaire.ts';
 import { $ } from './modeles.ts';
 import { afficherToast } from './toasts.ts';
 
@@ -124,6 +126,48 @@ function brancherCompte() {
 	window.addEventListener('session-changee', afficherCompte);
 }
 
+// --- Token GitHub ---
+
+function afficherEtatToken() {
+	const token = lireToken(stockage());
+	$('etat-token').textContent = token
+		? `Token enregistré (${finDeToken(token)}) : tes requêtes utilisent ton quota de 5000 par heure.`
+		: 'Aucun token : tu utilises le quota partagé de 60 requêtes par heure.';
+	$('bouton-retirer-token').hidden = !token;
+}
+
+function brancherToken() {
+	const champ = $<HTMLInputElement>('compte-token');
+	$<HTMLFormElement>('formulaire-token').addEventListener('submit', (evenement) => {
+		evenement.preventDefault();
+		const token = nettoyerToken(champ.value);
+		if (!estTokenValide(token)) {
+			afficherErreur(champ, 'Ce n’est pas un token GitHub : il commence par « github_pat_ » ou « ghp_ ».');
+			champ.focus();
+			return;
+		}
+		afficherErreur(champ, '');
+		if (!ecrireToken(stockage(), token)) {
+			afficherToast('Token non enregistré : ton navigateur bloque le stockage.', 'erreur');
+			return;
+		}
+		champ.value = '';
+		afficherEtatToken();
+		afficherToast('Token enregistré');
+	});
+	champ.addEventListener('input', () => afficherErreur(champ, ''));
+	$('bouton-retirer-token').addEventListener('click', () => {
+		if (!effacerToken(stockage())) {
+			afficherToast('Token non retiré : ton navigateur bloque le stockage.', 'erreur');
+			return;
+		}
+		afficherEtatToken();
+		afficherToast('Token retiré');
+	});
+	// La suppression des données (bouton « Supprimer mon compte ») efface aussi le token
+	window.addEventListener('session-changee', afficherEtatToken);
+}
+
 // --- Thème ---
 
 // Un seul thème existe : « Sombre » reste allumé même si on clique dessus (comme une liste de boutons radio)
@@ -139,4 +183,6 @@ remplirPreferences();
 brancherPreferences();
 afficherCompte();
 brancherCompte();
+brancherToken();
+afficherEtatToken();
 brancherTheme();
