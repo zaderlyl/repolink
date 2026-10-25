@@ -1,15 +1,15 @@
 ---
-// Page d'accueil (maquette Figma : « Site - Accueil »).
+// Page d'accueil (maquette Figma : « Site - Accueil »), allégée : l'accroche, la recherche, les repos et les issues pour débutants.
+// Le repo d'illustration du hero, les langages, les profils et la colonne « Légal » (déjà dans le footer) en ont été retirés.
 // Les données viennent de src/data/accueil.ts (factices pour l'instant, API GitHub à l'étape 5).
 import Layout from '../layouts/layout.astro';
 import Bouton from '../components/ui/bouton.astro';
 import CarteRepo from '../components/ui/carte-repo.astro';
-import CarteProfil from '../components/ui/carte-profil.astro';
 import LigneIssue from '../components/ui/ligne-issue.astro';
 import EntetePanneau from '../components/ui/entete-panneau.astro';
-import { repos, issues, langages, profils, activite, hrefRepo, hrefProfil } from '../data/accueil';
+import { repos, issues, hrefRepo } from '../data/accueil';
 
-// Liens du bloc « plan du site » en bas de page, en colonnes
+// Liens du bloc « plan du site » en bas de page, en colonnes (les liens légaux sont dans le footer)
 const colonnes = [
 	{
 		titre: 'Produit',
@@ -34,20 +34,12 @@ const colonnes = [
 			{ texte: 'Contact', href: '/contact' },
 		],
 	},
-	{
-		titre: 'Légal',
-		liens: [
-			{ texte: 'Mentions légales', href: '/mentions-legales' },
-			{ texte: 'Confidentialité', href: '/confidentialite' },
-			{ texte: 'Cookies', href: '/cookies' },
-		],
-	},
 ];
 ---
 
 <Layout>
 	<main>
-		<!-- Hero : accroche, recherche et un exemple de repo (décoratif) -->
+		<!-- Hero : accroche et recherche -->
 		<section class="mt-4 bg-linear-to-r from-fond-page via-[#1f1147] to-[#0e4f62]">
 			<div class="mx-auto flex w-full max-w-360 items-center justify-between gap-12 px-10 py-14">
 				<div class="max-w-[760px]">
@@ -71,20 +63,6 @@ const colonnes = [
 						/>
 						<Bouton type="submit" class="shrink-0">Rechercher</Bouton>
 					</form>
-				</div>
-				<!-- Simple illustration : inert la rend non cliquable et hors du clavier -->
-				<div aria-hidden="true" inert class="hidden w-[480px] shrink-0 lg:block">
-					<CarteRepo
-						nom={repos[0].nom}
-						href={hrefRepo(repos[0].nom)}
-						description={repos[0].description}
-						miseAJour={repos[0].miseAJour}
-						langage={repos[0].langage}
-						couleurLangage={repos[0].couleurLangage}
-						etoiles={repos[0].etoiles}
-						topics={repos[0].topics}
-						goodFirstIssues={repos[0].goodFirstIssues}
-					/>
 				</div>
 			</div>
 		</section>
@@ -115,70 +93,18 @@ const colonnes = [
 				</div>
 			</section>
 
-			<!-- Good first issues et langages, côte à côte -->
-			<div class="mt-8 grid gap-6 lg:grid-cols-[1fr_456px]">
-				<section aria-label="Good first issues" class="overflow-hidden rounded-xl border border-bordure-defaut">
-					<EntetePanneau titre="Good first issues" lienTexte="Voir tout" lienHref="/good-first-issues" />
-					{
-						issues.map((issue) => (
-							<LigneIssue
-								titre={issue.titre}
-								href={hrefRepo(issue.repo)}
-								repo={issue.repo}
-								ouverte={issue.ouverte}
-							/>
-						))
-					}
-				</section>
-
-				<section aria-label="Explorer par langage" class="self-start overflow-hidden rounded-xl border border-bordure-defaut">
-					<EntetePanneau titre="Explorer par langage" />
-					<ul class="grid grid-cols-2 gap-3 border-t border-bordure-defaut p-5">
-						{
-							langages.map((langage) => (
-								<li>
-									<a
-										href="/explorer"
-										class="flex h-[52px] items-center gap-3 rounded-md border border-bordure-defaut bg-fond-panneau px-4 text-sm font-medium transition-colors hover:border-accent-lien hover:bg-fond-carte"
-									>
-										<span
-											aria-hidden="true"
-											class="size-3.5 rounded-full"
-											style={`background-color: ${langage.couleur}`}
-										/>
-										{langage.nom}
-									</a>
-								</li>
-							))
-						}
-					</ul>
-				</section>
-			</div>
-
-			<!-- Profils à la une : défilent à l'horizontale, la dernière carte est coupée pour inviter à faire défiler -->
-			<section class="mt-8" aria-labelledby="profils-a-la-une">
-				<h2 id="profils-a-la-une" class="text-xl font-semibold">Profils à la une</h2>
-				<ul class="mt-4 flex snap-x gap-4 overflow-x-auto pb-4">
-					{
-						profils.map((profil, i) => (
-							<li class="w-[460px] shrink-0 snap-start">
-								<CarteProfil
-									nom={profil.nom}
-									pseudo={`@${profil.pseudo}`}
-									abonnes={profil.abonnes}
-									bio={profil.bio}
-									href={hrefProfil(profil.pseudo)}
-									niveaux={activite(i)}
-									class="h-full"
-								/>
-							</li>
-						))
-					}
-				</ul>
+			<!-- Good first issues -->
+			<section aria-label="Good first issues" class="mt-8 overflow-hidden rounded-xl border border-bordure-defaut">
+				<EntetePanneau titre="Good first issues" lienTexte="Voir tout" lienHref="/good-first-issues" />
+				{
+					issues.map((issue) => (
+						<LigneIssue titre={issue.titre} href={hrefRepo(issue.repo)} repo={issue.repo} ouverte={issue.ouverte} />
+					))
+				}
 			</section>
 
 			<!-- Plan du site : donne accès au guide, à la documentation et au blog -->
-			<nav aria-label="Plan du site" class="mt-12 grid gap-8 border-t border-bordure-defaut pt-10 sm:grid-cols-2 lg:grid-cols-[1fr_repeat(4,auto)] lg:gap-16">
+			<nav aria-label="Plan du site" class="mt-12 grid gap-8 border-t border-bordure-defaut pt-10 sm:grid-cols-2 lg:grid-cols-[1fr_repeat(3,auto)] lg:gap-16">
 				<p class="font-semibold">Repolink</p>
 				{
 					colonnes.map((colonne) => (
