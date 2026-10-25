@@ -14,7 +14,7 @@ import { purgerCache } from '../lib/cache.ts';
 import { hrefContacter } from '../lib/adresses.ts';
 import { hrefRecherche } from '../lib/recherche.ts';
 import { NIVEAUX_GRILLE, TAILLES_GRILLE } from '../lib/grille.ts';
-import { $, creerCarteRepo, depuisModele, messageErreur, montrer } from './commun.ts';
+import { $, afficherErreurPage, creerCarteRepo, depuisModele, messageErreur, montrer } from './commun.ts';
 import { lien } from '../lib/adresses.ts';
 
 const ZONES = ['chargement', 'contenu', 'introuvable', 'erreur'];
@@ -152,7 +152,7 @@ export async function chargerProfil(options: OptionsProfil) {
 		if (erreur instanceof ErreurGithub && erreur.type === 'introuvable') {
 			montrer(ZONES, 'introuvable');
 		} else {
-			document.querySelector('#erreur p')!.textContent = messageErreur(erreur);
+			afficherErreurPage(erreur);
 			montrer(ZONES, 'erreur');
 		}
 		return;

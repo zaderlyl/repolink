@@ -8,7 +8,7 @@ import { purgerCache } from '../lib/cache.ts';
 import { lirePreferences } from '../lib/preferences.ts';
 import { construireOptions, construireRequete, hrefRecherche, lireFiltres, nombrePages } from '../lib/recherche.ts';
 import type { Filtres } from '../lib/recherche.ts';
-import { $, afficherPagination, afficherPastilles, creerCarteRepo, messageErreur, montrer } from './commun.ts';
+import { $, afficherErreurPage, afficherPagination, afficherPastilles, creerCarteRepo, montrer } from './commun.ts';
 
 const LANGAGES_RAPIDES = ['JavaScript', 'Python'];
 
@@ -74,7 +74,7 @@ async function charger() {
 		resultat = await rechercherRepos(construireRequete(filtres, lirePreferences(stockage())), construireOptions(filtres));
 	} catch (erreur) {
 		$('statut').textContent = '';
-		document.querySelector('#erreur p')!.textContent = messageErreur(erreur);
+		afficherErreurPage(erreur);
 		montrer(ZONES, 'erreur');
 		return;
 	}

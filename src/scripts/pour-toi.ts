@@ -14,7 +14,7 @@ import {
 import { lirePreferences } from '../lib/preferences.ts';
 import { estPseudoValide, hrefRecherche, lirePseudo } from '../lib/recherche.ts';
 import { lireSession, nettoyerPseudo } from '../lib/session.ts';
-import { $, creerCarteRepo, depuisModele, messageErreur, montrer } from './commun.ts';
+import { $, afficherErreurPage, creerCarteRepo, depuisModele, montrer } from './commun.ts';
 import { afficherErreur, validerFormulaire } from './formulaire.ts';
 import { lien } from '../lib/adresses.ts';
 
@@ -93,7 +93,7 @@ async function analyser(pseudo: string) {
 			afficherErreur(champ, 'Ce pseudo n’existe pas sur GitHub.');
 			champ.focus();
 		} else {
-			document.querySelector('#erreur p')!.textContent = messageErreur(erreur);
+			afficherErreurPage(erreur);
 			montrer(ZONES, 'erreur');
 		}
 	} finally {

@@ -14,7 +14,7 @@ import {
 } from '../lib/mise-en-relation.ts';
 import { lirePreferences } from '../lib/preferences.ts';
 import { lireSession } from '../lib/session.ts';
-import { $, depuisModele, messageErreur, montrer } from './commun.ts';
+import { $, afficherErreurPage, depuisModele, montrer } from './commun.ts';
 import { lien } from '../lib/adresses.ts';
 
 const ZONES = ['chargement', 'contenu', 'vide', 'erreur'];
@@ -93,7 +93,7 @@ async function charger() {
 		montrer(ZONES, 'contenu');
 		filtrer();
 	} catch (erreur) {
-		document.querySelector('#erreur p')!.textContent = messageErreur(erreur);
+		afficherErreurPage(erreur);
 		montrer(ZONES, 'erreur');
 	}
 }

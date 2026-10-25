@@ -33,7 +33,7 @@ import {
 	nombrePages,
 	RESULTATS_PAR_PAGE,
 } from '../lib/recherche.ts';
-import { $, afficherPagination, creerCarteRepo, depuisModele, messageErreur, montrer } from './commun.ts';
+import { $, afficherErreurPage, afficherPagination, creerCarteRepo, depuisModele, messageErreur, montrer } from './commun.ts';
 
 const ZONES = ['chargement', 'contenu', 'introuvable', 'erreur'];
 const ONGLETS: { id: OngletRepo; texte: string }[] = [
@@ -342,7 +342,7 @@ async function charger() {
 		if (erreur instanceof ErreurGithub && erreur.type === 'introuvable') {
 			montrer(ZONES, 'introuvable');
 		} else {
-			document.querySelector('#erreur p')!.textContent = messageErreur(erreur);
+			afficherErreurPage(erreur);
 			montrer(ZONES, 'erreur');
 		}
 		return;
