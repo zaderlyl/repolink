@@ -1,6 +1,7 @@
 ---
 // Page d'accueil (maquette Figma : « Site - Accueil »), allégée : l'accroche, la recherche, les repos et les issues pour débutants.
 // Le repo d'illustration du hero, les langages, les profils et la colonne « Légal » (déjà dans le footer) en ont été retirés.
+// « Tes favoris » apparaît seulement si on a étoilé des repos (src/scripts/accueil.ts).
 // Les données viennent de src/data/accueil.ts (factices pour l'instant, API GitHub à l'étape 5).
 import Layout from '../layouts/layout.astro';
 import Bouton from '../components/ui/bouton.astro';
@@ -68,6 +69,15 @@ const colonnes = [
 		</section>
 
 		<div class="mx-auto w-full max-w-360 px-10">
+			<!-- Tes favoris : rempli et montré par le script quand des repos sont étoilés -->
+			<section id="favoris-accueil" hidden class="mt-8" aria-labelledby="titre-favoris-accueil">
+				<div class="flex items-baseline justify-between">
+					<h2 id="titre-favoris-accueil" class="text-xl font-semibold">Tes favoris</h2>
+					<a href="/favoris" class="text-sm font-medium text-accent-lien hover:underline">Voir tout</a>
+				</div>
+				<ul id="liste-favoris-accueil" class="mt-4 grid gap-6 md:grid-cols-2"></ul>
+			</section>
+
 			<!-- Repos à la une -->
 			<section class="mt-8" aria-labelledby="repos-a-la-une">
 				<div class="flex items-baseline justify-between">
@@ -125,4 +135,22 @@ const colonnes = [
 			</nav>
 		</div>
 	</main>
+
+	<!-- Modèle rempli par le script : __cle__ est remplacé par la valeur -->
+	<template id="modele-repo">
+		<CarteRepo
+			nom="__nom__"
+			href="__href__"
+			description="__description__"
+			miseAJour="__miseajour__"
+			langage="__langage__"
+			couleurLangage="__couleur__"
+			etoiles="__etoiles__"
+			topics={['__topic__']}
+		/>
+	</template>
 </Layout>
+
+<script>
+	import '../scripts/accueil.ts';
+</script>
