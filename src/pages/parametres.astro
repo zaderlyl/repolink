@@ -10,20 +10,21 @@ import LigneParametre from '../components/ui/ligne-parametre.astro';
 import Selecteur from '../components/ui/selecteur.astro';
 import { langages } from '../data/explorer-categories.ts';
 import { NIVEAUX } from '../lib/preferences.ts';
+import { lien } from '../lib/adresses.ts';
 
 const niveaux = NIVEAUX.map(({ id, texte }) => ({ valeur: id, texte }));
 ---
 
 <Layout titre="Paramètres" description="Tes préférences de recherche, ton compte et le thème du site.">
-	<main class="mx-auto w-full max-w-360 px-10 pt-6">
+	<main id="principal" tabindex="-1" class="mx-auto w-full max-w-360 px-4 sm:px-10 pt-6">
 		<h1 class="font-titre text-[40px] leading-tight font-bold">Paramètres</h1>
 
-		<div class="mt-[18px] grid items-start gap-5 lg:grid-cols-[320px_1fr]">
+		<div class="mt-[18px] grid grid-cols-[minmax(0,1fr)] items-start gap-5 lg:grid-cols-[320px_1fr]">
 			<!-- Menu : la section courante est mise en évidence par le script -->
 			<nav id="menu" aria-label="Sections des paramètres" class="flex flex-col gap-4">
-				<LigneParametre label="Préférences" href="/parametres" courant data-section="preferences" />
-				<LigneParametre label="Compte" href="/parametres?section=compte" data-section="compte" />
-				<LigneParametre label="Thème" href="/parametres?section=theme" data-section="theme" />
+				<LigneParametre label="Préférences" href={lien('/parametres')} courant data-section="preferences" />
+				<LigneParametre label="Compte" href={lien('/parametres?section=compte')} data-section="compte" />
+				<LigneParametre label="Thème" href={lien('/parametres?section=theme')} data-section="theme" />
 			</nav>
 
 			<div>
@@ -32,7 +33,7 @@ const niveaux = NIVEAUX.map(({ id, texte }) => ({ valeur: id, texte }));
 					<h2 id="titre-preferences" class="text-[22px] leading-7">Préférences</h2>
 					<div class="mt-6 flex flex-wrap gap-x-[175px] gap-y-4">
 						<!-- Langages favoris : liste déroulante à cases à cocher (un <select multiple> serait peu agréable) -->
-						<div class="flex w-80 flex-col gap-1.5">
+						<div class="flex w-full flex-col gap-1.5 sm:w-80">
 							<span id="etiquette-langages" class="text-[13px] font-medium">Langages favoris</span>
 							<details id="menu-langages" class="relative">
 								<summary
@@ -51,7 +52,7 @@ const niveaux = NIVEAUX.map(({ id, texte }) => ({ valeur: id, texte }));
 								</ul>
 							</details>
 						</div>
-						<Selecteur id="preference-niveau" name="niveau" label="Niveau" options={niveaux} class="w-80" />
+						<Selecteur id="preference-niveau" name="niveau" label="Niveau" options={niveaux} class="w-full sm:w-80" />
 					</div>
 					<div class="mt-5 flex flex-col gap-3">
 						<CaseACocher id="preference-actifs" name="actifs" label="Afficher uniquement les projets actifs" />
@@ -67,10 +68,10 @@ const niveaux = NIVEAUX.map(({ id, texte }) => ({ valeur: id, texte }));
 				<section id="section-compte" aria-labelledby="titre-compte" hidden class="rounded-xl border border-bordure-defaut bg-fond-panneau p-[23px]">
 					<h2 id="titre-compte" class="text-[22px] leading-7">Compte</h2>
 					<div class="mt-6 flex flex-wrap gap-x-[175px] gap-y-6">
-						<div class="w-80">
+						<div class="w-full sm:w-80">
 							<ChampTexte id="compte-pseudo" name="pseudo" label="Pseudo GitHub" placeholder="@pseudo" readonly />
 							<p id="compte-non-connecte" hidden class="mt-2 text-[13px] text-texte-secondaire">
-								Tu n'es pas connecté. <a href="/connexion" class="text-accent-lien hover:underline">Se connecter</a>
+								Tu n'es pas connecté. <a href={lien('/connexion')} class="text-accent-lien hover:underline">Se connecter</a>
 							</p>
 						</div>
 						<div class="flex flex-col items-start gap-4">

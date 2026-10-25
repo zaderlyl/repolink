@@ -40,16 +40,16 @@ const {
 
 <article
 	class:list={[
-		'relative flex flex-col rounded-xl border border-bordure-defaut bg-fond-page p-4 transition-colors hover:border-accent-lien hover:bg-fond-panneau',
+		'relative flex min-w-0 flex-col rounded-xl border border-bordure-defaut bg-fond-page p-4 transition-colors hover:border-accent-lien hover:bg-fond-panneau',
 		compacte && 'min-h-[150px]',
 		classe,
 	]}
 	{...reste}
 >
 	<div class="flex items-start justify-between gap-4">
-		<div class:list={['flex items-center gap-2', !compacte && 'h-7']}>
+		<div class:list={['flex min-w-0 items-center gap-2', !compacte && 'min-h-7']}>
 			<span aria-hidden="true" class="size-3.5 shrink-0 rounded-full border-2 border-texte-secondaire"></span>
-			<h3>
+			<h3 class="min-w-0 [overflow-wrap:anywhere]">
 				<a
 					href={href}
 					class:list={[
@@ -75,7 +75,7 @@ const {
 		<span><span aria-hidden="true">★</span> {etoiles}<span class="sr-only"> étoiles</span></span>
 		{
 			!compacte && topics.length > 0 && (
-				<ul class="flex gap-2" aria-label="Topics">
+				<ul class="flex flex-wrap gap-2" aria-label="Topics">
 					{topics.map((topic) => (
 						<li>
 							<Pill variante="topic">{topic}</Pill>

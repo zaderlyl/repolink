@@ -7,7 +7,7 @@ Site pour trouver des repos GitHub à sa portée et rencontrer des créateurs (r
 npm install
 npm run dev
 ```
-URL : http://localhost:4321
+URL : http://localhost:4321/repolink/
 
 Données de l'accueil (API GitHub) : créer un fichier `.env` avec `GITHUB_TOKEN=…` (token fine-grained en lecture seule sur les repos publics), puis lancer `npm run donnees`. Cela écrit `src/data/accueil.json` et `src/data/explorer.json` (ignorés par git).
 

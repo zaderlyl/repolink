@@ -16,7 +16,7 @@ const { href, actif = false, class: classe, ...reste } = Astro.props;
 	href={href}
 	aria-current={actif ? 'page' : undefined}
 	class:list={[
-		'inline-flex border-b-2 px-4 py-3 text-sm leading-[17px] transition-colors',
+		'inline-flex shrink-0 whitespace-nowrap border-b-2 px-4 py-3 text-sm leading-[17px] transition-colors',
 		actif
 			? 'border-accent-onglet font-semibold text-texte-principal'
 			: 'border-transparent text-texte-secondaire hover:border-bordure-defaut hover:text-texte-principal',

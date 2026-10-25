@@ -9,7 +9,7 @@ npm install
 npm run dev
 ```
 
-URL : http://localhost:4321
+URL : http://localhost:4321/repolink/
 
 ## Données de l'accueil (token GitHub)
 
@@ -29,6 +29,8 @@ L'accueil affiche de vrais repos, issues et profils, et la page Explorer de vrai
    ```
 
 Cela écrit `src/data/accueil.json` et `src/data/explorer.json` (environ 1 minute 30, car GitHub limite les recherches). Le fichier `.env` et ces JSON sont ignorés par git : le token ne doit jamais être commité.
+
+Sur GitHub Pages, le workflow `.github/workflows/deploiement.yml` lance `npm run donnees` avant chaque construction, à chaque push sur `main` et chaque jour à 5 h UTC. Il utilise le token fourni par GitHub Actions : rien à configurer.
 
 ## Stack
 

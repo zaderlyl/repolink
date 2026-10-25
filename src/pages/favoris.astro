@@ -10,17 +10,18 @@ import ChampRecherche from '../components/ui/champ-recherche.astro';
 import Chip from '../components/ui/chip.astro';
 import EtatVide from '../components/ui/etat-vide.astro';
 import LigneCreateur from '../components/ui/ligne-createur.astro';
+import { lien } from '../lib/adresses.ts';
 ---
 
 <Layout titre="Favoris" description="Les repos que tu as étoilés et les créateurs que tu suis, retrouvés au même endroit.">
-	<main class="mx-auto w-full max-w-360 px-10 pt-6">
+	<main id="principal" tabindex="-1" class="mx-auto w-full max-w-360 px-4 sm:px-10 pt-6">
 		<h1 class="font-titre text-[40px] leading-tight font-bold">Favoris</h1>
 
 		<!-- Version de départ des pastilles : le script les remplace selon l'adresse (?type=repos ou createurs) -->
 		<nav id="types" aria-label="Type de favoris" class="mt-4 flex flex-wrap gap-3">
-			<Chip href="/favoris" actif>TOUT</Chip>
-			<Chip href="/favoris?type=repos">Repos</Chip>
-			<Chip href="/favoris?type=createurs">Créateurs</Chip>
+			<Chip href={lien('/favoris')} actif>TOUT</Chip>
+			<Chip href={lien('/favoris?type=repos')}>Repos</Chip>
+			<Chip href={lien('/favoris?type=createurs')}>Créateurs</Chip>
 		</nav>
 
 		<form id="formulaire-filtre" role="search" class="mt-7">
@@ -47,7 +48,7 @@ import LigneCreateur from '../components/ui/ligne-createur.astro';
 
 		<div id="vide" hidden class="mt-6 flex justify-center">
 			<EtatVide symbole="☆" titre="Rien pour l'instant" texte="" class="w-full max-w-[466px]">
-				<Bouton href="/explorer">Explorer</Bouton>
+				<Bouton href={lien('/explorer')}>Explorer</Bouton>
 			</EtatVide>
 		</div>
 

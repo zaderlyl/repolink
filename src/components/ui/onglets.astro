@@ -5,6 +5,7 @@
 //     <Onglet href="/repo" actif>Aperçu</Onglet>
 //     <Onglet href="/repo?nom=proprietaire/repo&onglet=issues">Issues</Onglet>
 //   </Onglets>
+// Sur un petit écran, la barre défile à l'horizontale.
 // `label` décrit la navigation pour les lecteurs d'écran.
 import type { HTMLAttributes } from 'astro/types';
 
@@ -15,6 +16,6 @@ type Props = {
 const { label, class: classe, ...reste } = Astro.props;
 ---
 
-<nav aria-label={label} class:list={['flex border-b border-bordure-defaut', classe]} {...reste}>
+<nav aria-label={label} class:list={['flex overflow-x-auto border-b border-bordure-defaut', classe]} {...reste}>
 	<slot />
 </nav>

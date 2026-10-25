@@ -2,6 +2,7 @@
 // Page « À propos » (maquette Figma : « Site - À propos »).
 import Layout from '../layouts/layout.astro';
 import Bouton from '../components/ui/bouton.astro';
+import { lien } from '../lib/adresses.ts';
 
 const etapes = [
 	'Cherche un repo par langage, topic ou créateur.',
@@ -11,7 +12,7 @@ const etapes = [
 ---
 
 <Layout titre="À propos" description="Pourquoi Repolink existe et comment l'utiliser pour trouver ta première contribution.">
-	<main class="mx-auto w-full max-w-360 px-10 pt-6">
+	<main id="principal" tabindex="-1" class="mx-auto w-full max-w-360 px-4 sm:px-10 pt-6">
 		<h1 class="font-titre text-[40px] leading-tight font-bold">À propos</h1>
 
 		<div class="mt-6 flex flex-col gap-4">
@@ -51,7 +52,7 @@ const etapes = [
 						request.
 					</p>
 					<div class="mt-auto pt-8">
-						<Bouton href="/contact">Nous écrire</Bouton>
+						<Bouton href={lien('/contact')}>Nous écrire</Bouton>
 					</div>
 				</section>
 			</div>

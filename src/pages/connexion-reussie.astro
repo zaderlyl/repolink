@@ -4,21 +4,23 @@
 import Layout from '../layouts/layout.astro';
 import Bouton from '../components/ui/bouton.astro';
 import MessageConfirmation from '../components/ui/message-confirmation.astro';
+import { lien } from '../lib/adresses.ts';
 ---
 
 <Layout titre="Connexion réussie" description="Tu es connecté avec ton pseudo GitHub.">
-	<main class="flex flex-1 items-center justify-center px-10 py-16">
+	<main id="principal" tabindex="-1" class="flex flex-1 items-center justify-center px-4 sm:px-10 py-16">
 		<MessageConfirmation id="message-connexion" titre="Connexion réussie" texte="Tu es connecté.">
 			<!-- Première habitude : découvrir ses recommandations, puis revenir les consulter depuis la navbar -->
 			<div class="mt-8 flex flex-wrap justify-center gap-3">
-				<Bouton href="/pour-toi">Voir mes recommandations</Bouton>
-				<Bouton href="/explorer" variante="secondaire">Explorer les repos</Bouton>
+				<Bouton href={lien('/pour-toi')}>Voir mes recommandations</Bouton>
+				<Bouton href={lien('/explorer')} variante="secondaire">Explorer les repos</Bouton>
 			</div>
 		</MessageConfirmation>
 	</main>
 </Layout>
 
 <script>
+	import { lien } from '../lib/adresses.ts';
 	import { lireSession } from '../lib/session.ts';
 
 	function stockage(): Storage | null {
@@ -32,7 +34,7 @@ import MessageConfirmation from '../components/ui/message-confirmation.astro';
 	// Pas de session : on n'a rien à confirmer, on va se connecter
 	const session = lireSession(stockage());
 	if (!session) {
-		window.location.replace('/connexion');
+		window.location.replace(lien('/connexion'));
 	} else {
 		const texte = document.querySelector('#message-connexion p');
 		if (texte) texte.textContent = `Tu es connecté en tant que @${session.pseudo}.`;

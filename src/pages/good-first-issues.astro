@@ -11,6 +11,7 @@ import Bouton from '../components/ui/bouton.astro';
 import AideMots from '../components/ui/aide-mots.astro';
 import { couleurLangage } from '../lib/conversion.ts';
 import { hrefIssues } from '../lib/recherche.ts';
+import { lien } from '../lib/adresses.ts';
 
 const langagesRapides = ['JavaScript', 'Python', 'CSS'];
 ---
@@ -19,12 +20,12 @@ const langagesRapides = ['JavaScript', 'Python', 'CSS'];
 	titre="Good first issues"
 	description="Des issues ouvertes que les mainteneurs ont repérées comme accessibles aux débutants."
 >
-	<main class="mx-auto w-full max-w-360 px-10 pt-6">
+	<main id="principal" tabindex="-1" class="mx-auto w-full max-w-360 px-4 sm:px-10 pt-6">
 		<h1 class="font-titre text-[40px] leading-tight font-bold">Good first issues</h1>
 
 		<!-- Version de départ des pastilles : le script les remplace selon l'adresse -->
 		<nav id="filtres" aria-label="Filtres par langage" class="mt-4 flex flex-wrap gap-3">
-			<Chip href="/good-first-issues" actif>TOUT</Chip>
+			<Chip href={lien('/good-first-issues')} actif>TOUT</Chip>
 			{langagesRapides.map((langage) => (
 				<Chip href={hrefIssues({ langage })} couleur={couleurLangage(langage)}>{langage}</Chip>
 			))}
@@ -53,7 +54,7 @@ const langagesRapides = ['JavaScript', 'Python', 'CSS'];
 
 		<div id="vide" hidden>
 			<EtatVide symbole="⌕" titre="Aucune issue trouvée" texte="Aucune good first issue ouverte pour ce langage pour l'instant.">
-				<Bouton href="/good-first-issues" variante="secondaire">Voir toutes les issues</Bouton>
+				<Bouton href={lien('/good-first-issues')} variante="secondaire">Voir toutes les issues</Bouton>
 			</EtatVide>
 		</div>
 

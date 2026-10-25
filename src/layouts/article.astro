@@ -25,7 +25,7 @@ const { titre, description, intro, sections, sommaire, libellesSommaire } = Astr
 ---
 
 <Layout titre={titre} description={description}>
-	<main class:list={['mx-auto flex w-full max-w-360 gap-10 px-10 pt-6', !sommaire && 'justify-center']}>
+	<main id="principal" tabindex="-1" class:list={['mx-auto flex w-full max-w-360 gap-10 px-4 sm:px-10 pt-6', !sommaire && 'justify-center']}>
 		{
 			sommaire && (
 				<nav

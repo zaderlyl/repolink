@@ -9,47 +9,48 @@ import CarteRepo from '../components/ui/carte-repo.astro';
 import LigneIssue from '../components/ui/ligne-issue.astro';
 import EntetePanneau from '../components/ui/entete-panneau.astro';
 import { repos, issues, hrefRepo } from '../data/accueil';
+import { lien } from '../lib/adresses.ts';
 
 // Liens du bloc « plan du site » en bas de page, en colonnes (les liens légaux sont dans le footer)
 const colonnes = [
 	{
 		titre: 'Produit',
 		liens: [
-			{ texte: 'Explorer', href: '/explorer' },
-			{ texte: 'Recherche', href: '/recherche' },
-			{ texte: 'Good first issues', href: '/good-first-issues' },
+			{ texte: 'Explorer', href: lien('/explorer') },
+			{ texte: 'Recherche', href: lien('/recherche') },
+			{ texte: 'Good first issues', href: lien('/good-first-issues') },
 		],
 	},
 	{
 		titre: 'Ressources',
 		liens: [
-			{ texte: 'Guide du contributeur', href: '/guide' },
-			{ texte: 'Documentation', href: '/documentation' },
-			{ texte: 'Blog', href: '/blog' },
+			{ texte: 'Guide du contributeur', href: lien('/guide') },
+			{ texte: 'Documentation', href: lien('/documentation') },
+			{ texte: 'Blog', href: lien('/blog') },
 		],
 	},
 	{
 		titre: 'Communauté',
 		liens: [
 			{ texte: 'GitHub', href: 'https://github.com/zaderlyl/repolink' },
-			{ texte: 'Contact', href: '/contact' },
+			{ texte: 'Contact', href: lien('/contact') },
 		],
 	},
 ];
 ---
 
 <Layout>
-	<main>
+	<main id="principal" tabindex="-1">
 		<!-- Hero : accroche et recherche -->
 		<section class="mt-4 bg-linear-to-r from-fond-page via-[#1f1147] to-[#0e4f62]">
-			<div class="mx-auto flex w-full max-w-360 items-center justify-between gap-12 px-10 py-14">
+			<div class="mx-auto flex w-full max-w-360 items-center justify-between gap-12 px-4 sm:px-10 py-14">
 				<div class="max-w-[760px]">
 					<h1 class="font-titre text-5xl leading-[1.15] font-bold">Trouve le repo qui te fait progresser</h1>
 					<p class="mt-4 max-w-[700px] text-lg text-texte-secondaire">
 						Cherche par langage, topic ou créateur, sans la syntaxe compliquée de GitHub.
 					</p>
 					<form
-						action="/recherche"
+						action={lien('/recherche')}
 						method="get"
 						role="search"
 						class="mt-8 flex h-13 w-full max-w-[640px] items-center rounded-md border border-bordure-defaut bg-fond-page pr-2 pl-5 focus-within:border-accent-lien focus-within:ring-1 focus-within:ring-accent-lien"
@@ -68,12 +69,12 @@ const colonnes = [
 			</div>
 		</section>
 
-		<div class="mx-auto w-full max-w-360 px-10">
+		<div class="mx-auto w-full max-w-360 px-4 sm:px-10">
 			<!-- Tes favoris : rempli et montré par le script quand des repos sont étoilés -->
 			<section id="favoris-accueil" hidden class="mt-8" aria-labelledby="titre-favoris-accueil">
 				<div class="flex items-baseline justify-between">
 					<h2 id="titre-favoris-accueil" class="text-xl font-semibold">Tes favoris</h2>
-					<a href="/favoris" class="text-sm font-medium text-accent-lien hover:underline">Voir tout</a>
+					<a href={lien('/favoris')} class="text-sm font-medium text-accent-lien hover:underline">Voir tout</a>
 				</div>
 				<ul id="liste-favoris-accueil" class="mt-4 grid gap-6 md:grid-cols-2"></ul>
 			</section>
@@ -82,7 +83,7 @@ const colonnes = [
 			<section class="mt-8" aria-labelledby="repos-a-la-une">
 				<div class="flex items-baseline justify-between">
 					<h2 id="repos-a-la-une" class="text-xl font-semibold">Repos à la une</h2>
-					<a href="/recherche" class="text-sm font-medium text-accent-lien hover:underline">Voir tout</a>
+					<a href={lien('/recherche')} class="text-sm font-medium text-accent-lien hover:underline">Voir tout</a>
 				</div>
 				<div class="mt-4 grid gap-6 md:grid-cols-2">
 					{
@@ -105,7 +106,7 @@ const colonnes = [
 
 			<!-- Good first issues -->
 			<section aria-label="Good first issues" class="mt-8 overflow-hidden rounded-xl border border-bordure-defaut">
-				<EntetePanneau titre="Good first issues" lienTexte="Voir tout" lienHref="/good-first-issues" />
+				<EntetePanneau titre="Good first issues" lienTexte="Voir tout" lienHref={lien('/good-first-issues')} />
 				{
 					issues.map((issue) => (
 						<LigneIssue titre={issue.titre} href={hrefRepo(issue.repo)} repo={issue.repo} ouverte={issue.ouverte} />

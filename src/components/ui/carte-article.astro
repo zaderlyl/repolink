@@ -26,7 +26,7 @@ const { titre, resume, tag, date, href, image, class: classe, ...reste } = Astro
 >
 	{
 		image ? (
-			<img src={image} alt="" class="h-40 w-full object-cover" />
+			<img src={image} alt="" loading="lazy" decoding="async" class="h-40 w-full object-cover" />
 		) : (
 			<div aria-hidden="true" class="h-40 w-full bg-linear-to-r from-[#0e0e3a] to-[#0e4f62]" />
 		)

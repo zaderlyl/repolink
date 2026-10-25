@@ -3,12 +3,13 @@
 import Layout from '../layouts/layout.astro';
 import Bouton from '../components/ui/bouton.astro';
 import MessageConfirmation from '../components/ui/message-confirmation.astro';
+import { lien } from '../lib/adresses.ts';
 ---
 
 <Layout titre="Message envoyé" description="Ton message a bien été envoyé.">
-	<main class="flex flex-1 items-center justify-center px-10 py-16">
+	<main id="principal" tabindex="-1" class="flex flex-1 items-center justify-center px-4 sm:px-10 py-16">
 		<MessageConfirmation titre="Message envoyé" texte="Merci ! Nous te répondons sous 48 h.">
-			<Bouton href="/" class="mt-8">Retour à l’accueil</Bouton>
+			<Bouton href={lien('/')} class="mt-8">Retour à l’accueil</Bouton>
 		</MessageConfirmation>
 	</main>
 </Layout>
