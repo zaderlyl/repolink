@@ -1,14 +1,13 @@
 ---
 // Page « Connexion » (maquette Figma : « Site - Connexion »).
-// Connexion par pseudo : on vérifie que le pseudo existe sur GitHub puis on le garde dans le navigateur
-// (src/lib/session.ts). Il n'y a ni mot de passe ni serveur : « Se connecter avec GitHub » (OAuth) demanderait un serveur.
+// Connexion avec GitHub (OAuth, src/lib/oauth.ts) : GitHub renvoie sur « Connexion réussie », qui garde la session et le token
+// dans le navigateur (src/lib/session.ts). Il n'y a ni mot de passe ni compte sur un serveur.
 import Layout from '../layouts/layout.astro';
 import Bouton from '../components/ui/bouton.astro';
-import ChampTexte from '../components/ui/champ-texte.astro';
 import { lien } from '../lib/adresses.ts';
 ---
 
-<Layout titre="Connexion" description="Connecte-toi avec ton pseudo GitHub pour retrouver tes favoris et tes recommandations.">
+<Layout titre="Connexion" description="Connecte-toi avec ton compte GitHub pour retrouver tes favoris et tes recommandations.">
 	<main id="principal" tabindex="-1" class="mx-auto flex w-full max-w-360 flex-1 justify-center px-4 sm:px-10 pt-[78px] pb-16">
 		<section class="h-fit w-full max-w-[560px] rounded-xl border border-bordure-defaut bg-fond-panneau p-12">
 			<h1 class="text-center font-titre text-[40px] leading-tight font-bold">Connexion</h1>
@@ -30,24 +29,6 @@ import { lien } from '../lib/adresses.ts';
 					</Bouton>
 					<p id="aide-github" class="mt-2 text-center text-[13px] text-texte-secondaire">Lecture seule : Repolink ne peut rien modifier sur ton compte.</p>
 				</div>
-
-				<p class="mt-8 text-center text-base text-texte-secondaire">ou</p>
-
-				<form id="formulaire-connexion" novalidate class="mt-8 flex flex-col gap-6">
-					<ChampTexte
-						id="connexion-pseudo"
-						name="pseudo"
-						label="Pseudo GitHub"
-						placeholder="Pseudo GitHub"
-						grand
-						libelleCache
-						autocomplete="username"
-						autocapitalize="none"
-						spellcheck={false}
-						required
-					/>
-					<Bouton type="submit" id="bouton-continuer" class="h-16 w-full">Continuer</Bouton>
-				</form>
 			</div>
 		</section>
 	</main>

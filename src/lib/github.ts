@@ -1,8 +1,8 @@
 // Client de l'API publique de GitHub (https://docs.github.com/fr/rest).
 // Sans token, GitHub accepte 60 requêtes par heure et par visiteur (10 par minute pour la recherche) :
 // les réponses sont donc mises en cache 1 heure (src/lib/cache.ts).
-// Deux tokens possibles : celui du build, passé par `options.token`, et celui, facultatif, que la personne a collé dans
-// Paramètres (src/lib/token.ts) : il est lu dans son navigateur et donne 5000 requêtes par heure.
+// Deux tokens possibles : celui du build, passé par `options.token`, et celui de la connexion avec GitHub
+// (src/lib/token.ts) : il est lu dans le navigateur de la personne et donne 5000 requêtes par heure.
 import { avecCache } from './cache.ts';
 import { lireToken } from './token.ts';
 
@@ -116,7 +116,7 @@ export function requeteGithub<T>(
 	return avecCache(url.toString(), () => appelerGithub<T>(url, jeton ?? undefined));
 }
 
-// Le token que la personne a enregistré dans Paramètres ; pas de navigateur (build Node) ou pas de token : null
+// Le token de la connexion avec GitHub ; pas de navigateur (build Node) ou pas de token : null
 function jetonDuVisiteur(): string | null {
 	try {
 		return lireToken(globalThis.localStorage ?? null);
@@ -145,7 +145,7 @@ async function appelerGithub<T>(url: URL, token?: string): Promise<T> {
 
 	// 401 : GitHub refuse le token (mal copié, expiré ou supprimé)
 	if (reponse.status === 401) {
-		throw new ErreurGithub('jeton', 'GitHub refuse ton token (invalide ou expiré). Remplace-le ou retire-le dans Paramètres.', 401);
+		throw new ErreurGithub('jeton', 'GitHub refuse ta connexion (elle a expiré ou a été révoquée). Reconnecte-toi.', 401);
 	}
 	// GitHub répond 403 ou 429 quand la limite est atteinte : x-ratelimit-remaining vaut alors 0
 	const restantes = reponse.headers.get('x-ratelimit-remaining');

@@ -47,7 +47,7 @@ export function montrer(zones: string[], visible: string) {
 	for (const id of zones) $(id).hidden = id !== visible;
 }
 
-// Le token de la connexion avec GitHub (ou celui des Paramètres), s'il existe
+// Le token de la connexion avec GitHub, s'il existe
 function aUnToken(): boolean {
 	try {
 		return lireToken(globalThis.localStorage ?? null) !== null;
@@ -63,7 +63,6 @@ const estJetonRefuse = (erreur: unknown) => erreur instanceof ErreurGithub && er
 
 export function messageErreur(erreur: unknown): string {
 	if (erreur instanceof ErreurGithub) {
-		if (estJetonRefuse(erreur)) return 'GitHub refuse ta connexion (elle a expiré ou a été révoquée). Reconnecte-toi.';
 		let texte = erreur.message;
 		if (erreur.type === 'limite' && erreur.reinitialisation) {
 			const heure = erreur.reinitialisation.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });

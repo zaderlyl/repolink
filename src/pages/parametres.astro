@@ -89,31 +89,6 @@ const niveaux = NIVEAUX.map(({ id, texte }) => ({ valeur: id, texte }));
 							<Bouton id="bouton-annuler" variante="secondaire">Annuler</Bouton>
 						</div>
 					</div>
-
-					<!-- Token GitHub personnel et facultatif (src/lib/token.ts) -->
-					<div class="mt-8 max-w-[640px] border-t border-bordure-defaut pt-6">
-						<h3 class="text-lg font-semibold">Token GitHub (facultatif)</h3>
-						<p class="mt-2 text-[13px] text-texte-secondaire">
-							GitHub laisse chaque visiteur faire 60 requêtes par heure. Avec ton propre token, tu en as 5000. Il reste uniquement dans ce
-							navigateur et n'est envoyé qu'à GitHub. Crée-le en lecture seule, sans aucune permission, car un script de ce site pourrait le lire.
-							<a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener noreferrer" class="text-accent-lien hover:underline">Créer un token sur GitHub</a>
-						</p>
-						<form id="formulaire-token" novalidate class="mt-4 flex flex-wrap items-start gap-3">
-							<ChampTexte
-								id="compte-token"
-								name="token"
-								label="Ton token"
-								type="password"
-								placeholder="github_pat_…"
-								autocomplete="off"
-								spellcheck={false}
-								class="w-full sm:w-80"
-							/>
-							<Bouton type="submit" id="bouton-token" class="sm:mt-[25px]">Enregistrer</Bouton>
-							<Bouton type="button" id="bouton-retirer-token" variante="secondaire" hidden class="sm:mt-[25px]">Retirer</Bouton>
-						</form>
-						<p id="etat-token" role="status" class="mt-2 text-[13px] text-texte-secondaire"></p>
-					</div>
 				</section>
 
 				<!-- Thème -->
