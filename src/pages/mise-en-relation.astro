@@ -11,7 +11,7 @@ import EtatVide from '../components/ui/etat-vide.astro';
 ---
 
 <Layout titre="Mise en relation" description="Trouve des mentors pour t'aider ou des débutants à accompagner, et contacte-les.">
-	<main class="mx-auto w-full max-w-360 px-4 sm:px-10 pt-6">
+	<main id="principal" tabindex="-1" class="mx-auto w-full max-w-360 px-4 sm:px-10 pt-6">
 		<h1 class="font-titre text-[40px] leading-tight font-bold">Mise en relation</h1>
 
 		<!-- Version de départ des pastilles : le script les remplace selon l'adresse -->
@@ -31,6 +31,7 @@ import EtatVide from '../components/ui/etat-vide.astro';
 		</div>
 
 		<div id="contenu" hidden>
+			<h2 class="sr-only">Personnes à contacter</h2>
 			<ul id="liste-personnes" class="mt-6 grid gap-6 md:grid-cols-2 lg:grid-cols-3"></ul>
 			<p id="aucun-resultat" hidden class="mt-6 text-sm text-texte-secondaire"></p>
 		</div>

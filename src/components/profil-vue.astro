@@ -15,7 +15,7 @@ interface Props {
 const { moi = false } = Astro.props;
 ---
 
-	<main class="mx-auto w-full max-w-360 px-4 sm:px-10 pt-6">
+	<main id="principal" tabindex="-1" class="mx-auto w-full max-w-360 px-4 sm:px-10 pt-6">
 		<!-- Titre de la page pour les lecteurs d'écran : le script y met le nom du créateur -->
 		<h1 id="titre-page" class="sr-only">{moi ? 'Mon profil' : 'Profil d\'un créateur'}</h1>
 

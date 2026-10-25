@@ -17,7 +17,7 @@ const langagesRapides = ['JavaScript', 'Python'];
 ---
 
 <Layout titre="Recherche" description="Cherche des repos GitHub par mot-clé, langage ou topic, sans la syntaxe compliquée de GitHub.">
-	<main class="mx-auto w-full max-w-360 px-4 sm:px-10 pt-6">
+	<main id="principal" tabindex="-1" class="mx-auto w-full max-w-360 px-4 sm:px-10 pt-6">
 		<div class="flex items-baseline gap-3">
 			<h1 class="font-titre text-[40px] leading-tight font-bold">Recherche</h1>
 			<p id="statut" role="status" class="text-[13px] text-texte-secondaire">Chargement des repos…</p>
@@ -40,6 +40,7 @@ const langagesRapides = ['JavaScript', 'Python'];
 		<AideMots class="mt-4" />
 
 		<div class="mt-6">
+			<h2 class="sr-only">Résultats</h2>
 			<ul id="liste" class="flex flex-col gap-4" hidden></ul>
 
 			<!-- Chargement : trois cartes grisées, comme dans la maquette -->
