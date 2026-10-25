@@ -35,8 +35,8 @@ const COULEURS_LANGAGES: Record<string, string> = {
 	SCSS: '#c6538c',
 };
 const COULEUR_PAR_DEFAUT = '#8b949e';
-// Un repo peut avoir 20 topics : la carte n'en montre que quelques-uns
-const MAX_TOPICS = 3;
+// Un repo peut avoir 20 topics : la carte n'en montre que deux, pour rester lisible
+const MAX_TOPICS = 2;
 const LANGAGE_PAR_DEFAUT = 'Autre';
 
 export const couleurLangage = (langage: string | null) =>

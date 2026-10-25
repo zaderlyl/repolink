@@ -1,9 +1,12 @@
 ---
 // Barre de navigation en haut de chaque page (maquette Figma : composant « Navbar »).
-// Les pages vers lesquelles elle pointe seront créées aux étapes suivantes.
+// `connecte` : lien montré seulement quand quelqu'un est connecté (src/scripts/session.ts).
 const liens = [
 	{ texte: 'Recherche', href: '/recherche' },
 	{ texte: 'Explorer', href: '/explorer' },
+	{ texte: 'Pour toi', href: '/pour-toi', connecte: true },
+	{ texte: 'Favoris', href: '/favoris', connecte: true },
+	{ texte: 'Mise en relation', href: '/mise-en-relation' },
 	{ texte: 'À propos', href: '/a-propos' },
 ];
 
@@ -23,14 +26,14 @@ const classeBoutonNav =
 	>
 		<a href="/" class="transition-colors hover:text-accent-lien">Repolink</a>
 
-		<ul class="absolute left-1/2 flex -translate-x-1/2 items-center gap-[70px]">
+		<ul class="absolute left-1/2 flex -translate-x-1/2 items-center gap-8">
 			{
-				liens.map(({ texte, href }) => (
-					<li>
+				liens.map(({ texte, href, connecte }) => (
+					<li hidden={connecte} data-connecte={connecte ? '' : undefined}>
 						<a
 							href={href}
 							aria-current={estActif(href) ? 'page' : undefined}
-							class:list={['transition-colors hover:text-accent-lien', estActif(href) && 'text-accent-lien']}
+							class:list={['whitespace-nowrap transition-colors hover:text-accent-lien', estActif(href) && 'text-accent-lien']}
 						>
 							{texte}
 						</a>
@@ -43,14 +46,20 @@ const classeBoutonNav =
 			<!-- Connecté (voir src/scripts/session.ts) : « Connexion » laisse la place à « Déconnexion » et l'avatar prend la photo GitHub -->
 			<a id="lien-connexion" href="/connexion" class={classeBoutonNav}>Connexion</a>
 			<button id="bouton-deconnexion" type="button" data-deconnexion hidden class={classeBoutonNav}>Déconnexion</button>
-			<a
-				id="lien-mon-profil"
-				href="/mon-profil"
-				aria-label="Mon profil"
-				class="block size-10 overflow-hidden rounded-full bg-accent-violet"
-			>
-				<img id="avatar-navbar" alt="" hidden class="size-full object-cover" />
-			</a>
+			<!-- Menu de l'avatar : Mon profil et Paramètres (se ferme avec Échap ou en cliquant ailleurs, voir session.ts) -->
+			<details id="menu-avatar" hidden class="relative">
+				<summary
+					id="bouton-menu-avatar"
+					aria-label="Mon compte"
+					class="block size-10 cursor-pointer list-none overflow-hidden rounded-full bg-accent-violet focus-visible:ring-2 focus-visible:ring-accent-lien focus-visible:outline-none [&::-webkit-details-marker]:hidden"
+				>
+					<img id="avatar-navbar" alt="" hidden class="size-full object-cover" />
+				</summary>
+				<ul class="absolute right-0 z-20 mt-2 w-48 rounded-md border border-bordure-defaut bg-fond-panneau p-1 text-sm shadow-lg">
+					<li><a id="lien-mon-profil" href="/mon-profil" class="block rounded px-3 py-2 transition-colors hover:bg-bordure-defaut">Mon profil</a></li>
+					<li><a href="/parametres" class="block rounded px-3 py-2 transition-colors hover:bg-bordure-defaut">Paramètres</a></li>
+				</ul>
+			</details>
 		</div>
 	</nav>
 </header>
