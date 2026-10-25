@@ -188,6 +188,11 @@ export function recupererProfil(pseudo: string, token?: string) {
 	return requeteGithub<UtilisateurGithub>(`/users/${pseudo}`, {}, token);
 }
 
+// La personne à qui appartient le token (connexion avec GitHub)
+export function recupererMoi(token: string) {
+	return requeteGithub<UtilisateurGithub>('/user', {}, token);
+}
+
 // Répartition du code d'un repo par langage (en octets)
 export function recupererLangages(nomComplet: string, token?: string) {
 	return requeteGithub<LangagesGithub>(`/repos/${nomComplet}/languages`, {}, token);

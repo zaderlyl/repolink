@@ -5,8 +5,9 @@ import type { Stockage } from './favoris.ts';
 
 export const CLE_TOKEN = 'repolink:token';
 
-// Les formes courantes : « github_pat_… » (fine-grained) et « ghp_… » (classique), lettres, chiffres et _ seulement
-const FORME_TOKEN = /^(github_pat_|ghp_)[A-Za-z0-9_]{20,255}$/;
+// Les formes courantes : « github_pat_… » (fine-grained), « ghp_… » (classique) et « gho_… » (connexion avec GitHub),
+// lettres, chiffres et _ seulement
+const FORME_TOKEN = /^(github_pat_|ghp_|gho_)[A-Za-z0-9_]{20,255}$/;
 
 export const nettoyerToken = (texte: string) => texte.trim();
 export const estTokenValide = (texte: string) => FORME_TOKEN.test(texte);

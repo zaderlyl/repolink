@@ -8,6 +8,7 @@ import { $, messageErreur } from './commun.ts';
 import { afficherErreur, validerFormulaire } from './formulaire.ts';
 import { afficherToast } from './toasts.ts';
 import { lien } from '../lib/adresses.ts';
+import { adresseAutorisation, garderEtat, genererEtat } from '../lib/oauth.ts';
 
 const formulaire = $<HTMLFormElement>('formulaire-connexion');
 const champ = $<HTMLInputElement>('connexion-pseudo');
@@ -60,6 +61,22 @@ async function seConnecter() {
 		bouton.textContent = 'Continuer';
 	}
 }
+
+// « Se connecter avec GitHub » : on garde un `state` aléatoire puis on part chez GitHub (src/lib/oauth.ts)
+$('bouton-github').addEventListener('click', () => {
+	const etat = genererEtat();
+	let stockageEtat: Storage | null = null;
+	try {
+		stockageEtat = globalThis.sessionStorage ?? null;
+	} catch {
+		stockageEtat = null;
+	}
+	if (!garderEtat(stockageEtat, etat)) {
+		afficherToast('Connexion impossible : ton navigateur bloque le stockage.', 'erreur');
+		return;
+	}
+	window.location.assign(adresseAutorisation(etat));
+});
 
 // La vérification du format et du champ vide est faite par validerFormulaire ; seConnecter fait le reste
 validerFormulaire(formulaire, () => {

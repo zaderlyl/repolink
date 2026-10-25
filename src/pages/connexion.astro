@@ -23,17 +23,12 @@ import { lien } from '../lib/adresses.ts';
 			</div>
 
 			<div id="zone-connexion">
-				<!-- Le vrai bouton GitHub (OAuth) demande un petit serveur : il viendra plus tard. -->
+				<!-- Connexion OAuth : GitHub renvoie sur « Connexion réussie » (src/lib/oauth.ts). Lecture seule, aucun droit sur tes repos. -->
 				<div class="mt-12">
-					<Bouton
-						desactive
-						aria-describedby="aide-github"
-						class="h-16 w-full text-xl font-normal"
-						type="button"
-					>
+					<Bouton id="bouton-github" aria-describedby="aide-github" class="h-16 w-full text-xl font-normal" type="button">
 						Se connecter avec GitHub
 					</Bouton>
-					<p id="aide-github" class="mt-2 text-center text-[13px] text-texte-secondaire">Bientôt disponible : utilise ton pseudo pour l'instant.</p>
+					<p id="aide-github" class="mt-2 text-center text-[13px] text-texte-secondaire">Lecture seule : Repolink ne peut rien modifier sur ton compte.</p>
 				</div>
 
 				<p class="mt-8 text-center text-base text-texte-secondaire">ou</p>
