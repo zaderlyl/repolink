@@ -1,3 +1,4 @@
+import { lien } from '../lib/adresses.ts';
 // Articles du blog (données factices : le blog n'a pas d'API, les articles sont écrits ici).
 // Les types décrivent la forme que les pages /blog et /blog/[slug] attendent.
 
@@ -19,7 +20,7 @@ export type Article = {
 	sections: SectionArticle[];
 };
 
-export const hrefArticle = (slug: string) => `/blog/${slug}`;
+export const hrefArticle = (slug: string) => lien(`/blog/${slug}`);
 
 // « 12 oct. 2026 · 5 min de lecture », affiché sous les titres
 export const infosArticle = (article: Article) => `${article.date} · ${article.lecture}`;

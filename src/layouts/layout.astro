@@ -4,6 +4,7 @@ import '../styles/global.css';
 import Navbar from '../components/navbar.astro';
 import Footer from '../components/footer.astro';
 import Toast from '../components/ui/toast.astro';
+import { lien } from '../lib/adresses.ts';
 
 interface Props {
 	titre?: string;
@@ -26,8 +27,8 @@ const titreComplet = titre === 'Repolink' ? titre : `${titre} · Repolink`;
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
 		<meta name="description" content={description} />
 		<meta name="generator" content={Astro.generator} />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
+		<link rel="icon" type="image/svg+xml" href={lien('/favicon.svg')} />
+		<link rel="icon" href={lien('/favicon.ico')} />
 		<title>{titreComplet}</title>
 	</head>
 	<body class="flex min-h-screen flex-col bg-fond-page text-texte-principal antialiased">

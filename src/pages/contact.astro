@@ -52,10 +52,11 @@ const sujets = ['Question générale', 'Signaler un bug', 'Proposer un projet', 
 </Layout>
 
 <script>
+	import { lien } from '../lib/adresses.ts';
 	import { validerFormulaire } from '../scripts/formulaire.ts';
 
 	// Les champs sont vérifiés avant d'arriver ici. Pas d'envoi réel ni de données dans l'adresse :
 	// on affiche simplement la page de confirmation.
 	const formulaire = document.getElementById('formulaire-contact') as HTMLFormElement | null;
-	if (formulaire) validerFormulaire(formulaire, () => window.location.assign('/message-envoye'));
+	if (formulaire) validerFormulaire(formulaire, () => window.location.assign(lien('/message-envoye')));
 </script>

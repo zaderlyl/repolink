@@ -5,6 +5,7 @@ import Layout from '../layouts/layout.astro';
 import Chip from './ui/chip.astro';
 import CarteCategorie from './ui/carte-categorie.astro';
 import { formaterRepos, hrefLangage, hrefTopic, langagesExplorer, topicsExplorer } from '../data/explorer.ts';
+import { lien } from '../lib/adresses.ts';
 
 interface Props {
 	onglet: 'langages' | 'topics';
@@ -24,8 +25,8 @@ const description =
 		<h1 class="font-titre text-[40px] leading-tight font-bold">Explorer</h1>
 
 		<nav aria-label="Catégories" class="mt-4 flex gap-3">
-			<Chip href="/explorer" actif={onglet === 'langages'}>Langages</Chip>
-			<Chip href="/explorer/topics" actif={onglet === 'topics'}>Topics</Chip>
+			<Chip href={lien('/explorer')} actif={onglet === 'langages'}>Langages</Chip>
+			<Chip href={lien('/explorer/topics')} actif={onglet === 'topics'}>Topics</Chip>
 		</nav>
 
 		<ul class="mt-[38px] grid gap-4 sm:grid-cols-2 lg:grid-cols-4">

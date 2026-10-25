@@ -7,6 +7,7 @@ import { estPseudoValide } from '../lib/recherche.ts';
 import { $, messageErreur } from './commun.ts';
 import { afficherErreur, validerFormulaire } from './formulaire.ts';
 import { afficherToast } from './toasts.ts';
+import { lien } from '../lib/adresses.ts';
 
 const formulaire = $<HTMLFormElement>('formulaire-connexion');
 const champ = $<HTMLInputElement>('connexion-pseudo');
@@ -46,7 +47,7 @@ async function seConnecter() {
 			afficherToast('Connexion impossible : ton navigateur bloque le stockage.', 'erreur');
 			return;
 		}
-		window.location.assign('/connexion-reussie');
+		window.location.assign(lien('/connexion-reussie'));
 	} catch (erreur) {
 		if (erreur instanceof ErreurGithub && erreur.type === 'introuvable') {
 			afficherErreur(champ, 'Ce pseudo n’existe pas sur GitHub.');

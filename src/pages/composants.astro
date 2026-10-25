@@ -32,6 +32,7 @@ import EntetePanneau from '../components/ui/entete-panneau.astro';
 import EtatVide from '../components/ui/etat-vide.astro';
 import Toast from '../components/ui/toast.astro';
 import MessageConfirmation from '../components/ui/message-confirmation.astro';
+import { lien } from '../lib/adresses.ts';
 
 // Activité d'exemple : 24 semaines de 5 jours, niveaux de 0 à 4 (calculés, pas de vraies données)
 const activite = Array.from({ length: 24 }, (_, semaine) =>
@@ -39,7 +40,7 @@ const activite = Array.from({ length: 24 }, (_, semaine) =>
 );
 
 // Les liens de démo restent sur cette page
-const adressePage = (n: number) => `/composants?page=${n}`;
+const adressePage = (n: number) => lien(`/composants?page=${n}`);
 
 const variantes = ['primaire', 'secondaire', 'danger'] as const;
 ---
@@ -70,7 +71,7 @@ const variantes = ['primaire', 'secondaire', 'danger'] as const;
 				}
 				<div class="flex items-center gap-4">
 					<span class="w-24 text-sm text-texte-secondaire">lien</span>
-					<Bouton href="/">Retour à l'accueil</Bouton>
+					<Bouton href={lien('/')}>Retour à l'accueil</Bouton>
 				</div>
 			</div>
 
@@ -146,7 +147,7 @@ const variantes = ['primaire', 'secondaire', 'danger'] as const;
 				<Chip couleur="#f1e05a">JavaScript</Chip>
 				<Chip couleur="#3572a5">Python</Chip>
 				<Chip couleur="#563d7c">CSS</Chip>
-				<Chip href="/">Lien</Chip>
+				<Chip href={lien('/')}>Lien</Chip>
 			</div>
 
 			<h3 class="mt-8 text-sm font-semibold text-texte-secondaire">Pill</h3>
@@ -170,10 +171,10 @@ const variantes = ['primaire', 'secondaire', 'danger'] as const;
 
 			<h3 class="mt-6 text-sm font-semibold text-texte-secondaire">Onglets (le survol se voit à la souris)</h3>
 			<Onglets label="Sections du repo (démo)" class="mt-3 w-fit">
-				<Onglet href="/composants" actif>Aperçu</Onglet>
-				<Onglet href="/composants#issues">Issues</Onglet>
-				<Onglet href="/composants#contributeurs">Contributeurs</Onglet>
-				<Onglet href="/composants#similaires">Similaires</Onglet>
+				<Onglet href={lien('/composants')} actif>Aperçu</Onglet>
+				<Onglet href={lien('/composants#issues')}>Issues</Onglet>
+				<Onglet href={lien('/composants#contributeurs')}>Contributeurs</Onglet>
+				<Onglet href={lien('/composants#similaires')}>Similaires</Onglet>
 			</Onglets>
 
 			<h3 class="mt-8 text-sm font-semibold text-texte-secondaire">
@@ -196,7 +197,7 @@ const variantes = ['primaire', 'secondaire', 'danger'] as const;
 			<div class="mt-3 grid gap-4 md:grid-cols-2">
 				<CarteRepo
 					nom="lunaris/pixel-kit"
-					href="/composants#pixel-kit"
+					href={lien('/composants#pixel-kit')}
 					description="Kit de composants UI minimaliste en CSS pur, sans dépendance."
 					miseAJour="il y a 2 jours"
 					langage="JavaScript"
@@ -207,7 +208,7 @@ const variantes = ['primaire', 'secondaire', 'danger'] as const;
 				/>
 				<CarteRepo
 					nom="ada-dev/study-planner"
-					href="/composants#study-planner"
+					href={lien('/composants#study-planner')}
 					description="Planificateur de révisions en Python avec export vers ton calendrier."
 					miseAJour="il y a 2 jours"
 					langage="Python"
@@ -224,7 +225,7 @@ const variantes = ['primaire', 'secondaire', 'danger'] as const;
 				<CarteRepo
 					compacte
 					nom="lunaris/pixel-kit"
-					href="/composants#pixel-kit"
+					href={lien('/composants#pixel-kit')}
 					description="Kit de composants UI minimaliste en CSS pur, sans dépendance."
 					langage="JavaScript"
 					couleurLangage="#f1e05a"
@@ -233,7 +234,7 @@ const variantes = ['primaire', 'secondaire', 'danger'] as const;
 				<CarteRepo
 					compacte
 					nom="nomad/api-starter"
-					href="/composants#api-starter"
+					href={lien('/composants#api-starter')}
 					description="Squelette d'API REST typé, avec tests et documentation prêts à l'emploi."
 					langage="TypeScript"
 					couleurLangage="#3178c6"
@@ -242,7 +243,7 @@ const variantes = ['primaire', 'secondaire', 'danger'] as const;
 				<CarteRepo
 					compacte
 					nom="kiwi/css-grid-lab"
-					href="/composants#css-grid-lab"
+					href={lien('/composants#css-grid-lab')}
 					description="Exercices progressifs pour maîtriser CSS Grid, avec corrections."
 					langage="CSS"
 					couleurLangage="#563d7c"
@@ -254,20 +255,20 @@ const variantes = ['primaire', 'secondaire', 'danger'] as const;
 			<div class="mt-3 overflow-hidden rounded-xl border border-bordure-defaut">
 				<LigneIssue
 					titre="Corriger l'alignement du menu sur mobile"
-					href="/composants#issue-1"
+					href={lien('/composants#issue-1')}
 					repo="lunaris/pixel-kit"
 					ouverte="il y a 2 jours"
 					class="border-t-0"
 				/>
 				<LigneIssue
 					titre="Ajouter des tests pour le parseur de dates"
-					href="/composants#issue-2"
+					href={lien('/composants#issue-2')}
 					repo="ada-dev/study-planner"
 					ouverte="il y a 3 jours"
 				/>
 				<LigneIssue
 					titre="Traduire le README en français"
-					href="/composants#issue-3"
+					href={lien('/composants#issue-3')}
 					repo="nomad/api-starter"
 					ouverte="il y a 5 jours"
 				/>
@@ -287,7 +288,7 @@ const variantes = ['primaire', 'secondaire', 'danger'] as const;
 					pseudo="@camille-d"
 					abonnes="128"
 					bio="Dev front passionnée d'accessibilité. Je cherche des contributeurs pour mes outils CSS."
-					href="/composants#camille"
+					href={lien('/composants#camille')}
 					niveaux={activite}
 				/>
 				<CarteProfil
@@ -295,17 +296,17 @@ const variantes = ['primaire', 'secondaire', 'danger'] as const;
 					pseudo="@yanis-m"
 					abonnes="342"
 					bio="Backend Python. Mentor open source, je réponds aux débutants chaque semaine."
-					href="/composants#yanis"
+					href={lien('/composants#yanis')}
 					niveaux={activite}
 				/>
 			</div>
 
 			<h3 class="mt-8 text-sm font-semibold text-texte-secondaire">Carte catégorie</h3>
 			<div class="mt-3 grid gap-4 md:grid-cols-4">
-				<CarteCategorie nom="JavaScript" compte="48 210 repos" href="/composants#js" couleur="#f1e05a" />
-				<CarteCategorie nom="Python" compte="41 880 repos" href="/composants#python" couleur="#3572a5" />
-				<CarteCategorie nom="TypeScript" compte="36 450 repos" href="/composants#ts" couleur="#3178c6" />
-				<CarteCategorie nom="CSS" compte="22 300 repos" href="/composants#css" couleur="#563d7c" />
+				<CarteCategorie nom="JavaScript" compte="48 210 repos" href={lien('/composants#js')} couleur="#f1e05a" />
+				<CarteCategorie nom="Python" compte="41 880 repos" href={lien('/composants#python')} couleur="#3572a5" />
+				<CarteCategorie nom="TypeScript" compte="36 450 repos" href={lien('/composants#ts')} couleur="#3178c6" />
+				<CarteCategorie nom="CSS" compte="22 300 repos" href={lien('/composants#css')} couleur="#563d7c" />
 			</div>
 
 			<h3 class="mt-8 text-sm font-semibold text-texte-secondaire">Carte article</h3>
@@ -315,21 +316,21 @@ const variantes = ['primaire', 'secondaire', 'danger'] as const;
 					resume="Trois critères simples pour ne pas se tromper de projet quand on débute."
 					tag="Guide"
 					date="12 oct. 2026 · 5 min de lecture"
-					href="/composants#article-1"
+					href={lien('/composants#article-1')}
 				/>
 				<CarteArticle
 					titre="Apprendre Git sans stress"
 					resume="Les cinq commandes qui suffisent pour contribuer à un projet."
 					tag="Tutoriel"
 					date="8 oct. 2026 · 4 min de lecture"
-					href="/composants#article-2"
+					href={lien('/composants#article-2')}
 				/>
 			</div>
 
 			<h3 class="mt-8 text-sm font-semibold text-texte-secondaire">Carte mise en relation</h3>
 			<div class="mt-3 grid gap-4 md:grid-cols-3">
-				<CarteMiseEnRelation nom="Camille Durand" href="/composants#contact-1" tags={['JavaScript', 'Mentor']} />
-				<CarteMiseEnRelation nom="Yanis Moreau" href="/composants#contact-2" tags={['Python', 'Débutant']} />
+				<CarteMiseEnRelation nom="Camille Durand" href={lien('/composants#contact-1')} tags={['JavaScript', 'Mentor']} />
+				<CarteMiseEnRelation nom="Yanis Moreau" href={lien('/composants#contact-2')} tags={['Python', 'Débutant']} />
 			</div>
 		</section>
 
@@ -338,10 +339,10 @@ const variantes = ['primaire', 'secondaire', 'danger'] as const;
 
 			<h3 class="mt-6 text-sm font-semibold text-texte-secondaire">En-tête de panneau (dans un panneau)</h3>
 			<div class="mt-3 max-w-[880px] overflow-hidden rounded-xl border border-bordure-defaut">
-				<EntetePanneau titre="Issues ouvertes" lienTexte="Voir tout" lienHref="/composants#issues" niveau="h3" />
+				<EntetePanneau titre="Issues ouvertes" lienTexte="Voir tout" lienHref={lien('/composants#issues')} niveau="h3" />
 				<LigneIssue
 					titre="Corriger l'alignement du menu sur mobile"
-					href="/composants#issue-a"
+					href={lien('/composants#issue-a')}
 					repo="lunaris/pixel-kit"
 					ouverte="il y a 2 jours"
 				/>
@@ -349,21 +350,21 @@ const variantes = ['primaire', 'secondaire', 'danger'] as const;
 
 			<h3 class="mt-8 text-sm font-semibold text-texte-secondaire">Ligne créateur : Suivre, puis Suivi</h3>
 			<div class="mt-3 flex max-w-[480px] flex-col gap-3">
-				<LigneCreateur nom="Prénom Nom" pseudo="@pseudo" abonnes="128" href="/composants#createur-1" />
-				<LigneCreateur nom="Prénom Nom" pseudo="@pseudo" abonnes="128" href="/composants#createur-2" suivi />
+				<LigneCreateur nom="Prénom Nom" pseudo="@pseudo" abonnes="128" href={lien('/composants#createur-1')} />
+				<LigneCreateur nom="Prénom Nom" pseudo="@pseudo" abonnes="128" href={lien('/composants#createur-2')} suivi />
 			</div>
 
 			<h3 class="mt-8 text-sm font-semibold text-texte-secondaire">Ligne paramètre : lien, toggle désactivé, toggle activé</h3>
 			<div class="mt-3 flex max-w-[480px] flex-col gap-3">
-				<LigneParametre label="Compte" href="/composants#compte" />
+				<LigneParametre label="Compte" href={lien('/composants#compte')} />
 				<LigneParametre type="toggle" label="Notifications par e-mail" id="param-1" name="notifications" />
 				<LigneParametre type="toggle" label="Profil public" id="param-2" name="profil-public" actif />
 			</div>
 
 			<h3 class="mt-8 text-sm font-semibold text-texte-secondaire">Ligne info</h3>
 			<div class="mt-3 flex max-w-[392px] flex-col gap-3">
-				<LigneInfo label="Langages : JavaScript, CSS" href="/composants#langages" />
-				<LigneInfo label="github.com/camille-d" href="/composants#github" />
+				<LigneInfo label="Langages : JavaScript, CSS" href={lien('/composants#langages')} />
+				<LigneInfo label="github.com/camille-d" href={lien('/composants#github')} />
 			</div>
 		</section>
 
@@ -377,7 +378,7 @@ const variantes = ['primaire', 'secondaire', 'danger'] as const;
 				titre="Rien pour l'instant"
 				texte="Ajoute des repos à tes favoris pour les retrouver ici."
 			>
-				<Bouton href="/composants#explorer">Explorer</Bouton>
+				<Bouton href={lien('/composants#explorer')}>Explorer</Bouton>
 			</EtatVide>
 
 			<h3 class="mt-8 text-sm font-semibold text-texte-secondaire">Toast : succès, puis erreur</h3>
@@ -398,7 +399,7 @@ const variantes = ['primaire', 'secondaire', 'danger'] as const;
 				titre="Connexion réussie"
 				texte="Tu peux maintenant ajouter des favoris et contacter des créateurs."
 			>
-				<Bouton href="/composants#explorer-repos">Explorer les repos</Bouton>
+				<Bouton href={lien('/composants#explorer-repos')}>Explorer les repos</Bouton>
 			</MessageConfirmation>
 		</section>
 	</main>

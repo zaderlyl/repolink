@@ -2,6 +2,7 @@
 // Page « À propos » (maquette Figma : « Site - À propos »).
 import Layout from '../layouts/layout.astro';
 import Bouton from '../components/ui/bouton.astro';
+import { lien } from '../lib/adresses.ts';
 
 const etapes = [
 	'Cherche un repo par langage, topic ou créateur.',
@@ -51,7 +52,7 @@ const etapes = [
 						request.
 					</p>
 					<div class="mt-auto pt-8">
-						<Bouton href="/contact">Nous écrire</Bouton>
+						<Bouton href={lien('/contact')}>Nous écrire</Bouton>
 					</div>
 				</section>
 			</div>

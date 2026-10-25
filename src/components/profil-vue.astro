@@ -7,6 +7,7 @@ import Bouton from './ui/bouton.astro';
 import CarteRepo from './ui/carte-repo.astro';
 import EtatVide from './ui/etat-vide.astro';
 import LigneInfo from './ui/ligne-info.astro';
+import { lien } from '../lib/adresses.ts';
 
 interface Props {
 	moi?: boolean;
@@ -39,7 +40,7 @@ const { moi = false } = Astro.props;
 				{
 					!moi && (
 						<div class="mt-9">
-							<Bouton id="lien-contact" href="/" class="h-14 w-full">
+							<Bouton id="lien-contact" href={lien('/')} class="h-14 w-full">
 								Mise en relation
 							</Bouton>
 						</div>
@@ -62,7 +63,7 @@ const { moi = false } = Astro.props;
 
 		<div id="introuvable" hidden class="mt-6">
 			<EtatVide symbole="⌕" titre="Profil introuvable" texte="Ce profil a peut-être été supprimé, renommé, ou n’a jamais existé.">
-				<Bouton href="/recherche" variante="secondaire">Rechercher un repo</Bouton>
+				<Bouton href={lien('/recherche')} variante="secondaire">Rechercher un repo</Bouton>
 			</EtatVide>
 		</div>
 

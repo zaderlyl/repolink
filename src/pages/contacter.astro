@@ -8,6 +8,7 @@ import Bouton from '../components/ui/bouton.astro';
 import EtatVide from '../components/ui/etat-vide.astro';
 import Selecteur from '../components/ui/selecteur.astro';
 import ZoneTexte from '../components/ui/zone-texte.astro';
+import { lien } from '../lib/adresses.ts';
 
 const objets = ['Demande de mentorat', 'Question sur un projet', 'Proposition de collaboration', 'Autre'];
 ---
@@ -45,7 +46,7 @@ const objets = ['Demande de mentorat', 'Question sur un projet', 'Proposition de
 
 		<div id="introuvable" hidden>
 			<EtatVide symbole="⌕" titre="Créateur introuvable" texte="Ce profil a peut-être été supprimé, renommé, ou n’a jamais existé.">
-				<Bouton href="/recherche" variante="secondaire">Rechercher un repo</Bouton>
+				<Bouton href={lien('/recherche')} variante="secondaire">Rechercher un repo</Bouton>
 			</EtatVide>
 		</div>
 	</main>

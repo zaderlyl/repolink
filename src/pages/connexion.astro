@@ -5,6 +5,7 @@
 import Layout from '../layouts/layout.astro';
 import Bouton from '../components/ui/bouton.astro';
 import ChampTexte from '../components/ui/champ-texte.astro';
+import { lien } from '../lib/adresses.ts';
 ---
 
 <Layout titre="Connexion" description="Connecte-toi avec ton pseudo GitHub pour retrouver tes favoris et tes recommandations.">
@@ -16,7 +17,7 @@ import ChampTexte from '../components/ui/champ-texte.astro';
 			<div id="deja-connecte" hidden class="mt-12 text-center">
 				<p class="text-base">Tu es connecté en tant que <strong id="pseudo-connecte" class="font-semibold"></strong>.</p>
 				<div class="mt-8 flex justify-center gap-3">
-					<Bouton href="/explorer">Explorer les repos</Bouton>
+					<Bouton href={lien('/explorer')}>Explorer les repos</Bouton>
 					<Bouton variante="secondaire" data-deconnexion>Se déconnecter</Bouton>
 				</div>
 			</div>

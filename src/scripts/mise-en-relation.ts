@@ -15,6 +15,7 @@ import {
 import { lirePreferences } from '../lib/preferences.ts';
 import { lireSession } from '../lib/session.ts';
 import { $, depuisModele, messageErreur, montrer } from './commun.ts';
+import { lien } from '../lib/adresses.ts';
 
 const ZONES = ['chargement', 'contenu', 'vide', 'erreur'];
 const type = lireType(new URLSearchParams(location.search).get('type'));
@@ -32,7 +33,7 @@ function afficherPastilles() {
 		...TYPES_MISE_EN_RELATION.map(({ id, texte }) =>
 			depuisModele(id === type ? 'modele-chip-actif' : 'modele-chip', {
 				texte,
-				href: id === 'mentors' ? '/mise-en-relation' : `/mise-en-relation?type=${id}`,
+				href: lien(id === 'mentors' ? '/mise-en-relation' : `/mise-en-relation?type=${id}`),
 			}),
 		),
 	);

@@ -4,6 +4,7 @@
 import { CLE_CREATEURS, CLE_FAVORIS, lireFavoris } from '../lib/favoris.ts';
 import { lireSession } from '../lib/session.ts';
 import { chargerProfil, lignesMoi } from './profil-commun.ts';
+import { lien } from '../lib/adresses.ts';
 
 function stockage(): Storage | null {
 	try {
@@ -15,10 +16,10 @@ function stockage(): Storage | null {
 
 const session = lireSession(stockage());
 if (!session) {
-	window.location.replace('/connexion');
+	window.location.replace(lien('/connexion'));
 } else {
 	// « Favoris (N) » compte les repos étoilés et les créateurs suivis, comme la page Favoris
 	const favoris = Object.keys(lireFavoris(stockage(), CLE_FAVORIS)).length + Object.keys(lireFavoris(stockage(), CLE_CREATEURS)).length;
 	void chargerProfil({ pseudo: session.pseudo, titrePage: 'Mon profil', lignes: lignesMoi(favoris) });
-	window.addEventListener('session-changee', () => window.location.replace('/connexion'));
+	window.addEventListener('session-changee', () => window.location.replace(lien('/connexion')));
 }

@@ -1,12 +1,13 @@
 ---
+import { lien } from '../lib/adresses.ts';
 // Pied de page affiché en bas de chaque page (maquette Figma : composant « Footer »).
 // Les pages vers lesquelles il pointe seront créées aux étapes suivantes.
 const liens = [
-	{ texte: 'À propos', href: '/a-propos' },
-	{ texte: 'Contact', href: '/contact' },
-	{ texte: 'Mentions légales', href: '/mentions-legales' },
-	{ texte: 'Confidentialité', href: '/confidentialite' },
-	{ texte: 'Cookies', href: '/cookies' },
+	{ texte: 'À propos', href: lien('/a-propos') },
+	{ texte: 'Contact', href: lien('/contact') },
+	{ texte: 'Mentions légales', href: lien('/mentions-legales') },
+	{ texte: 'Confidentialité', href: lien('/confidentialite') },
+	{ texte: 'Cookies', href: lien('/cookies') },
 ];
 
 const annee = new Date().getFullYear();

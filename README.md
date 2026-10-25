@@ -9,7 +9,7 @@ npm install
 npm run dev
 ```
 
-URL : http://localhost:4321
+URL : http://localhost:4321/repolink/
 
 ## Données de l'accueil (token GitHub)
 

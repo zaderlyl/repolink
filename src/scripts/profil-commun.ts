@@ -15,6 +15,7 @@ import { hrefContacter } from '../lib/adresses.ts';
 import { hrefRecherche } from '../lib/recherche.ts';
 import { NIVEAUX_GRILLE, TAILLES_GRILLE } from '../lib/grille.ts';
 import { $, creerCarteRepo, depuisModele, messageErreur, montrer } from './commun.ts';
+import { lien } from '../lib/adresses.ts';
 
 const ZONES = ['chargement', 'contenu', 'introuvable', 'erreur'];
 const NB_REPOS = 6;
@@ -69,8 +70,8 @@ export function lignesMoi(favoris: number): (profil: ProfilCreateur) => LignePro
 		if (profil.competences.length > 0) {
 			lignes.push({ label: `Compétences : ${profil.competences.join(', ')}`, href: hrefRecherche({ topic: profil.competences[0] }) });
 		}
-		lignes.push({ label: `Favoris (${favoris})`, href: '/favoris' });
-		lignes.push({ label: 'Paramètres du compte', href: '/parametres' });
+		lignes.push({ label: `Favoris (${favoris})`, href: lien('/favoris') });
+		lignes.push({ label: 'Paramètres du compte', href: lien('/parametres') });
 		return lignes;
 	};
 }

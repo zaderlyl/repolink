@@ -12,6 +12,7 @@ import Bouton from '../components/ui/bouton.astro';
 import AideMots from '../components/ui/aide-mots.astro';
 import { couleurLangage } from '../lib/conversion.ts';
 import { hrefRecherche } from '../lib/recherche.ts';
+import { lien } from '../lib/adresses.ts';
 
 const langagesRapides = ['JavaScript', 'Python'];
 ---
@@ -25,13 +26,13 @@ const langagesRapides = ['JavaScript', 'Python'];
 
 		<!-- Version de départ des pastilles : le script les remplace selon l'adresse -->
 		<nav id="filtres" aria-label="Filtres par langage" class="mt-4 flex flex-wrap gap-3">
-			<Chip href="/recherche" actif>TOUT</Chip>
+			<Chip href={lien('/recherche')} actif>TOUT</Chip>
 			{langagesRapides.map((langage) => (
 				<Chip href={hrefRecherche({ langage })} couleur={couleurLangage(langage)}>{langage}</Chip>
 			))}
 		</nav>
 
-		<form id="formulaire-recherche" action="/recherche" method="get" role="search" class="mt-7">
+		<form id="formulaire-recherche" action={lien('/recherche')} method="get" role="search" class="mt-7">
 			<input type="hidden" name="langage" disabled />
 			<input type="hidden" name="topic" disabled />
 			<ChampRecherche name="q" label="Rechercher un repo, un topic ou un créateur" maxlength={100} />
@@ -65,7 +66,7 @@ const langagesRapides = ['JavaScript', 'Python'];
 
 			<div id="vide" hidden>
 				<EtatVide symbole="⌕" titre="Aucun repo trouvé" texte="Essaie un autre mot-clé ou retire un filtre.">
-					<Bouton href="/recherche" variante="secondaire">Effacer les filtres</Bouton>
+					<Bouton href={lien('/recherche')} variante="secondaire">Effacer les filtres</Bouton>
 				</EtatVide>
 			</div>
 

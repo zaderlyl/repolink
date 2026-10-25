@@ -4,6 +4,7 @@ import type { OptionsRecherche } from './github.ts';
 import type { OngletRepo } from './adresses.ts';
 import { dateLimiteActif, PREFERENCES_PAR_DEFAUT } from './preferences.ts';
 import type { Preferences } from './preferences.ts';
+import { lien } from './adresses.ts';
 
 export const RESULTATS_PAR_PAGE = 10;
 // GitHub ne donne jamais plus de 1000 résultats pour une recherche
@@ -88,7 +89,7 @@ export function hrefRecherche(filtres: Partial<Filtres> = {}, chemin = '/recherc
 	if (f.topic) parametres.set('topic', f.topic);
 	if (f.page > 1) parametres.set('page', String(f.page));
 	const texte = parametres.toString();
-	return texte ? `${chemin}?${texte}` : chemin;
+	return lien(texte ? `${chemin}?${texte}` : chemin);
 }
 
 // --- Good first issues ---
