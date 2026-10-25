@@ -8,6 +8,7 @@ import EntetePanneau from '../components/ui/entete-panneau.astro';
 import LigneIssue from '../components/ui/ligne-issue.astro';
 import EtatVide from '../components/ui/etat-vide.astro';
 import Bouton from '../components/ui/bouton.astro';
+import AideMots from '../components/ui/aide-mots.astro';
 import { couleurLangage } from '../lib/conversion.ts';
 import { hrefIssues } from '../lib/recherche.ts';
 
@@ -28,6 +29,8 @@ const langagesRapides = ['JavaScript', 'Python', 'CSS'];
 				<Chip href={hrefIssues({ langage })} couleur={couleurLangage(langage)}>{langage}</Chip>
 			))}
 		</nav>
+
+		<AideMots class="mt-4" />
 
 		<section id="panneau" aria-label="Issues ouvertes" class="mt-6 overflow-hidden rounded-xl border border-bordure-defaut bg-fond-page">
 			<EntetePanneau titre="Issues ouvertes" id="entete-panneau" />

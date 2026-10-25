@@ -9,6 +9,7 @@ import ChampRecherche from '../components/ui/champ-recherche.astro';
 import CarteRepo from '../components/ui/carte-repo.astro';
 import EtatVide from '../components/ui/etat-vide.astro';
 import Bouton from '../components/ui/bouton.astro';
+import AideMots from '../components/ui/aide-mots.astro';
 import { couleurLangage } from '../lib/conversion.ts';
 import { hrefRecherche } from '../lib/recherche.ts';
 
@@ -35,6 +36,8 @@ const langagesRapides = ['JavaScript', 'Python'];
 			<input type="hidden" name="topic" disabled />
 			<ChampRecherche name="q" label="Rechercher un repo, un topic ou un créateur" maxlength={100} />
 		</form>
+
+		<AideMots class="mt-4" />
 
 		<div class="mt-6">
 			<ul id="liste" class="flex flex-col gap-4" hidden></ul>
