@@ -6,7 +6,7 @@ import { versIssue } from '../lib/conversion.ts';
 import { purgerCache } from '../lib/cache.ts';
 import { hrefRepo } from '../lib/adresses.ts';
 import { construireOptionsIssues, construireRequeteIssues, hrefIssues, lireFiltres, nombrePages } from '../lib/recherche.ts';
-import { $, afficherPagination, afficherPastilles, depuisModele, messageErreur, montrer } from './commun.ts';
+import { $, afficherErreurPage, afficherPagination, afficherPastilles, depuisModele, montrer } from './commun.ts';
 
 const LANGAGES_RAPIDES = ['JavaScript', 'Python', 'CSS'];
 const ZONES = ['liste', 'chargement', 'vide', 'erreur'];
@@ -45,7 +45,7 @@ async function charger() {
 		resultat = await rechercherIssues(construireRequeteIssues(filtres), construireOptionsIssues(filtres));
 	} catch (erreur) {
 		titrePanneau().textContent = 'Issues ouvertes';
-		document.querySelector('#erreur p')!.textContent = messageErreur(erreur);
+		afficherErreurPage(erreur);
 		$('panneau').hidden = true;
 		montrer(ZONES, 'erreur');
 		return;

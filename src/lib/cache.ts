@@ -3,7 +3,7 @@
 // Les réponses sont gardées dans le localStorage du navigateur (elles survivent au rechargement)
 // et en mémoire (utile quand le localStorage est indisponible : navigation privée, build Node…).
 
-export const DUREE_PAR_DEFAUT = 10 * 60 * 1000; // 10 minutes
+export const DUREE_PAR_DEFAUT = 60 * 60 * 1000; // 1 heure : la limite de GitHub se compte par heure
 
 const PREFIXE = 'repolink:cache:';
 
