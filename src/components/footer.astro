@@ -12,14 +12,14 @@ const liens = [
 const annee = new Date().getFullYear();
 ---
 
-<footer class="mx-auto mt-auto w-full max-w-360 px-10 pt-15 pb-10">
+<footer class="mx-auto mt-auto w-full max-w-360 px-4 sm:px-10 pt-15 pb-10">
 	<div
-		class="flex h-25 items-center justify-between rounded-xl border border-bordure-defaut bg-fond-panneau px-8 text-[13px]"
+		class="flex flex-col items-start gap-4 rounded-xl border border-bordure-defaut bg-fond-panneau px-6 py-6 text-[13px] md:h-25 md:flex-row md:items-center md:justify-between md:px-8 md:py-0"
 	>
 		<p class="text-texte-secondaire">© {annee} Repolink · Fait pour la communauté open source</p>
 
 		<nav aria-label="Liens du pied de page">
-			<ul class="flex items-center gap-6">
+			<ul class="flex flex-wrap items-center gap-x-6 gap-y-2">
 				{
 					liens.map(({ texte, href }) => (
 						<li>
