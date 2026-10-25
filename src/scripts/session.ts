@@ -19,10 +19,13 @@ function rafraichirNavbar() {
 	const boutonDeconnexion = document.getElementById('bouton-deconnexion');
 	const boutonMenu = document.getElementById('bouton-menu-avatar');
 	const avatar = document.getElementById('avatar-navbar') as HTMLImageElement | null;
-	if (!lienConnexion || !boutonDeconnexion || !boutonMenu || !avatar) return;
+	const menuAvatar = document.getElementById('menu-avatar');
+	if (!lienConnexion || !boutonDeconnexion || !boutonMenu || !avatar || !menuAvatar) return;
 
 	for (const lien of document.querySelectorAll<HTMLElement>('[data-connecte]')) lien.hidden = !session;
 	lienConnexion.hidden = !!session;
+	// Sans connexion, pas d'avatar : « Connexion » suffit
+	menuAvatar.hidden = !session;
 	boutonDeconnexion.hidden = !session;
 	if (session) {
 		avatar.src = session.avatar;
