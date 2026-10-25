@@ -1,11 +1,14 @@
 # Construit le site et le publie sur GitHub Pages (https://zaderlyl.github.io/repolink/).
-# Se lance à chaque push sur main, ou à la main depuis l'onglet « Actions ».
-# Les données de l'accueil et de l'Explorer ne sont pas encore générées ici : le site utilise ses données de secours.
+# Se lance à chaque push sur main, chaque jour à 5 h UTC (pour rafraîchir les données de l'accueil et de l'Explorer),
+# ou à la main depuis l'onglet « Actions ».
+# Le lancement planifié ne fonctionne que si ce fichier est sur la branche par défaut du dépôt (main).
 name: Déploiement
 
 on:
   push:
     branches: [main]
+  schedule:
+    - cron: '0 5 * * *'
   workflow_dispatch:
 
 # Droits minimum pour publier sur Pages
@@ -29,6 +32,12 @@ jobs:
           node-version: 24
           cache: npm
       - run: npm ci
+      # Données de l'accueil et de l'Explorer (environ 1 min 30). Le token fourni par GitHub Actions suffit :
+      # il ne demande aucun réglage. Si GitHub ne répond pas, on continue avec les données de secours du site.
+      - run: npm run donnees
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: npm run build
       - uses: actions/upload-pages-artifact@v3
         with:
