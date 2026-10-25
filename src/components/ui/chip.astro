@@ -16,8 +16,8 @@ const { actif = false, href, couleur, class: classe, ...reste } = Astro.props;
 const Balise = href ? 'a' : 'button';
 // Un lien utilise aria-current, un bouton utilise aria-pressed.
 const attributs = href
-	? { href, 'aria-current': actif ? 'true' : undefined }
-	: { type: 'button', 'aria-pressed': actif };
+	? { href, 'aria-current': actif ? ('true' as const) : undefined }
+	: { type: 'button' as const, 'aria-pressed': actif };
 ---
 
 <Balise

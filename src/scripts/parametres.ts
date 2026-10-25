@@ -102,7 +102,7 @@ function brancherCompte() {
 		supprimer.setAttribute('aria-expanded', String(visible));
 		if (visible) $('bouton-annuler').focus();
 	};
-	supprimer.addEventListener('click', () => montrer(confirmation.hidden));
+	supprimer.addEventListener('click', () => montrer(Boolean(confirmation.hidden)));
 	$('bouton-annuler').addEventListener('click', () => {
 		montrer(false);
 		supprimer.focus();
