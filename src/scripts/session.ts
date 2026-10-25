@@ -23,6 +23,7 @@ function rafraichirNavbar() {
 	if (!lienConnexion || !boutonDeconnexion || !boutonMenu || !avatar || !menuAvatar) return;
 
 	for (const lien of document.querySelectorAll<HTMLElement>('[data-connecte]')) lien.hidden = !session;
+	for (const lien of document.querySelectorAll<HTMLElement>('[data-deconnecte]')) lien.hidden = !!session;
 	lienConnexion.hidden = !!session;
 	// Sans connexion, pas d'avatar : « Connexion » suffit
 	menuAvatar.hidden = !session;
@@ -48,17 +49,19 @@ function deconnecter() {
 	afficherToast('Déconnexion réussie');
 }
 
+// Les menus dépliants (avatar, menu des petits écrans) se ferment avec Échap ou en cliquant ailleurs
+const menus = () => [...document.querySelectorAll<HTMLDetailsElement>('details[data-menu]')];
+
 document.addEventListener('click', (evenement) => {
 	const cible = evenement.target as Element;
 	if (cible.closest('[data-deconnexion]')) deconnecter();
-	// Le menu de l'avatar se ferme quand on clique ailleurs
-	const menu = document.getElementById('menu-avatar') as HTMLDetailsElement | null;
-	if (menu?.open && !menu.contains(cible)) menu.open = false;
+	for (const menu of menus()) if (menu.open && !menu.contains(cible)) menu.open = false;
 });
 
 document.addEventListener('keydown', (evenement) => {
-	const menu = document.getElementById('menu-avatar') as HTMLDetailsElement | null;
-	if (evenement.key === 'Escape' && menu?.open) {
+	if (evenement.key !== 'Escape') return;
+	for (const menu of menus()) {
+		if (!menu.open) continue;
 		menu.open = false;
 		menu.querySelector('summary')?.focus();
 	}
