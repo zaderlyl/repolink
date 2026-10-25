@@ -1,0 +1,8 @@
+name = "repolink-auth"
+main = "index.js"
+compatibility_date = "2026-10-01"
+
+# Public : identifiant de l'OAuth App GitHub. Le secret (CLIENT_SECRET) n'est JAMAIS ici :
+# il s'ajoute avec « npx wrangler secret put CLIENT_SECRET ».
+[vars]
+CLIENT_ID = "Ov23liUhPBtbxKpy3Okx"
