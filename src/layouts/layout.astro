@@ -17,6 +17,9 @@ const {
 } = Astro.props;
 
 // « Blog · Repolink » sur les pages, « Repolink » seul sur l'accueil
+// Adresse officielle de la page (sans ?filtres ni #ancre), pour que les moteurs de recherche ne la comptent qu'une fois
+const adresseCanonique = new URL(Astro.url.pathname, Astro.site).href;
+
 const titreComplet = titre === 'Repolink' ? titre : `${titre} · Repolink`;
 ---
 
@@ -29,6 +32,7 @@ const titreComplet = titre === 'Repolink' ? titre : `${titre} · Repolink`;
 		<meta name="generator" content={Astro.generator} />
 		<link rel="icon" type="image/svg+xml" href={lien('/favicon.svg')} />
 		<link rel="icon" href={lien('/favicon.ico')} />
+		<link rel="canonical" href={adresseCanonique} />
 		<title>{titreComplet}</title>
 	</head>
 	<body class="flex min-h-screen flex-col bg-fond-page text-texte-principal antialiased">
