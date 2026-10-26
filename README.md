@@ -67,3 +67,7 @@ README.md
 - **FigJam** : [Arborescence Repolink](https://www.figma.com/board/2iw6Lsaaydt88pwBVmgYYk) : les 46 pages et les liens entre elles
 
 Ces liens demandent un accès Figma.
+
+## Licence
+
+Le code est publié sous licence [MIT](LICENSE). Les textes du blog sont ceux de l'équipe Repolink.
