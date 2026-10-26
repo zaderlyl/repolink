@@ -2,10 +2,19 @@ import { lien } from '../lib/adresses.ts';
 // Articles du blog (données factices : le blog n'a pas d'API, les articles sont écrits ici).
 // Les types décrivent la forme que les pages /blog et /blog/[slug] attendent.
 
+// Un morceau de contenu dans une section. Le texte d'un paragraphe ou d'un élément de liste peut contenir du HTML simple
+// (<code>, <strong>, <a>) : il est écrit ici, pas par les visiteurs. Un lien interne s'écrit href="{base}/recherche".
+export type Bloc =
+	| { type: 'p'; texte: string }
+	| { type: 'liste'; items: string[]; ordonnee?: boolean }
+	| { type: 'code'; code: string };
+
+// `texte` : un seul paragraphe simple ; `blocs` : paragraphes, listes et commandes, affichés après `texte`
 export type SectionArticle = {
 	id: string;
 	titre: string;
-	texte: string;
+	texte?: string;
+	blocs?: Bloc[];
 };
 
 export type Article = {
@@ -26,186 +35,294 @@ export const hrefArticle = (slug: string) => lien(`/blog/${slug}`);
 // « 12 oct. 2026 · 5 min de lecture », affiché sous les titres
 export const infosArticle = (article: Article) => `${article.date} · ${article.lecture}`;
 
-// Premier article : celui de la bannière « À la une » du blog
+// Le premier article est celui de la bannière « À la une » du blog.
+// Les articles sont écrits par l'équipe : `auteur` reste « Équipe Repolink » tant qu'aucune personne n'a signé un article.
 export const articles: Article[] = [
 	{
-		slug: 'premiere-pull-request',
-		titre: 'Comment j’ai fait ma première pull request',
-		resume: 'Il y a un mois, je n’avais jamais contribué à l’open source. Voici ce que j’ai appris en corrigeant ma première issue.',
-		tag: 'Témoignage',
-		auteur: 'Camille Durand',
-		date: '12 oct. 2026',
-		dateIso: '2026-10-12',
-		lecture: '5 min de lecture',
-		intro: 'Il y a un mois, je n’avais jamais contribué à un projet open source. Voici ce que j’ai appris en corrigeant ma première issue.',
-		sections: [
-			{
-				id: 'choix-du-projet',
-				titre: 'Le choix du projet',
-				texte: 'J’ai commencé par un petit kit d’interface en CSS, très bien documenté. La section « good first issue » m’a donné plusieurs idées par où démarrer.',
-			},
-			{
-				id: 'erreurs-du-debut',
-				titre: 'Les erreurs du début',
-				texte: 'Mon premier commit ne respectait pas le format demandé. Le mainteneur m’a expliqué la règle en deux lignes, et j’ai corrigé en dix minutes.',
-			},
-			{
-				id: 'ce-que-je-retiens',
-				titre: 'Ce que je retiens',
-				texte: 'Poser une question n’a rien de gênant. Les mainteneurs préfèrent une question claire à une pull request qui s’éloigne de ce qu’ils attendent.',
-			},
-		],
-	},
-	{
-		slug: 'choisir-sa-premiere-good-first-issue',
-		titre: 'Choisir sa première good first issue',
-		resume: 'Trois critères simples pour ne pas se tromper de projet quand on débute.',
+		slug: 'premiere-contribution-open-source',
+		titre: 'Comment faire sa première contribution open source',
+		resume: 'Un guide pas à pas pour passer de « je n’ose pas » à une première pull request acceptée : choisir un projet, une issue, et envoyer ton travail.',
 		tag: 'Guide',
-		auteur: 'Yanis Moreau',
-		date: '12 oct. 2026',
-		dateIso: '2026-10-12',
-		lecture: '5 min de lecture',
-		intro: 'Toutes les good first issues ne se valent pas. Voici trois critères pour choisir celle qui te fera vraiment progresser.',
+		auteur: 'Équipe Repolink',
+		date: '26 oct. 2026',
+		dateIso: '2026-10-26',
+		lecture: '7 min de lecture',
+		intro: 'Contribuer à un projet open source semble réservé aux experts. C’est faux : une faute corrigée dans une documentation ou un petit bug réglé comptent autant qu’une grosse fonctionnalité. Voici la marche à suivre, de A à Z.',
 		sections: [
 			{
-				id: 'projet-actif',
-				titre: 'Un projet actif',
-				texte: 'Regarde la date des derniers commits et le temps de réponse aux issues. Un projet qui répond en quelques jours te laissera moins bloqué.',
+				id: 'choisir-un-projet',
+				titre: 'Choisir un projet à ta portée',
+				blocs: [
+					{ type: 'p', texte: 'Le bon premier projet n’est pas le plus célèbre, c’est celui où tu te sentiras accueilli. Quelques signes qui ne trompent pas :' },
+					{
+						type: 'liste',
+						items: [
+							'<strong>Il est actif</strong> : des changements récents, des issues et des pull requests qui reçoivent une réponse.',
+							'<strong>Il explique comment contribuer</strong> : un fichier <code>CONTRIBUTING.md</code> ou une section dédiée dans le README.',
+							'<strong>Il est de taille raisonnable</strong> : un petit projet se lit plus vite et les mainteneurs ont plus de temps pour toi.',
+							'<strong>Tu l’utilises ou tu le comprends</strong> : tu sauras plus facilement ce qui manque.',
+						],
+					},
+					{ type: 'p', texte: 'Sur Repolink, le filtre « Petits projets » de la <a href="{base}/recherche?taille=petits">recherche</a> met en avant des créateurs moins connus, souvent très heureux d’avoir de l’aide.' },
+				],
 			},
 			{
-				id: 'issue-claire',
-				titre: 'Une issue claire',
-				texte: 'Une bonne issue décrit le problème et le résultat attendu. Si tu ne comprends pas ce qu’il faut faire, passe à la suivante.',
+				id: 'trouver-une-issue',
+				titre: 'Trouver une issue pour débuter',
+				blocs: [
+					{ type: 'p', texte: 'Une issue est une tâche ou un problème signalé sur le projet. Les mainteneurs marquent les plus accessibles avec le label <code>good first issue</code>. Tu peux les parcourir sur la page <a href="{base}/good-first-issues/">Good first issues</a>, par langage si tu préfères.' },
+					{ type: 'p', texte: 'Avant de te lancer, vérifie que personne n’est déjà dessus, puis écris un commentaire court : « Je voudrais m’en occuper, est-ce toujours disponible ? ». Attends la réponse du mainteneur : ça évite de travailler pour rien.' },
+				],
 			},
 			{
-				id: 'taille-raisonnable',
-				titre: 'Une taille raisonnable',
-				texte: 'Vise un changement de quelques lignes. Ta première contribution n’a pas besoin d’être spectaculaire pour être utile.',
+				id: 'copier-le-projet',
+				titre: 'Faire ta copie du projet',
+				blocs: [
+					{ type: 'p', texte: 'Tu n’as pas le droit de modifier directement le dépôt d’un autre. Tu en fais donc une copie à ton nom, un <strong>fork</strong>, avec le bouton « Fork » en haut de la page du projet. Puis tu la télécharges sur ton ordinateur, c’est le <strong>clone</strong> :' },
+					{ type: 'code', code: 'git clone https://github.com/TON-PSEUDO/le-projet.git\ncd le-projet' },
+				],
+			},
+			{
+				id: 'modifier',
+				titre: 'Créer une branche et faire ta modification',
+				blocs: [
+					{ type: 'p', texte: 'Travaille toujours sur une branche à part : le travail de la branche principale reste intact et ta contribution est facile à relire. Donne-lui un nom qui dit ce qu’elle fait.' },
+					{ type: 'code', code: 'git switch -c fix/faute-dans-le-readme' },
+					{ type: 'p', texte: 'Fais ta modification, en restant strictement dans ce que demande l’issue : un petit changement bien fait est accepté plus vite qu’un gros. Relis les règles du projet, par exemple le format des messages de commit. Puis enregistre et envoie ton travail :' },
+					{
+						type: 'code',
+						code: 'git add .\ngit commit -m "docs: Corrige une faute dans le README"\ngit push origin fix/faute-dans-le-readme',
+					},
+				],
+			},
+			{
+				id: 'pull-request',
+				titre: 'Ouvrir ta pull request',
+				blocs: [
+					{ type: 'p', texte: 'Sur GitHub, un bandeau te propose « Compare &amp; pull request » : c’est la demande de fusion de ta branche dans le projet. Rédige-la comme tu aimerais la lire :' },
+					{
+						type: 'liste',
+						items: [
+							'un titre précis, par exemple « Corrige une faute dans le README » ;',
+							'quelques lignes qui expliquent ce que tu as changé et pourquoi ;',
+							'la mention <code>Closes #12</code> (avec le numéro de l’issue) : GitHub fermera l’issue quand ta pull request sera acceptée.',
+						],
+					},
+				],
+			},
+			{
+				id: 'apres',
+				titre: 'Et après ?',
+				blocs: [
+					{ type: 'p', texte: 'Un mainteneur relira ton travail et te demandera peut-être des changements : c’est normal et ça ne veut pas dire que c’est raté. Réponds poliment, corrige sur la même branche, et ta pull request se met à jour toute seule. Selon le projet, la réponse peut prendre quelques heures ou plusieurs semaines : sois patient et ne relance pas tous les jours.' },
+					{ type: 'p', texte: 'Quand ta pull request est fusionnée, tu es officiellement contributeur. Tu peux alors choisir une deuxième issue, un peu plus ambitieuse : la première marche est franchie.' },
+				],
 			},
 		],
 	},
 	{
-		slug: 'apprendre-git-sans-stress',
-		titre: 'Apprendre Git sans stress',
-		resume: 'Les cinq commandes qui suffisent pour contribuer à un projet.',
-		tag: 'Tutoriel',
-		auteur: 'Inès Garcia',
-		date: '12 oct. 2026',
-		dateIso: '2026-10-12',
+		slug: 'good-first-issue-trouver-une-premiere-issue',
+		titre: 'Qu’est-ce qu’une good first issue, et comment en trouver une ?',
+		resume: 'Le label que les mainteneurs collent sur les tâches accessibles aux débutants : ce qu’il veut dire, où les chercher et comment choisir la bonne.',
+		tag: 'Guide',
+		auteur: 'Équipe Repolink',
+		date: '26 oct. 2026',
+		dateIso: '2026-10-26',
 		lecture: '5 min de lecture',
-		intro: 'Git semble immense au début, mais cinq commandes couvrent presque tout ce qu’il faut pour contribuer.',
+		intro: 'Tu veux contribuer à l’open source mais tu ne sais pas par où commencer ? Les « good first issues » ont été inventées pour ça : des tâches choisies par les mainteneurs eux-mêmes parce qu’elles conviennent à une première contribution.',
 		sections: [
 			{
-				id: 'cloner-et-brancher',
-				titre: 'Cloner et créer une branche',
-				texte: 'git clone récupère le projet, puis git switch -c crée ta branche. Ne travaille jamais directement sur la branche principale.',
+				id: 'definition',
+				titre: 'Ce que ça veut dire',
+				blocs: [
+					{ type: 'p', texte: 'Une <strong>issue</strong> est une fiche sur un projet GitHub : un bug à corriger, une amélioration à faire, une question à traiter. Quand les mainteneurs estiment qu’une issue est faisable sans connaître tout le projet, ils lui ajoutent le label <code>good first issue</code> (« bonne première issue »). Ce label fait partie de ceux que GitHub propose par défaut sur un nouveau dépôt.' },
+					{ type: 'p', texte: 'Typiquement, ce sont des tâches courtes et bien décrites : corriger une faute dans la documentation, ajouter un test, changer un message d’erreur, traduire un texte. Un autre label voisin, <code>help wanted</code>, signale que les mainteneurs cherchent de l’aide, avec une difficulté variable.' },
+				],
+			},
+			{
+				id: 'ou-chercher',
+				titre: 'Où en trouver',
+				blocs: [
+					{ type: 'p', texte: 'La façon la plus simple est de passer par un outil qui rassemble les issues de plusieurs projets. Sur Repolink, la page <a href="{base}/good-first-issues/">Good first issues</a> les liste, avec un filtre par langage. Tu peux aussi aller directement à la page de ton langage :' },
+					{
+						type: 'liste',
+						items: [
+							'<a href="{base}/good-first-issues/javascript/">Good first issues JavaScript</a> et <a href="{base}/good-first-issues/typescript/">TypeScript</a>',
+							'<a href="{base}/good-first-issues/python/">Good first issues Python</a>',
+							'<a href="{base}/good-first-issues/java/">Good first issues Java</a> et <a href="{base}/good-first-issues/csharp/">C#</a>',
+							'<a href="{base}/good-first-issues/go/">Good first issues Go</a> et <a href="{base}/good-first-issues/rust/">Rust</a>',
+						],
+					},
+					{ type: 'p', texte: 'Tu peux aussi chercher directement sur GitHub, avec la recherche d’issues : tape <code>label:"good first issue" state:open</code> et ajoute <code>language:python</code> pour limiter à un langage. Et si tu as déjà un projet que tu aimes, regarde l’onglet « Issues » de son dépôt et filtre par ce label.' },
+				],
+			},
+			{
+				id: 'bien-choisir',
+				titre: 'Comment choisir la bonne',
+				blocs: [
+					{ type: 'p', texte: 'Toutes les good first issues ne se valent pas. Avant de t’y lancer, vérifie ces points :' },
+					{
+						type: 'liste',
+						items: [
+							'<strong>Elle est libre</strong> : personne n’y est assigné et aucun commentaire récent ne dit « je m’en occupe ».',
+							'<strong>Elle est claire</strong> : tu comprends ce qu’il faut faire et comment savoir que c’est terminé.',
+							'<strong>Le projet répond</strong> : les dernières issues ont reçu une réponse en quelques jours ou semaines, pas en plusieurs mois.',
+							'<strong>Elle est dans ton niveau</strong> : tu reconnais le langage et tu as une idée de par où commencer.',
+						],
+					},
+					{ type: 'p', texte: 'Au moindre doute, passe ton chemin : il y en a beaucoup d’autres. Une issue ouverte depuis très longtemps sans réponse est souvent le signe d’un projet qui n’est plus suivi.' },
+				],
+			},
+			{
+				id: 'se-lancer',
+				titre: 'Te lancer',
+				blocs: [
+					{ type: 'p', texte: 'Une fois ton issue choisie, laisse un commentaire pour dire que tu t’en occupes, et attends la réponse d’un mainteneur. Il peut te donner des conseils, ou te dire qu’elle n’est plus disponible : ce n’est pas grave. Ensuite, tu peux suivre le guide <a href="{base}/blog/premiere-contribution-open-source/">Comment faire sa première contribution open source</a> pour la suite, du fork jusqu’à la pull request.' },
+				],
+			},
+		],
+	},
+	{
+		slug: 'lire-un-readme-github',
+		titre: 'Lire un README : comprendre un projet GitHub quand on débute',
+		resume: 'Le README est la porte d’entrée d’un projet. Voici comment le lire pour savoir à quoi il sert, s’il est vivant et comment y contribuer.',
+		tag: 'Tutoriel',
+		auteur: 'Équipe Repolink',
+		date: '26 oct. 2026',
+		dateIso: '2026-10-26',
+		lecture: '5 min de lecture',
+		intro: 'Tu arrives sur la page d’un projet GitHub et tu ne sais pas par où commencer ? Le premier réflexe, c’est de lire le README. Ce fichier est la vitrine du projet, et savoir le lire te fera gagner beaucoup de temps avant de contribuer.',
+		sections: [
+			{
+				id: 'ce-que-cest',
+				titre: 'Un README, c’est quoi ?',
+				blocs: [
+					{ type: 'p', texte: 'Le README est un fichier texte, le plus souvent <code>README.md</code>, que GitHub affiche automatiquement sous la liste des fichiers du projet. Son rôle : présenter le projet à quelqu’un qui le découvre. Le <code>.md</code> signifie qu’il est écrit en Markdown, une façon simple de mettre des titres, des listes et du code en forme.' },
+					{ type: 'p', texte: 'Un bon README répond en quelques minutes à trois questions : à quoi sert le projet, comment l’essayer, et comment participer.' },
+				],
+			},
+			{
+				id: 'les-parties',
+				titre: 'Les parties que tu vas retrouver',
+				blocs: [
+					{ type: 'p', texte: 'Chaque projet organise son README à sa façon, mais on retrouve souvent la même structure :' },
+					{
+						type: 'code',
+						code: '# Nom du projet\nUne phrase qui explique à quoi il sert.\n\n## Installation\nLes commandes pour le mettre en route.\n\n## Utilisation\nUn exemple pour l’essayer.\n\n## Contribuer\nComment proposer ton aide.\n\n## Licence\nCe que tu as le droit de faire avec.',
+					},
+					{
+						type: 'liste',
+						items: [
+							'<strong>Description</strong> : en tête, une ou deux phrases. Si tu ne comprends pas à quoi sert le projet après les avoir lues, il n’est peut-être pas pour toi.',
+							'<strong>Installation et utilisation</strong> : les commandes pour le lancer sur ton ordinateur. C’est ce que tu suivras pour tester ta modification.',
+							'<strong>Contribuer</strong> : les règles du projet. Souvent, le README renvoie vers un fichier <code>CONTRIBUTING.md</code> qui détaille la marche à suivre.',
+							'<strong>Licence</strong> : ce que les autres ont le droit de faire avec le code. Elle est détaillée dans le fichier <code>LICENSE</code>.',
+						],
+					},
+				],
+			},
+			{
+				id: 'projet-vivant',
+				titre: 'Le projet est-il vivant ?',
+				blocs: [
+					{ type: 'p', texte: 'Le README ne dit pas tout : regarde aussi la page du projet. Quelques indices pour savoir s’il est suivi :' },
+					{
+						type: 'liste',
+						items: [
+							'la date du dernier commit, affichée en haut de la liste des fichiers ;',
+							'les issues et pull requests récentes, et si quelqu’un y répond ;',
+							'la présence d’un fichier <code>CODE_OF_CONDUCT.md</code>, signe d’une communauté qui soigne l’accueil.',
+						],
+					},
+					{ type: 'p', texte: 'Un projet sans activité depuis plus d’un an n’est pas forcément mort, mais tu risques d’attendre longtemps une réponse. Pour un premier essai, vise un projet actif.' },
+				],
+			},
+			{
+				id: 'dans-la-pratique',
+				titre: 'Dans la pratique',
+				blocs: [
+					{ type: 'p', texte: 'Avant de commenter une issue, prends dix minutes : lis le README, essaie de lancer le projet, puis ouvre le fichier de contribution s’il existe. Tu poseras de meilleures questions, et les mainteneurs apprécieront que tu aies fait cet effort.' },
+					{ type: 'p', texte: 'Prêt à te lancer ? Trouve une tâche sur la page <a href="{base}/good-first-issues/">Good first issues</a>, puis suis le guide <a href="{base}/blog/premiere-contribution-open-source/">Comment faire sa première contribution open source</a>.' },
+				],
+			},
+		],
+	},
+	{
+		slug: 'vocabulaire-github-explique',
+		titre: 'Le vocabulaire de GitHub expliqué simplement',
+		resume: 'Dépôt, fork, clone, branche, commit, pull request… Les mots à connaître pour comprendre une discussion de développeurs sans te perdre.',
+		tag: 'Guide',
+		auteur: 'Équipe Repolink',
+		date: '26 oct. 2026',
+		dateIso: '2026-10-26',
+		lecture: '5 min de lecture',
+		intro: 'GitHub a son propre jargon, et il peut décourager quand on débute. Bonne nouvelle : une douzaine de mots suffisent pour suivre presque toutes les discussions. Les voici, regroupés par ce qu’ils permettent de faire.',
+		sections: [
+			{
+				id: 'depot-et-copies',
+				titre: 'Le projet et ses copies',
+				blocs: [
+					{
+						type: 'liste',
+						items: [
+							'<strong>Dépôt</strong> (repository, ou « repo ») : le dossier d’un projet avec tous ses fichiers et tout l’historique de leurs modifications.',
+							'<strong>Fork</strong> : ta copie personnelle du dépôt de quelqu’un d’autre, hébergée sur ton compte GitHub. Tu peux la modifier librement sans toucher à l’original.',
+							'<strong>Clone</strong> : le téléchargement d’un dépôt sur ton ordinateur pour travailler dessus. On clone souvent son propre fork.',
+						],
+					},
+					{ type: 'code', code: 'git clone https://github.com/TON-PSEUDO/le-projet.git' },
+				],
 			},
 			{
 				id: 'enregistrer',
-				titre: 'Enregistrer ton travail',
-				texte: 'git add prépare tes fichiers et git commit les enregistre avec un message court qui dit ce que tu as changé.',
+				titre: 'Enregistrer son travail',
+				blocs: [
+					{
+						type: 'liste',
+						items: [
+							'<strong>Commit</strong> : une photo de tes modifications à un instant donné, avec un message qui dit ce que tu as changé. Un projet est une suite de commits.',
+							'<strong>Branche</strong> : une ligne de travail parallèle. Tu y fais tes essais sans toucher à la version principale du projet, appelée en général <code>main</code>.',
+							'<strong>Push</strong> : envoyer tes commits de ton ordinateur vers GitHub.',
+							'<strong>Pull</strong> : l’inverse, récupérer les derniers changements de GitHub sur ton ordinateur.',
+						],
+					},
+					{ type: 'code', code: 'git switch -c ma-branche\ngit add .\ngit commit -m "docs: Corrige une faute"\ngit push origin ma-branche' },
+				],
 			},
 			{
-				id: 'envoyer',
-				titre: 'Envoyer tes changements',
-				texte: 'git push envoie ta branche sur GitHub, d’où tu pourras ouvrir ta pull request.',
-			},
-		],
-	},
-	{
-		slug: 'ouvrir-une-issue-qui-donne-envie-de-repondre',
-		titre: 'Ouvrir une issue qui donne envie de répondre',
-		resume: 'Comment décrire un bug pour que les mainteneurs le comprennent vite.',
-		tag: 'Conseils',
-		auteur: 'Camille Durand',
-		date: '12 oct. 2026',
-		dateIso: '2026-10-12',
-		lecture: '5 min de lecture',
-		intro: 'Une issue bien écrite reçoit une réponse plus vite. Voici comment décrire un bug pour qu’on le comprenne du premier coup.',
-		sections: [
-			{
-				id: 'titre-precis',
-				titre: 'Un titre précis',
-				texte: '« Ça ne marche pas » ne dit rien. Écris ce qui échoue et où : « Le menu se ferme au clic sur mobile ».',
+				id: 'proposer',
+				titre: 'Proposer et discuter',
+				blocs: [
+					{
+						type: 'liste',
+						items: [
+							'<strong>Issue</strong> : une fiche de discussion sur le projet : un bug, une idée, une question. Chacune a un numéro, par exemple <code>#12</code>.',
+							'<strong>Pull request</strong> (« PR ») : ta demande d’ajouter tes modifications au projet. C’est là que les autres relisent ton travail et en discutent.',
+							'<strong>Review</strong> : la relecture de ta pull request par un mainteneur, avec ses remarques.',
+							'<strong>Merge</strong> (fusion) : l’acceptation de ta pull request. Tes modifications entrent dans le projet.',
+						],
+					},
+				],
 			},
 			{
-				id: 'etapes',
-				titre: 'Les étapes pour reproduire',
-				texte: 'Liste ce que tu as fait, ce que tu attendais et ce qui s’est passé. Ajoute ton navigateur ou ta version si c’est utile.',
-			},
-		],
-	},
-	{
-		slug: 'trouver-un-mentor-open-source',
-		titre: 'Trouver un mentor open source',
-		resume: 'Où chercher, quoi demander, et comment remercier.',
-		tag: 'Mentorat',
-		auteur: 'Yanis Moreau',
-		date: '12 oct. 2026',
-		dateIso: '2026-10-12',
-		lecture: '5 min de lecture',
-		intro: 'Un mentor te fait gagner des semaines. Voici comment le trouver sans le déranger.',
-		sections: [
-			{
-				id: 'ou-chercher',
-				titre: 'Où chercher',
-				texte: 'Commence par les mainteneurs des projets où tu as déjà contribué, ou par les créateurs de profils sur Repolink.',
+				id: 'les-personnes',
+				titre: 'Les personnes',
+				blocs: [
+					{
+						type: 'liste',
+						items: [
+							'<strong>Mainteneur</strong> : une personne qui s’occupe du projet. Elle relit les propositions et décide de ce qui est accepté.',
+							'<strong>Contributeur</strong> : toute personne qui propose une modification. Dès que ta première pull request est fusionnée, c’est toi.',
+						],
+					},
+				],
 			},
 			{
-				id: 'quoi-demander',
-				titre: 'Quoi demander',
-				texte: 'Une question précise vaut mieux qu’un « peux-tu m’aider ? ». Dis ce que tu as essayé et où tu bloques.',
-			},
-			{
-				id: 'remercier',
-				titre: 'Comment remercier',
-				texte: 'Un retour sur ce qui a marché, ou une pull request qui améliore la documentation, fait toujours plaisir.',
-			},
-		],
-	},
-	{
-		slug: 'documenter-son-projet-en-30-minutes',
-		titre: 'Documenter son projet en 30 minutes',
-		resume: 'Un README clair attire plus de contributeurs que du code parfait.',
-		tag: 'Documentation',
-		auteur: 'Inès Garcia',
-		date: '12 oct. 2026',
-		dateIso: '2026-10-12',
-		lecture: '5 min de lecture',
-		intro: 'Un bon README tient en une page. Voici de quoi l’écrire en une demi-heure.',
-		sections: [
-			{
-				id: 'presentation',
-				titre: 'Dire à quoi sert le projet',
-				texte: 'Une phrase pour le but, une capture ou un exemple, puis les commandes pour l’installer et le lancer.',
-			},
-			{
-				id: 'contribuer',
-				titre: 'Expliquer comment contribuer',
-				texte: 'Ajoute un fichier CONTRIBUTING court et marque quelques issues « good first issue » pour accueillir les débutants.',
-			},
-		],
-	},
-	{
-		slug: 'publier-son-projet-sur-github-pages',
-		titre: 'Publier son projet sur GitHub Pages',
-		resume: 'En dix minutes, mets ton site en ligne gratuitement et partage le lien.',
-		tag: 'Tutoriel',
-		auteur: 'Camille Durand',
-		date: '12 oct. 2026',
-		dateIso: '2026-10-12',
-		lecture: '5 min de lecture',
-		intro: 'GitHub Pages héberge gratuitement un site statique. Voici comment mettre le tien en ligne.',
-		sections: [
-			{
-				id: 'activer-pages',
-				titre: 'Activer GitHub Pages',
-				texte: 'Dans les paramètres du dépôt, choisis la branche à publier. GitHub construit et héberge le site pour toi.',
-			},
-			{
-				id: 'partager',
-				titre: 'Partager le lien',
-				texte: 'L’adresse apparaît après quelques minutes. Ajoute-la à la description du dépôt pour que chacun la trouve.',
+				id: 'pour-aller-plus-loin',
+				titre: 'Pour aller plus loin',
+				blocs: [
+					{ type: 'p', texte: 'Le plus simple pour retenir ces mots, c’est de les utiliser. Suis le guide <a href="{base}/blog/premiere-contribution-open-source/">Comment faire sa première contribution open source</a> : tu y croiseras chacun d’eux, dans l’ordre. Et pour savoir où commencer, lis aussi <a href="{base}/blog/lire-un-readme-github/">Lire un README</a>.' },
+				],
 			},
 		],
 	},
