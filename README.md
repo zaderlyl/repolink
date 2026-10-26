@@ -11,6 +11,14 @@ npm run dev
 
 URL : http://localhost:4321/repolink/
 
+## Tests
+
+```bash
+npm test
+```
+
+Les tests sont dans `tests/` (connexion, Worker, recherche, filtres). Ils tournent avec l'outil intégré de Node, sans internet ni token, et le workflow de déploiement les lance avant la construction : un test qui échoue bloque la mise en ligne.
+
 ## Données de l'accueil (token GitHub)
 
 L'accueil affiche de vrais repos, issues et profils, et la page Explorer de vrais nombres de repos, récupérés avec l'API de GitHub. Sans token, le site se construit quand même avec des données d'exemple.

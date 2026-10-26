@@ -34,6 +34,8 @@ jobs:
       - run: npm ci
       # Vérifie les types : le déploiement s'arrête si une erreur s'est glissée
       - run: npm run verifier
+      # Lance les tests (dossier tests/) : le déploiement s'arrête si l'un d'eux échoue
+      - run: npm test
       # Données de l'accueil, de l'Explorer et des pages par langage (environ 2 min 30). Le token fourni par GitHub Actions suffit :
       # il ne demande aucun réglage. Si GitHub ne répond pas, on continue avec les données de secours du site.
       - run: npm run donnees
