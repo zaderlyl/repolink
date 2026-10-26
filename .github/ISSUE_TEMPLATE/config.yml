@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Signaler une faille de sécurité
+    url: https://github.com/zaderlyl/repolink/security/advisories/new
+    about: "Ne publie pas de faille dans une issue : utilise le signalement privé."
