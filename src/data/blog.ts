@@ -120,4 +120,66 @@ export const articles: Article[] = [
 			},
 		],
 	},
+	{
+		slug: 'good-first-issue-trouver-une-premiere-issue',
+		titre: 'Qu’est-ce qu’une good first issue, et comment en trouver une ?',
+		resume: 'Le label que les mainteneurs collent sur les tâches accessibles aux débutants : ce qu’il veut dire, où les chercher et comment choisir la bonne.',
+		tag: 'Guide',
+		auteur: 'Équipe Repolink',
+		date: '26 oct. 2026',
+		dateIso: '2026-10-26',
+		lecture: '5 min de lecture',
+		intro: 'Tu veux contribuer à l’open source mais tu ne sais pas par où commencer ? Les « good first issues » ont été inventées pour ça : des tâches choisies par les mainteneurs eux-mêmes parce qu’elles conviennent à une première contribution.',
+		sections: [
+			{
+				id: 'definition',
+				titre: 'Ce que ça veut dire',
+				blocs: [
+					{ type: 'p', texte: 'Une <strong>issue</strong> est une fiche sur un projet GitHub : un bug à corriger, une amélioration à faire, une question à traiter. Quand les mainteneurs estiment qu’une issue est faisable sans connaître tout le projet, ils lui ajoutent le label <code>good first issue</code> (« bonne première issue »). Ce label fait partie de ceux que GitHub propose par défaut sur un nouveau dépôt.' },
+					{ type: 'p', texte: 'Typiquement, ce sont des tâches courtes et bien décrites : corriger une faute dans la documentation, ajouter un test, changer un message d’erreur, traduire un texte. Un autre label voisin, <code>help wanted</code>, signale que les mainteneurs cherchent de l’aide, avec une difficulté variable.' },
+				],
+			},
+			{
+				id: 'ou-chercher',
+				titre: 'Où en trouver',
+				blocs: [
+					{ type: 'p', texte: 'La façon la plus simple est de passer par un outil qui rassemble les issues de plusieurs projets. Sur Repolink, la page <a href="{base}/good-first-issues/">Good first issues</a> les liste, avec un filtre par langage. Tu peux aussi aller directement à la page de ton langage :' },
+					{
+						type: 'liste',
+						items: [
+							'<a href="{base}/good-first-issues/javascript/">Good first issues JavaScript</a> et <a href="{base}/good-first-issues/typescript/">TypeScript</a>',
+							'<a href="{base}/good-first-issues/python/">Good first issues Python</a>',
+							'<a href="{base}/good-first-issues/java/">Good first issues Java</a> et <a href="{base}/good-first-issues/csharp/">C#</a>',
+							'<a href="{base}/good-first-issues/go/">Good first issues Go</a> et <a href="{base}/good-first-issues/rust/">Rust</a>',
+						],
+					},
+					{ type: 'p', texte: 'Tu peux aussi chercher directement sur GitHub, avec la recherche d’issues : tape <code>label:"good first issue" state:open</code> et ajoute <code>language:python</code> pour limiter à un langage. Et si tu as déjà un projet que tu aimes, regarde l’onglet « Issues » de son dépôt et filtre par ce label.' },
+				],
+			},
+			{
+				id: 'bien-choisir',
+				titre: 'Comment choisir la bonne',
+				blocs: [
+					{ type: 'p', texte: 'Toutes les good first issues ne se valent pas. Avant de t’y lancer, vérifie ces points :' },
+					{
+						type: 'liste',
+						items: [
+							'<strong>Elle est libre</strong> : personne n’y est assigné et aucun commentaire récent ne dit « je m’en occupe ».',
+							'<strong>Elle est claire</strong> : tu comprends ce qu’il faut faire et comment savoir que c’est terminé.',
+							'<strong>Le projet répond</strong> : les dernières issues ont reçu une réponse en quelques jours ou semaines, pas en plusieurs mois.',
+							'<strong>Elle est dans ton niveau</strong> : tu reconnais le langage et tu as une idée de par où commencer.',
+						],
+					},
+					{ type: 'p', texte: 'Au moindre doute, passe ton chemin : il y en a beaucoup d’autres. Une issue ouverte depuis très longtemps sans réponse est souvent le signe d’un projet qui n’est plus suivi.' },
+				],
+			},
+			{
+				id: 'se-lancer',
+				titre: 'Te lancer',
+				blocs: [
+					{ type: 'p', texte: 'Une fois ton issue choisie, laisse un commentaire pour dire que tu t’en occupes, et attends la réponse d’un mainteneur. Il peut te donner des conseils, ou te dire qu’elle n’est plus disponible : ce n’est pas grave. Ensuite, tu peux suivre le guide <a href="{base}/blog/premiere-contribution-open-source/">Comment faire sa première contribution open source</a> pour la suite, du fork jusqu’à la pull request.' },
+				],
+			},
+		],
+	},
 ];
