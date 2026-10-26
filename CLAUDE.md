@@ -9,6 +9,8 @@ npm run dev
 ```
 URL : http://localhost:4321/repolink/
 
+Tests : `npm test` (dossier `tests/`, outil de Node, sans internet). Le workflow les lance avant le build ; ajouter un fichier `tests/<sujet>.test.ts` quand on touche à de la logique.
+
 Données de l'accueil (API GitHub) : créer un fichier `.env` avec `GITHUB_TOKEN=…` (token fine-grained en lecture seule sur les repos publics), puis lancer `npm run donnees`. Cela écrit `src/data/accueil.json`, `src/data/explorer.json` et `src/data/langages.json` (les issues des pages `/good-first-issues/<langage>/`), ignorés par git.
 
 ## Structure
