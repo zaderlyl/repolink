@@ -1,0 +1,16 @@
+User-agent: *
+Allow: /
+Disallow: /repolink/connexion/
+Disallow: /repolink/connexion-reussie/
+Disallow: /repolink/favoris/
+Disallow: /repolink/mon-profil/
+Disallow: /repolink/parametres/
+Disallow: /repolink/pour-toi/
+Disallow: /repolink/profil/
+Disallow: /repolink/repo/
+Disallow: /repolink/message-envoye/
+Disallow: /repolink/mise-en-relation/
+Disallow: /repolink/contacter/
+Disallow: /repolink/composants/
+
+Sitemap: https://zaderlyl.github.io/repolink/sitemap-index.xml
