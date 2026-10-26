@@ -6,9 +6,9 @@ import type { RepoGithub, ResultatRecherche } from '../lib/github.ts';
 import { formaterRepos } from '../lib/conversion.ts';
 import { purgerCache } from '../lib/cache.ts';
 import { lirePreferences } from '../lib/preferences.ts';
-import { construireOptions, construireRequete, hrefRecherche, lireFiltres, nombrePages } from '../lib/recherche.ts';
+import { construireOptions, construireRequete, expliquerTaille, hrefRecherche, lireFiltres, nombrePages, TAILLES } from '../lib/recherche.ts';
 import type { Filtres } from '../lib/recherche.ts';
-import { $, afficherErreurPage, afficherPagination, afficherPastilles, creerCarteRepo, montrer } from './commun.ts';
+import { $, afficherErreurPage, afficherPagination, afficherPastilles, creerCarteRepo, depuisModele, montrer } from './commun.ts';
 
 const LANGAGES_RAPIDES = ['JavaScript', 'Python'];
 
@@ -23,7 +23,8 @@ function stockage(): Storage | null {
 const ZONES = ['liste', 'chargement', 'vide', 'erreur'];
 
 function afficherFiltres(filtres: Filtres) {
-	const base = { q: filtres.q, topic: filtres.topic };
+	// Changer de langage garde le texte, le topic et la taille
+	const base = { q: filtres.q, topic: filtres.topic, taille: filtres.taille };
 	afficherPastilles($('filtres'), {
 		langagesRapides: LANGAGES_RAPIDES,
 		langage: filtres.langage,
@@ -32,23 +33,36 @@ function afficherFiltres(filtres: Filtres) {
 			? [
 					{
 						texte: `topic : ${filtres.topic} ✕`,
-						href: hrefRecherche({ q: filtres.q, langage: filtres.langage }),
+						href: hrefRecherche({ q: filtres.q, langage: filtres.langage, taille: filtres.taille }),
 						libelle: `Retirer le topic ${filtres.topic}`,
 					},
 				]
 			: [],
 	});
+	const aide = $('aide-taille');
+	aide.textContent = expliquerTaille(filtres.taille);
+	aide.hidden = filtres.taille === 'tous';
+	// Changer de taille garde le texte, le langage et le topic ; on repart de la page 1
+	$('filtres-taille').replaceChildren(
+		...TAILLES.map(({ id, texte }) =>
+			depuisModele(id === filtres.taille ? 'modele-chip-actif' : 'modele-chip', {
+				texte,
+				href: hrefRecherche({ q: filtres.q, langage: filtres.langage, topic: filtres.topic, taille: id }),
+				couleur: '#8b949e',
+			}),
+		),
+	);
 }
 
 function remplirFormulaire(filtres: Filtres) {
 	const champ = document.querySelector<HTMLInputElement>('#formulaire-recherche input[name="q"]');
 	if (champ) champ.value = filtres.q;
-	// Les champs cachés ne sont envoyés que s'ils ont une valeur : une nouvelle recherche garde le langage et le topic
-	for (const nom of ['langage', 'topic'] as const) {
+	// Les champs cachés ne sont envoyés que s'ils ont une valeur : une nouvelle recherche garde le langage, le topic et la taille
+	for (const nom of ['langage', 'topic', 'taille'] as const) {
 		const cache = document.querySelector<HTMLInputElement>(`#formulaire-recherche input[name="${nom}"]`);
 		if (!cache) continue;
 		cache.value = filtres[nom];
-		cache.disabled = !filtres[nom];
+		cache.disabled = !filtres[nom] || filtres[nom] === 'tous';
 	}
 }
 
@@ -88,6 +102,10 @@ async function charger() {
 
 	if (resultat.items.length === 0) {
 		$('statut').textContent = ''; // le message « Aucun repo trouvé » suffit
+		// Avec une taille choisie, le plus simple est de l'élargir : un bouton y mène
+		const voirTous = $('voir-tous');
+		voirTous.hidden = filtres.taille === 'tous';
+		voirTous.setAttribute('href', hrefRecherche({ ...filtres, taille: 'tous', page: 1 }));
 		montrer(ZONES, 'vide');
 		return;
 	}
