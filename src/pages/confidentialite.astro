@@ -1,34 +1,55 @@
 ---
 // Page « Politique de confidentialité » (maquette Figma : « Site - Confidentialité »).
+// Elle décrit ce que fait vraiment le site : pas de serveur, tout est gardé dans le navigateur (voir src/lib/donnees.ts).
 import Article from '../layouts/article.astro';
 
 const sections = [
 	{
 		id: 'donnees-collectees',
 		titre: 'Données collectées',
-		texte: 'Sans compte, aucune donnée personnelle n’est collectée. Avec une connexion GitHub, nous conservons ton pseudo et ta photo de profil publique.',
+		texte: 'Repolink n’a ni serveur ni base de données : nous ne collectons et ne conservons aucune donnée sur toi. Ce que tu fais sur le site (favoris, créateurs suivis, préférences) reste dans ton navigateur.',
+	},
+	{
+		id: 'connexion',
+		titre: 'Connexion avec GitHub',
+		texte: 'Quand tu te connectes, GitHub donne à Repolink un jeton (token) en lecture seule, sans aucune permission particulière : il ne permet ni de modifier tes repos ni de voir tes repos privés. Il est gardé dans ton navigateur et envoyé uniquement à l’API de GitHub, pour passer de 60 à 5 000 requêtes par heure. Tu peux le révoquer à tout moment dans tes réglages GitHub, rubrique « Applications ».',
+	},
+	{
+		id: 'service-de-connexion',
+		titre: 'Service de connexion',
+		texte: 'Le site est statique et ne peut pas garder le secret de l’application GitHub. Un petit service hébergé sur Cloudflare Workers reçoit le code temporaire donné par GitHub, l’échange contre le jeton et le renvoie à ton navigateur. Il ne conserve rien. Comme tout hébergeur, Cloudflare peut traiter des données techniques de connexion, comme ton adresse IP, pour faire fonctionner le service.',
+	},
+	{
+		id: 'stockage-local',
+		titre: 'Ce qui est gardé dans ton navigateur',
+		texte: 'Ton pseudo GitHub, ton nom et ta photo de profil publics, ton jeton, tes favoris, les créateurs que tu suis, tes préférences, et une copie des réponses de GitHub pendant une heure pour limiter le nombre de requêtes. Ces données ne quittent pas ton navigateur et ne sont jamais envoyées à Repolink. La page Cookies en donne le détail.',
 	},
 	{
 		id: 'utilisation',
 		titre: 'Utilisation',
-		texte: 'Ces données servent uniquement à personnaliser les recommandations et à enregistrer tes favoris.',
+		texte: 'Ces données servent uniquement à te connecter, à enregistrer tes favoris et à personnaliser les recommandations de la page « Pour toi ». Elles ne sont ni vendues ni partagées.',
+	},
+	{
+		id: 'services-tiers',
+		titre: 'Services tiers',
+		texte: 'Les repos et les profils viennent de l’API publique de GitHub : ton navigateur la contacte directement et GitHub peut voir ton adresse IP, selon sa propre politique de confidentialité. Le site est hébergé sur GitHub Pages. Repolink n’utilise ni mesure d’audience ni publicité.',
 	},
 	{
 		id: 'droits',
 		titre: 'Tes droits',
-		texte: 'Tu peux demander la suppression de ton compte et de tes données à tout moment depuis les paramètres.',
+		texte: 'Comme nous ne conservons rien, il n’y a rien à nous demander. Tu gardes la main : « Se déconnecter » ferme ta connexion, et « Supprimer mon compte » dans les paramètres efface de ce navigateur ta connexion, tes favoris, tes créateurs suivis et tes préférences. Vider les données du site dans ton navigateur fait la même chose.',
 	},
 	{
 		id: 'conservation',
 		titre: 'Conservation',
-		texte: 'Les données sont supprimées 30 jours après la suppression du compte.',
+		texte: 'Tes données restent dans ton navigateur jusqu’à ce que tu les effaces. Nous ne conservons rien côté serveur.',
 	},
 ];
 ---
 
 <Article
 	titre="Politique de confidentialité"
-	description="Les données que Repolink collecte, pourquoi, et comment les supprimer."
-	intro="Nous collectons le minimum de données nécessaires au fonctionnement du site."
+	description="Les données que Repolink garde dans ton navigateur, pourquoi, et comment les supprimer."
+	intro="Repolink garde le minimum de données, et uniquement dans ton navigateur. Dernière mise à jour : 26 octobre 2026."
 	sections={sections}
 />
