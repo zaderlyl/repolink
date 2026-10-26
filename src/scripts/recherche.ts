@@ -6,7 +6,7 @@ import type { RepoGithub, ResultatRecherche } from '../lib/github.ts';
 import { formaterRepos } from '../lib/conversion.ts';
 import { purgerCache } from '../lib/cache.ts';
 import { lirePreferences } from '../lib/preferences.ts';
-import { construireOptions, construireRequete, hrefRecherche, lireFiltres, nombrePages, TAILLES } from '../lib/recherche.ts';
+import { construireOptions, construireRequete, expliquerTaille, hrefRecherche, lireFiltres, nombrePages, TAILLES } from '../lib/recherche.ts';
 import type { Filtres } from '../lib/recherche.ts';
 import { $, afficherErreurPage, afficherPagination, afficherPastilles, creerCarteRepo, depuisModele, montrer } from './commun.ts';
 
@@ -39,6 +39,9 @@ function afficherFiltres(filtres: Filtres) {
 				]
 			: [],
 	});
+	const aide = $('aide-taille');
+	aide.textContent = expliquerTaille(filtres.taille);
+	aide.hidden = filtres.taille === 'tous';
 	// Changer de taille garde le texte, le langage et le topic ; on repart de la page 1
 	$('filtres-taille').replaceChildren(
 		...TAILLES.map(({ id, texte }) =>
@@ -99,6 +102,10 @@ async function charger() {
 
 	if (resultat.items.length === 0) {
 		$('statut').textContent = ''; // le message « Aucun repo trouvé » suffit
+		// Avec une taille choisie, le plus simple est de l'élargir : un bouton y mène
+		const voirTous = $('voir-tous');
+		voirTous.hidden = filtres.taille === 'tous';
+		voirTous.setAttribute('href', hrefRecherche({ ...filtres, taille: 'tous', page: 1 }));
 		montrer(ZONES, 'vide');
 		return;
 	}

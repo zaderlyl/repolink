@@ -42,6 +42,8 @@ const langagesRapides = ['JavaScript', 'Python'];
 			</nav>
 		</div>
 
+		<p id="aide-taille" hidden class="mt-2 text-[13px] text-texte-secondaire"></p>
+
 		<form id="formulaire-recherche" action={lien('/recherche')} method="get" role="search" class="mt-7">
 			<input type="hidden" name="langage" disabled />
 			<input type="hidden" name="topic" disabled />
@@ -77,6 +79,7 @@ const langagesRapides = ['JavaScript', 'Python'];
 
 			<div id="vide" hidden>
 				<EtatVide symbole="⌕" titre="Aucun repo trouvé" texte="Essaie un autre mot-clé ou retire un filtre.">
+					<Bouton id="voir-tous" href={lien('/recherche')} variante="secondaire" hidden>Voir tous les projets</Bouton>
 					<Bouton href={lien('/recherche')} variante="secondaire">Effacer les filtres</Bouton>
 				</EtatVide>
 			</div>

@@ -2,7 +2,7 @@
 // et construction de la requête de l'API de GitHub. Ces fonctions ne font aucun appel réseau.
 import type { OptionsRecherche } from './github.ts';
 import type { OngletRepo } from './adresses.ts';
-import { dateLimiteActif, PREFERENCES_PAR_DEFAUT } from './preferences.ts';
+import { dateLimiteActif, JOURS_ACTIF, PREFERENCES_PAR_DEFAUT } from './preferences.ts';
 import type { Preferences } from './preferences.ts';
 import { lien } from './adresses.ts';
 
@@ -37,6 +37,15 @@ export type Filtres = {
 };
 
 export const FILTRES_VIDES: Filtres = { q: '', langage: '', topic: '', taille: 'tous', page: 1 };
+
+// Phrase qui explique ce que montre une taille ; « tous » n'a rien à expliquer
+export function expliquerTaille(taille: Taille): string {
+	if (taille === 'petits') {
+		return `Projets de ${ETOILES_PETIT_MIN} à ${ETOILES_PETIT_MAX} étoiles, mis à jour ces ${JOURS_ACTIF} derniers jours et pas vides : des créateurs encore peu connus, à encourager.`;
+	}
+	if (taille === 'populaires') return `Projets de plus de ${ETOILES_PETIT_MAX} étoiles.`;
+	return '';
+}
 
 // Une taille inconnue (adresse tapée à la main) donne « tous »
 const lireTaille = (valeur: string | null): Taille => TAILLES.find((t) => t.id === valeur)?.id ?? 'tous';
