@@ -51,6 +51,8 @@ const titreComplet = titre === 'Repolink' ? titre : `${titre} · Repolink`;
 		<meta property="og:image:alt" content="Repolink : trouve des repos GitHub à ta portée et rencontre des créateurs." />
 		<meta name="twitter:card" content="summary_large_image" />
 		<title>{titreComplet}</title>
+		<!-- Pour une page qui ajoute des balises à l'en-tête (ex. données structurées d'un article) -->
+		<slot name="head" />
 	</head>
 	<body class="flex min-h-screen flex-col bg-fond-page text-texte-principal antialiased">
 		<!-- Lien d'évitement : visible seulement au clavier, il saute la navigation -->

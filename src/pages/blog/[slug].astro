@@ -3,6 +3,7 @@
 import ArticleLayout from '../../layouts/article.astro';
 import Avatar from '../../components/ui/avatar.astro';
 import { articles, infosArticle } from '../../data/blog';
+import { lien } from '../../lib/adresses.ts';
 
 // Une page par article du fichier src/data/blog.ts
 export function getStaticPaths() {
@@ -10,6 +11,25 @@ export function getStaticPaths() {
 }
 
 const { article } = Astro.props;
+
+// Données structurées (JSON-LD) lues par Google. L'auteur est Repolink : les articles sont des exemples, pas de vraie personne à citer.
+const adresse = (chemin: string) => new URL(lien(chemin), Astro.site).href;
+const repolink = { '@type': 'Organization', name: 'Repolink', url: adresse('/') };
+const donneesStructurees = {
+	'@context': 'https://schema.org',
+	'@type': 'BlogPosting',
+	headline: article.titre,
+	description: article.resume,
+	inLanguage: 'fr',
+	datePublished: article.dateIso,
+	dateModified: article.dateIso,
+	image: adresse('/image-partage.png'),
+	mainEntityOfPage: adresse(`/blog/${article.slug}/`),
+	author: repolink,
+	publisher: { ...repolink, logo: { '@type': 'ImageObject', url: adresse('/icone-512.png') } },
+};
+// « < » est échappé pour qu'un texte ne puisse pas fermer la balise <script>
+const json = JSON.stringify(donneesStructurees).replace(/</g, '\\u003c');
 ---
 
 <ArticleLayout
@@ -19,6 +39,7 @@ const { article } = Astro.props;
 	sections={article.sections}
 	sommaire="Dans cet article"
 >
+	<script slot="head" type="application/ld+json" set:html={json} />
 	<Fragment slot="entete">
 		<p class="mt-3 flex items-center gap-3 text-sm text-texte-secondaire">
 			<Avatar taille="s" />
