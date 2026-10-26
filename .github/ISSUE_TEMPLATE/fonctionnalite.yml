@@ -1,0 +1,28 @@
+name: Proposer une idée
+description: Une amélioration ou une nouvelle fonctionnalité
+title: "feat: "
+labels: ["feature"]
+body:
+  - type: textarea
+    id: besoin
+    attributes:
+      label: Quel besoin cela couvre-t-il ?
+      description: Explique la situation qui te manque, pas seulement la solution.
+    validations:
+      required: true
+  - type: textarea
+    id: idee
+    attributes:
+      label: Ton idée
+      description: Comment tu imagines la solution (une maquette ou un exemple suffit).
+    validations:
+      required: true
+  - type: dropdown
+    id: contribution
+    attributes:
+      label: Veux-tu t'en occuper ?
+      options:
+        - Oui, j'aimerais la faire
+        - Non, c'est juste une idée
+    validations:
+      required: true

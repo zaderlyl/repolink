@@ -1,0 +1,37 @@
+name: Signaler un bug
+description: Quelque chose ne marche pas comme prévu sur le site
+title: "fix: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Merci de prendre le temps de signaler ce problème ! Pour une faille de sécurité, ne l'écris pas ici : utilise le [signalement privé](https://github.com/zaderlyl/repolink/security/advisories/new).
+  - type: textarea
+    id: probleme
+    attributes:
+      label: Qu'est-ce qui ne marche pas ?
+      description: Décris ce que tu as vu et ce que tu attendais.
+    validations:
+      required: true
+  - type: textarea
+    id: etapes
+    attributes:
+      label: Comment le reproduire ?
+      description: Les étapes, de l'adresse de la page jusqu'au problème.
+      placeholder: |
+        1. Aller sur la page Recherche
+        2. Choisir le langage Go
+        3. Cliquer sur…
+    validations:
+      required: true
+  - type: input
+    id: navigateur
+    attributes:
+      label: Navigateur et appareil
+      placeholder: Firefox 130 sur ordinateur, Safari sur iPhone…
+  - type: textarea
+    id: capture
+    attributes:
+      label: Capture d'écran (facultatif)
+      description: Tu peux glisser une image ici.
