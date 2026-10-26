@@ -1,10 +1,11 @@
-// Filtres de la page Recherche : lecture de l'adresse (?q=…&langage=…&topic=…&taille=…&page=…)
+// Filtres de la page Recherche : lecture de l'adresse (?q=…&langage=a,b&topic=x,y&taille=…&page=…)
 // et construction de la requête de l'API de GitHub. Ces fonctions ne font aucun appel réseau.
 import type { OptionsRecherche } from './github.ts';
 import type { OngletRepo } from './adresses.ts';
 import { dateLimiteActif, JOURS_ACTIF, PREFERENCES_PAR_DEFAUT } from './preferences.ts';
 import type { Preferences } from './preferences.ts';
 import { lien } from './adresses.ts';
+import { langagesRecherche } from '../data/filtres.ts';
 
 export const RESULTATS_PAR_PAGE = 10;
 // GitHub ne donne jamais plus de 1000 résultats pour une recherche
@@ -30,13 +31,16 @@ const TAILLE_MIN_PETIT = 200;
 
 export type Filtres = {
 	q: string; // texte tapé par le visiteur (nom, mot-clé, créateur…)
-	langage: string; // « JavaScript », ou vide pour tous
-	topic: string; // « react », ou vide pour tous
+	langages: string[]; // « JavaScript »… vide pour tous ; plusieurs langages se cumulent en OU (un repo n'a qu'un langage principal)
+	topics: string[]; // « react »… vide pour tous ; plusieurs topics se cumulent en ET (le repo doit les avoir tous)
 	taille: Taille; // « petits », « populaires » ou « tous »
 	page: number; // commence à 1
 };
 
-export const FILTRES_VIDES: Filtres = { q: '', langage: '', topic: '', taille: 'tous', page: 1 };
+// Au plus 5 langages et 5 topics à la fois : GitHub limite la longueur et la complexité d'une recherche
+export const MAX_FILTRES = 5;
+
+export const FILTRES_VIDES: Filtres = { q: '', langages: [], topics: [], taille: 'tous', page: 1 };
 
 // Phrase qui explique ce que montre une taille ; « tous » n'a rien à expliquer
 export function expliquerTaille(taille: Taille): string {
@@ -58,6 +62,30 @@ function nettoyerNom(valeur: string | null): string {
 	return NOM_VALIDE.test(nom) ? nom : '';
 }
 
+// Noms du langage tels que GitHub les écrit : « go » dans une adresse devient « Go »
+const LANGAGES_CONNUS = new Map(langagesRecherche.map(({ nom }) => [nom.toLowerCase(), nom]));
+
+// « a,b,c » devient une liste sans doublon, sans valeur bizarre, de MAX_FILTRES éléments au plus
+function nettoyerListe(valeurs: string | null, enMinuscules: boolean): string[] {
+	const liste: string[] = [];
+	for (const brut of (valeurs ?? '').split(',')) {
+		const nom = nettoyerNom(brut);
+		if (!nom) continue;
+		const propre = enMinuscules ? nom.toLowerCase() : (LANGAGES_CONNUS.get(nom.toLowerCase()) ?? nom);
+		if (liste.some((v) => v.toLowerCase() === propre.toLowerCase())) continue;
+		liste.push(propre);
+		if (liste.length >= MAX_FILTRES) break;
+	}
+	return liste;
+}
+
+// Ajoute la valeur à la liste si elle n'y est pas, la retire sinon (un clic sur une pastille). Au maximum, on n'ajoute plus.
+export function basculer(liste: string[], valeur: string): string[] {
+	const present = liste.some((v) => v.toLowerCase() === valeur.toLowerCase());
+	if (present) return liste.filter((v) => v.toLowerCase() !== valeur.toLowerCase());
+	return liste.length >= MAX_FILTRES ? liste : [...liste, valeur];
+}
+
 // Lit l'adresse de la page. Une valeur absente ou bizarre est ignorée : on ne plante jamais sur une adresse tapée à la main.
 export function lireFiltres(parametres: URLSearchParams): Filtres {
 	// Pas de retours à la ligne ni de caractères de contrôle dans la recherche
@@ -65,8 +93,8 @@ export function lireFiltres(parametres: URLSearchParams): Filtres {
 	const page = Math.floor(Number(parametres.get('page')));
 	return {
 		q,
-		langage: nettoyerNom(parametres.get('langage')),
-		topic: nettoyerNom(parametres.get('topic')).toLowerCase(),
+		langages: nettoyerListe(parametres.get('langage'), false),
+		topics: nettoyerListe(parametres.get('topic'), true),
 		taille: lireTaille(parametres.get('taille')),
 		page: Number.isFinite(page) && page >= 1 ? Math.min(page, MAX_RESULTATS / RESULTATS_PAR_PAGE) : 1,
 	};
@@ -88,8 +116,9 @@ export function construireRequete(
 ): string {
 	const morceaux: string[] = [];
 	if (filtres.q) morceaux.push(filtres.q);
-	if (filtres.langage) morceaux.push(`language:${valeur(filtres.langage)}`);
-	if (filtres.topic) morceaux.push(`topic:${valeur(filtres.topic)}`);
+	// Plusieurs « language: » se cumulent en OU chez GitHub, plusieurs « topic: » en ET
+	for (const langage of filtres.langages) morceaux.push(`language:${valeur(langage)}`);
+	for (const topic of filtres.topics) morceaux.push(`topic:${valeur(topic)}`);
 	if (morceaux.length === 0) morceaux.push('good-first-issues:>0');
 	if (filtres.taille === 'petits') morceaux.push(`stars:${ETOILES_PETIT_MIN}..${ETOILES_PETIT_MAX}`, `size:>${TAILLE_MIN_PETIT}`);
 	else if (filtres.taille === 'populaires') morceaux.push(`stars:>${ETOILES_PETIT_MAX}`);
@@ -122,11 +151,12 @@ export function hrefRecherche(filtres: Partial<Filtres> = {}, chemin = '/recherc
 	const f = { ...FILTRES_VIDES, ...filtres };
 	const parametres = new URLSearchParams();
 	if (f.q) parametres.set('q', f.q);
-	if (f.langage) parametres.set('langage', f.langage);
-	if (f.topic) parametres.set('topic', f.topic);
+	if (f.langages.length > 0) parametres.set('langage', f.langages.join(','));
+	if (f.topics.length > 0) parametres.set('topic', f.topics.join(','));
 	if (f.taille !== 'tous') parametres.set('taille', f.taille);
 	if (f.page > 1) parametres.set('page', String(f.page));
-	const texte = parametres.toString();
+	// La virgule est permise dans une adresse : on la laisse lisible (langage=Go,Rust)
+	const texte = parametres.toString().replace(/%2C/g, ',');
 	return lien(texte ? `${chemin}?${texte}` : chemin);
 }
 
@@ -136,12 +166,12 @@ export function hrefRecherche(filtres: Partial<Filtres> = {}, chemin = '/recherc
 export const CHEMIN_ISSUES = '/good-first-issues';
 
 export const hrefIssues = (filtres: Partial<Filtres> = {}) =>
-	hrefRecherche({ langage: filtres.langage, page: filtres.page }, CHEMIN_ISSUES);
+	hrefRecherche({ langages: filtres.langages, page: filtres.page }, CHEMIN_ISSUES);
 
 // Issues ouvertes, sans personne d'assigné, portant le label « good first issue », dans des repos non archivés.
 export function construireRequeteIssues(filtres: Filtres): string {
 	const morceaux = ['label:"good first issue"', 'state:open', 'is:issue', 'no:assignee', 'archived:false'];
-	if (filtres.langage) morceaux.push(`language:${valeur(filtres.langage)}`);
+	for (const langage of filtres.langages) morceaux.push(`language:${valeur(langage)}`);
 	return morceaux.join(' ');
 }
 

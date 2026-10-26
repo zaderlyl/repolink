@@ -3,12 +3,12 @@
 // ainsi les cartes et les pastilles gardent exactement le style des composants.
 import { rechercherRepos } from '../lib/github.ts';
 import type { RepoGithub, ResultatRecherche } from '../lib/github.ts';
-import { formaterRepos } from '../lib/conversion.ts';
+import { couleurLangage, formaterRepos } from '../lib/conversion.ts';
 import { purgerCache } from '../lib/cache.ts';
 import { lirePreferences } from '../lib/preferences.ts';
-import { construireOptions, construireRequete, expliquerTaille, hrefRecherche, lireFiltres, nombrePages, TAILLES } from '../lib/recherche.ts';
+import { basculer, construireOptions, construireRequete, expliquerTaille, hrefRecherche, lireFiltres, nombrePages, TAILLES } from '../lib/recherche.ts';
 import type { Filtres } from '../lib/recherche.ts';
-import { $, afficherErreurPage, afficherPagination, afficherPastilles, creerCarteRepo, depuisModele, montrer } from './commun.ts';
+import { $, afficherErreurPage, afficherPagination, creerCarteRepo, depuisModele, montrer } from './commun.ts';
 
 const LANGAGES_RAPIDES = ['JavaScript', 'Python'];
 
@@ -22,47 +22,51 @@ function stockage(): Storage | null {
 }
 const ZONES = ['liste', 'chargement', 'vide', 'erreur'];
 
+// Une pastille de filtre ; « retirable » : cliquer la retire (texte avec ✕), sinon c'est un interrupteur
+function pastille(texte: string, href: string, actif: boolean, couleur: string, libelle?: string): HTMLElement {
+	const chip = depuisModele(actif ? 'modele-chip-actif' : 'modele-chip', { texte, href, couleur });
+	if (libelle) chip.setAttribute('aria-label', libelle);
+	return chip;
+}
+
 function afficherFiltres(filtres: Filtres) {
-	// Changer de langage garde le texte, le topic et la taille
-	const base = { q: filtres.q, topic: filtres.topic, taille: filtres.taille };
-	afficherPastilles($('filtres'), {
-		langagesRapides: LANGAGES_RAPIDES,
-		langage: filtres.langage,
-		hrefLangage: (langage) => hrefRecherche({ ...base, langage }),
-		supplement: filtres.topic
-			? [
-					{
-						texte: `topic : ${filtres.topic} ✕`,
-						href: hrefRecherche({ q: filtres.q, langage: filtres.langage, taille: filtres.taille }),
-						libelle: `Retirer le topic ${filtres.topic}`,
-					},
-				]
-			: [],
-	});
+	// Chaque pastille mène à la même recherche avec un filtre de plus ou de moins ; le texte et la taille restent, la page repart de 1
+	const vers = (changement: Partial<Filtres>) => hrefRecherche({ ...filtres, page: 1, ...changement });
+	const pastilles: HTMLElement[] = [pastille('TOUT', vers({ langages: [] }), filtres.langages.length === 0, '#8b949e')];
+	// Les langages rapides sont des interrupteurs, les autres langages choisis se retirent avec ✕
+	for (const rapide of LANGAGES_RAPIDES) {
+		const actif = filtres.langages.includes(rapide);
+		pastilles.push(pastille(rapide, vers({ langages: basculer(filtres.langages, rapide) }), actif, couleurLangage(rapide)));
+	}
+	for (const langage of filtres.langages.filter((l) => !LANGAGES_RAPIDES.includes(l))) {
+		pastilles.push(
+			pastille(`${langage} ✕`, vers({ langages: basculer(filtres.langages, langage) }), true, couleurLangage(langage), `Retirer le langage ${langage}`),
+		);
+	}
+	for (const topic of filtres.topics) {
+		pastilles.push(pastille(`topic : ${topic} ✕`, vers({ topics: basculer(filtres.topics, topic) }), true, '#8b949e', `Retirer le topic ${topic}`));
+	}
+	$('filtres').replaceChildren(...pastilles);
+
 	const aide = $('aide-taille');
 	aide.textContent = expliquerTaille(filtres.taille);
 	aide.hidden = filtres.taille === 'tous';
-	// Changer de taille garde le texte, le langage et le topic ; on repart de la page 1
+	// Changer de taille garde le texte, les langages et les topics ; on repart de la page 1
 	$('filtres-taille').replaceChildren(
-		...TAILLES.map(({ id, texte }) =>
-			depuisModele(id === filtres.taille ? 'modele-chip-actif' : 'modele-chip', {
-				texte,
-				href: hrefRecherche({ q: filtres.q, langage: filtres.langage, topic: filtres.topic, taille: id }),
-				couleur: '#8b949e',
-			}),
-		),
+		...TAILLES.map(({ id, texte }) => pastille(texte, vers({ taille: id }), id === filtres.taille, '#8b949e')),
 	);
 }
 
 function remplirFormulaire(filtres: Filtres) {
 	const champ = document.querySelector<HTMLInputElement>('#formulaire-recherche input[name="q"]');
 	if (champ) champ.value = filtres.q;
-	// Les champs cachés ne sont envoyés que s'ils ont une valeur : une nouvelle recherche garde le langage, le topic et la taille
-	for (const nom of ['langage', 'topic', 'taille'] as const) {
+	// Les champs cachés ne sont envoyés que s'ils ont une valeur : une nouvelle recherche garde les langages, les topics et la taille
+	const valeurs = { langage: filtres.langages.join(','), topic: filtres.topics.join(','), taille: filtres.taille === 'tous' ? '' : filtres.taille };
+	for (const [nom, valeur] of Object.entries(valeurs)) {
 		const cache = document.querySelector<HTMLInputElement>(`#formulaire-recherche input[name="${nom}"]`);
 		if (!cache) continue;
-		cache.value = filtres[nom];
-		cache.disabled = !filtres[nom] || filtres[nom] === 'tous';
+		cache.value = valeur;
+		cache.disabled = !valeur;
 	}
 }
 

@@ -28,7 +28,7 @@ const langagesRapides = ['JavaScript', 'Python'];
 		<nav id="filtres" aria-label="Filtres par langage" class="mt-4 flex flex-wrap gap-3">
 			<Chip href={lien('/recherche')} actif>TOUT</Chip>
 			{langagesRapides.map((langage) => (
-				<Chip href={hrefRecherche({ langage })} couleur={couleurLangage(langage)}>{langage}</Chip>
+				<Chip href={hrefRecherche({ langages: [langage] })} couleur={couleurLangage(langage)}>{langage}</Chip>
 			))}
 		</nav>
 

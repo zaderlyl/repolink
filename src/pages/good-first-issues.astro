@@ -27,7 +27,7 @@ const langagesRapides = ['JavaScript', 'Python', 'CSS'];
 		<nav id="filtres" aria-label="Filtres par langage" class="mt-4 flex flex-wrap gap-3">
 			<Chip href={lien('/good-first-issues')} actif>TOUT</Chip>
 			{langagesRapides.map((langage) => (
-				<Chip href={hrefIssues({ langage })} couleur={couleurLangage(langage)}>{langage}</Chip>
+				<Chip href={hrefIssues({ langages: [langage] })} couleur={couleurLangage(langage)}>{langage}</Chip>
 			))}
 		</nav>
 
