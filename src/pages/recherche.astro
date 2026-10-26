@@ -11,7 +11,7 @@ import EtatVide from '../components/ui/etat-vide.astro';
 import Bouton from '../components/ui/bouton.astro';
 import AideMots from '../components/ui/aide-mots.astro';
 import { couleurLangage } from '../lib/conversion.ts';
-import { hrefRecherche, TAILLES } from '../lib/recherche.ts';
+import { hrefRecherche, LANGUES, TAILLES } from '../lib/recherche.ts';
 import { lien } from '../lib/adresses.ts';
 
 const langagesRapides = ['JavaScript', 'Python'];
@@ -44,6 +44,18 @@ const langagesRapides = ['JavaScript', 'Python'];
 
 		<p id="aide-taille" hidden class="mt-2 text-[13px] text-texte-secondaire"></p>
 
+		<!-- Langue du README : indicatif (voir src/lib/recherche.ts). Le script remplace les pastilles selon l'adresse. -->
+		<div class="mt-3 flex flex-wrap items-center gap-3">
+			<span class="text-[13px] text-texte-secondaire">Langue</span>
+			<nav id="filtres-langue" aria-label="Filtrer par langue du repo" class="flex flex-wrap gap-3">
+				<Chip href={hrefRecherche({ langue: '' })} actif>Toutes</Chip>
+				{LANGUES.map(({ id, texte }) => (
+					<Chip href={hrefRecherche({ langue: id })}>{texte}</Chip>
+				))}
+			</nav>
+		</div>
+		<p id="aide-langue" hidden class="mt-2 text-[13px] text-texte-secondaire"></p>
+
 		<!-- Tous les langages et topics : le script remplit les pastilles. Plusieurs langages = l'un OU l'autre ; plusieurs topics = tous à la fois. -->
 		<details id="plus-filtres" class="mt-4 rounded-xl border border-bordure-defaut bg-fond-panneau p-4">
 			<summary class="cursor-pointer text-sm font-medium"><span id="titre-plus-filtres">Plus de filtres</span></summary>
@@ -60,6 +72,7 @@ const langagesRapides = ['JavaScript', 'Python'];
 			<input type="hidden" name="langage" disabled />
 			<input type="hidden" name="topic" disabled />
 			<input type="hidden" name="taille" disabled />
+			<input type="hidden" name="langue" disabled />
 			<ChampRecherche name="q" label="Rechercher un repo, un topic ou un créateur" maxlength={100} />
 		</form>
 
@@ -91,7 +104,7 @@ const langagesRapides = ['JavaScript', 'Python'];
 
 			<div id="vide" hidden>
 				<EtatVide symbole="⌕" titre="Aucun repo trouvé" texte="Essaie un autre mot-clé ou retire un filtre.">
-					<Bouton id="voir-tous" href={lien('/recherche')} variante="secondaire" hidden>Voir tous les projets</Bouton>
+					<Bouton id="voir-tous" href={lien('/recherche')} variante="secondaire" hidden>Élargir la recherche</Bouton>
 					<Bouton href={lien('/recherche')} variante="secondaire">Effacer les filtres</Bouton>
 				</EtatVide>
 			</div>

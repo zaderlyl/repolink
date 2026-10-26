@@ -7,7 +7,18 @@ import { couleurLangage, formaterRepos } from '../lib/conversion.ts';
 import { groupesTopics, langagesRecherche } from '../data/filtres.ts';
 import { purgerCache } from '../lib/cache.ts';
 import { lirePreferences } from '../lib/preferences.ts';
-import { basculer, construireOptions, construireRequete, expliquerTaille, hrefRecherche, lireFiltres, nombrePages, TAILLES } from '../lib/recherche.ts';
+import {
+	basculer,
+	construireOptions,
+	construireRequete,
+	expliquerTaille,
+	EXPLICATION_LANGUE,
+	hrefRecherche,
+	LANGUES,
+	lireFiltres,
+	nombrePages,
+	TAILLES,
+} from '../lib/recherche.ts';
 import type { Filtres } from '../lib/recherche.ts';
 import { $, afficherErreurPage, afficherPagination, creerCarteRepo, depuisModele, montrer } from './commun.ts';
 
@@ -87,9 +98,16 @@ function afficherFiltres(filtres: Filtres) {
 	const aide = $('aide-taille');
 	aide.textContent = expliquerTaille(filtres.taille);
 	aide.hidden = filtres.taille === 'tous';
-	// Changer de taille garde le texte, les langages et les topics
+	// Changer de taille ou de langue garde le reste des filtres
 	$('filtres-taille').replaceChildren(
 		...TAILLES.map(({ id, texte }) => pastille(texte, vers(filtres, { taille: id }), id === filtres.taille, '#8b949e', `t:${id}`)),
+	);
+	const aideLangue = $('aide-langue');
+	aideLangue.textContent = EXPLICATION_LANGUE;
+	aideLangue.hidden = filtres.langue === '';
+	$('filtres-langue').replaceChildren(
+		pastille('Toutes', vers(filtres, { langue: '' }), filtres.langue === '', '#8b949e', 'l:toutes'),
+		...LANGUES.map(({ id, texte }) => pastille(texte, vers(filtres, { langue: id }), id === filtres.langue, '#8b949e', `l:${id}`)),
 	);
 }
 
@@ -97,7 +115,12 @@ function remplirFormulaire(filtres: Filtres) {
 	const champ = document.querySelector<HTMLInputElement>('#formulaire-recherche input[name="q"]');
 	if (champ) champ.value = filtres.q;
 	// Les champs cachés ne sont envoyés que s'ils ont une valeur : une nouvelle recherche garde les langages, les topics et la taille
-	const valeurs = { langage: filtres.langages.join(','), topic: filtres.topics.join(','), taille: filtres.taille === 'tous' ? '' : filtres.taille };
+	const valeurs = {
+		langage: filtres.langages.join(','),
+		topic: filtres.topics.join(','),
+		taille: filtres.taille === 'tous' ? '' : filtres.taille,
+		langue: filtres.langue,
+	};
 	for (const [nom, valeur] of Object.entries(valeurs)) {
 		const cache = document.querySelector<HTMLInputElement>(`#formulaire-recherche input[name="${nom}"]`);
 		if (!cache) continue;
@@ -154,10 +177,10 @@ async function charger() {
 
 	if (resultat.items.length === 0) {
 		$('statut').textContent = ''; // le message « Aucun repo trouvé » suffit
-		// Avec une taille choisie, le plus simple est de l'élargir : un bouton y mène
-		const voirTous = $('voir-tous');
-		voirTous.hidden = filtres.taille === 'tous';
-		voirTous.setAttribute('href', hrefRecherche({ ...filtres, taille: 'tous', page: 1 }));
+		// Avec une taille ou une langue choisie, le plus simple est de les enlever : un bouton y mène
+		const elargir = $('voir-tous');
+		elargir.hidden = filtres.taille === 'tous' && filtres.langue === '';
+		elargir.setAttribute('href', hrefRecherche({ ...filtres, taille: 'tous', langue: '', page: 1 }));
 		montrer(ZONES, 'vide');
 		return;
 	}
@@ -172,7 +195,7 @@ $('reessayer').addEventListener('click', () => location.reload());
 // Les pastilles de filtre changent l'adresse sans recharger la page (le panneau reste ouvert, la page ne saute pas)
 document.addEventListener('click', (evenement) => {
 	if (evenement.defaultPrevented || evenement.button !== 0 || evenement.metaKey || evenement.ctrlKey || evenement.shiftKey || evenement.altKey) return;
-	const lienFiltre = (evenement.target as Element).closest<HTMLAnchorElement>('#filtres a, #filtres-taille a, #plus-filtres a');
+	const lienFiltre = (evenement.target as Element).closest<HTMLAnchorElement>('#filtres a, #filtres-taille a, #filtres-langue a, #plus-filtres a');
 	if (!lienFiltre) return;
 	evenement.preventDefault();
 	history.pushState(null, '', lienFiltre.href);

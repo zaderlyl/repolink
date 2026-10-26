@@ -1,4 +1,4 @@
-// Filtres de la page Recherche : lecture de l'adresse (?q=…&langage=a,b&topic=x,y&taille=…&page=…)
+// Filtres de la page Recherche : lecture de l'adresse (?q=…&langage=a,b&topic=x,y&taille=…&langue=…&page=…)
 // et construction de la requête de l'API de GitHub. Ces fonctions ne font aucun appel réseau.
 import type { OptionsRecherche } from './github.ts';
 import type { OngletRepo } from './adresses.ts';
@@ -29,18 +29,38 @@ const ETOILES_MIN_SANS_TEXTE = 10;
 // Un repo plus léger que cela (en Ko) est presque vide : on l'écarte des petits projets
 const TAILLE_MIN_PETIT = 200;
 
+// Langue du repo (celle de son README). GitHub ne la connaît pas : on cherche des mots très courants de cette langue,
+// donc c'est indicatif (quelques repos peuvent se glisser en trop ou manquer). L'anglais n'a pas de mots à lui : il n'est pas proposé.
+export type Langue = 'fr' | 'es' | 'de' | 'pt' | 'it' | 'ru' | 'zh' | 'ja';
+
+export const LANGUES: { id: Langue; texte: string; mots: string[] }[] = [
+	{ id: 'fr', texte: 'Français', mots: ['avec', 'pour', 'dans', 'des', 'une'] },
+	{ id: 'es', texte: 'Español', mots: ['para', 'con', 'una', 'los', 'que', 'del'] },
+	{ id: 'de', texte: 'Deutsch', mots: ['und', 'der', 'die', 'mit', 'für'] },
+	{ id: 'pt', texte: 'Português', mots: ['não', 'uma', 'para', 'com', 'você'] },
+	{ id: 'it', texte: 'Italiano', mots: ['che', 'per', 'con', 'una', 'della'] },
+	{ id: 'ru', texte: 'Русский', mots: ['это', 'для', 'что', 'как'] },
+	{ id: 'zh', texte: '中文', mots: ['的', '是', '和', '使用'] },
+	{ id: 'ja', texte: '日本語', mots: ['これ', 'です', 'する', 'ます'] },
+];
+
 export type Filtres = {
 	q: string; // texte tapé par le visiteur (nom, mot-clé, créateur…)
 	langages: string[]; // « JavaScript »… vide pour tous ; plusieurs langages se cumulent en OU (un repo n'a qu'un langage principal)
 	topics: string[]; // « react »… vide pour tous ; plusieurs topics se cumulent en ET (le repo doit les avoir tous)
 	taille: Taille; // « petits », « populaires » ou « tous »
+	langue: Langue | ''; // langue du README, ou vide pour toutes
 	page: number; // commence à 1
 };
 
 // Au plus 5 langages et 5 topics à la fois : GitHub limite la longueur et la complexité d'une recherche
 export const MAX_FILTRES = 5;
 
-export const FILTRES_VIDES: Filtres = { q: '', langages: [], topics: [], taille: 'tous', page: 1 };
+export const FILTRES_VIDES: Filtres = { q: '', langages: [], topics: [], taille: 'tous', langue: '', page: 1 };
+
+// Phrase qui prévient que le filtre de langue est une approximation
+export const EXPLICATION_LANGUE =
+	"Indicatif : GitHub ne connaît pas la langue d'un repo. On cherche des mots courants de cette langue dans son nom, sa description et son README : quelques repos peuvent se glisser en trop ou manquer.";
 
 // Phrase qui explique ce que montre une taille ; « tous » n'a rien à expliquer
 export function expliquerTaille(taille: Taille): string {
@@ -50,6 +70,9 @@ export function expliquerTaille(taille: Taille): string {
 	if (taille === 'populaires') return `Projets de plus de ${ETOILES_PETIT_MAX} étoiles.`;
 	return '';
 }
+
+// Une langue inconnue (adresse tapée à la main) donne « toutes »
+const lireLangue = (valeur: string | null): Langue | '' => LANGUES.find((l) => l.id === valeur)?.id ?? '';
 
 // Une taille inconnue (adresse tapée à la main) donne « tous »
 const lireTaille = (valeur: string | null): Taille => TAILLES.find((t) => t.id === valeur)?.id ?? 'tous';
@@ -96,6 +119,7 @@ export function lireFiltres(parametres: URLSearchParams): Filtres {
 		langages: nettoyerListe(parametres.get('langage'), false),
 		topics: nettoyerListe(parametres.get('topic'), true),
 		taille: lireTaille(parametres.get('taille')),
+		langue: lireLangue(parametres.get('langue')),
 		page: Number.isFinite(page) && page >= 1 ? Math.min(page, MAX_RESULTATS / RESULTATS_PAR_PAGE) : 1,
 	};
 }
@@ -116,6 +140,9 @@ export function construireRequete(
 ): string {
 	const morceaux: string[] = [];
 	if (filtres.q) morceaux.push(filtres.q);
+	// La langue ajoute des mots courants de cette langue, cherchés dans le nom, la description et le README
+	const langue = LANGUES.find((l) => l.id === filtres.langue);
+	if (langue) morceaux.push('in:name,description,readme', ...langue.mots);
 	// Plusieurs « language: » se cumulent en OU chez GitHub, plusieurs « topic: » en ET
 	for (const langage of filtres.langages) morceaux.push(`language:${valeur(langage)}`);
 	for (const topic of filtres.topics) morceaux.push(`topic:${valeur(topic)}`);
@@ -154,6 +181,7 @@ export function hrefRecherche(filtres: Partial<Filtres> = {}, chemin = '/recherc
 	if (f.langages.length > 0) parametres.set('langage', f.langages.join(','));
 	if (f.topics.length > 0) parametres.set('topic', f.topics.join(','));
 	if (f.taille !== 'tous') parametres.set('taille', f.taille);
+	if (f.langue) parametres.set('langue', f.langue);
 	if (f.page > 1) parametres.set('page', String(f.page));
 	// La virgule est permise dans une adresse : on la laisse lisible (langage=Go,Rust)
 	const texte = parametres.toString().replace(/%2C/g, ',');
