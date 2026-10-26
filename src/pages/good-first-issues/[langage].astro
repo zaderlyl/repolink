@@ -1,0 +1,79 @@
+---
+// Une page « Good first issues » par langage (ex. /good-first-issues/python/).
+// Contrairement à la page Good first issues, celle-ci est construite avec les issues déjà dans le HTML (src/data/langages.json,
+// écrit par « npm run donnees ») : les moteurs de recherche peuvent la lire. Les issues peuvent avoir jusqu'à un jour de retard.
+import Layout from '../../layouts/layout.astro';
+import Chip from '../../components/ui/chip.astro';
+import EntetePanneau from '../../components/ui/entete-panneau.astro';
+import LigneIssue from '../../components/ui/ligne-issue.astro';
+import EtatVide from '../../components/ui/etat-vide.astro';
+import Bouton from '../../components/ui/bouton.astro';
+import { pagesLangages } from '../../data/pages-langages.ts';
+import { genereLe, issuesParLangage } from '../../data/langages.ts';
+import { couleurLangage } from '../../lib/conversion.ts';
+import { hrefRepo, lien } from '../../lib/adresses.ts';
+import { hrefIssues } from '../../lib/recherche.ts';
+
+export function getStaticPaths() {
+	return pagesLangages.map((page) => ({ params: { langage: page.slug }, props: { page } }));
+}
+
+const { page } = Astro.props;
+const donnees = issuesParLangage[page.slug];
+
+const nombre = (n: number) => n.toLocaleString('fr-FR');
+const date = (iso: string) => new Date(iso).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+
+const description = donnees
+	? `${nombre(donnees.total)} good first issues ouvertes en ${page.nom} : trouve une première contribution open source adaptée aux débutants.`
+	: `Des good first issues en ${page.nom} : trouve une première contribution open source adaptée aux débutants.`;
+const autres = pagesLangages.filter((autre) => autre.slug !== page.slug);
+---
+
+<Layout titre={`Good first issues ${page.nom}`} description={description}>
+	<main id="principal" tabindex="-1" class="mx-auto w-full max-w-360 px-4 sm:px-10 pt-6">
+		<h1 class="font-titre text-[40px] leading-tight font-bold">Good first issues {page.nom}</h1>
+		<p class="mt-3 max-w-3xl text-texte-secondaire">{page.intro}</p>
+		<p class="mt-3 max-w-3xl text-texte-secondaire">
+			Une « good first issue » est une tâche que les mainteneurs ont repérée comme accessible aux débutants.
+			{donnees && ` Il y en a ${nombre(donnees.total)} d'ouvertes en ${page.nom} sur GitHub : voici les plus récemment mises à jour.`}
+		</p>
+
+		{
+			donnees ? (
+				<section aria-label={`Issues ouvertes en ${page.nom}`} class="mt-6 overflow-hidden rounded-xl border border-bordure-defaut bg-fond-page">
+					<EntetePanneau
+						titre="Issues récentes"
+						lienTexte={`Toutes les issues ${page.nom}`}
+						lienHref={hrefIssues({ langages: [page.nom] })}
+					/>
+					{donnees.issues.map((issue) => (
+						<LigneIssue titre={issue.titre} href={hrefRepo(issue.repo)} repo={issue.repo} ouverte={`le ${date(issue.creeeLe)}`} />
+					))}
+				</section>
+			) : (
+				<div class="mt-6">
+					<EtatVide symbole="⌕" titre="Liste indisponible" texte="Les issues de cette page n'ont pas pu être chargées. Utilise la recherche pour les voir.">
+						<Bouton href={hrefIssues({ langages: [page.nom] })} variante="secondaire">Voir les issues {page.nom}</Bouton>
+					</EtatVide>
+				</div>
+			)
+		}
+
+		{
+			donnees && (
+				<div class="mt-6 flex flex-wrap items-center gap-4">
+					<Bouton href={hrefIssues({ langages: [page.nom] })}>Voir toutes les issues {page.nom}</Bouton>
+					{genereLe && <p class="text-xs text-texte-secondaire">Liste mise à jour le {date(genereLe)}.</p>}
+				</div>
+			)
+		}
+
+		<h2 class="mt-10 text-xl font-semibold">Autres langages</h2>
+		<nav aria-label="Good first issues par langage" class="mt-4 flex flex-wrap gap-3 pb-10">
+			{autres.map((autre) => (
+				<Chip href={lien(`/good-first-issues/${autre.slug}/`)} couleur={couleurLangage(autre.nom)}>{autre.nom}</Chip>
+			))}
+		</nav>
+	</main>
+</Layout>
