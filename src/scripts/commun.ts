@@ -47,7 +47,7 @@ export function montrer(zones: string[], visible: string) {
 	for (const id of zones) $(id).hidden = id !== visible;
 }
 
-// Le token personnel enregistré dans Paramètres, s'il existe
+// Le token de la connexion avec GitHub, s'il existe
 function aUnToken(): boolean {
 	try {
 		return lireToken(globalThis.localStorage ?? null) !== null;
@@ -56,8 +56,10 @@ function aUnToken(): boolean {
 	}
 }
 
-// Sans token, la limite de 60 requêtes par heure est vite atteinte : on propose d'en ajouter un
+// Sans token, la limite de 60 requêtes par heure est vite atteinte : se connecter donne 5000 requêtes par heure
 const estLimiteSansToken = (erreur: unknown) => erreur instanceof ErreurGithub && erreur.type === 'limite' && !aUnToken();
+// GitHub refuse le token (révoqué sur GitHub, par exemple) : il faut se reconnecter
+const estJetonRefuse = (erreur: unknown) => erreur instanceof ErreurGithub && erreur.type === 'jeton';
 
 export function messageErreur(erreur: unknown): string {
 	if (erreur instanceof ErreurGithub) {
@@ -66,21 +68,21 @@ export function messageErreur(erreur: unknown): string {
 			const heure = erreur.reinitialisation.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' });
 			texte = `GitHub limite le nombre de requêtes. Réessaie vers ${heure}.`;
 		}
-		return estLimiteSansToken(erreur) ? `${texte} Pour en avoir davantage, ajoute ton token GitHub dans Paramètres.` : texte;
+		return estLimiteSansToken(erreur) ? `${texte} Connecte-toi avec GitHub pour en avoir davantage.` : texte;
 	}
 	return 'Une erreur est survenue. Réessaie dans un instant.';
 }
 
-// Remplit la zone d'erreur d'une page (#erreur) ; quand le token peut aider, un lien mène aux Paramètres
+// Remplit la zone d'erreur d'une page (#erreur) ; quand la connexion peut aider, un lien mène à la page Connexion
 export function afficherErreurPage(erreur: unknown) {
 	const paragraphe = document.querySelector('#erreur p')!;
 	paragraphe.textContent = messageErreur(erreur);
-	if (estLimiteSansToken(erreur) || (erreur instanceof ErreurGithub && erreur.type === 'jeton')) {
-		const lienParametres = document.createElement('a');
-		lienParametres.href = lien('/parametres?section=compte');
-		lienParametres.className = 'text-accent-lien hover:underline';
-		lienParametres.textContent = 'Ouvrir les Paramètres';
-		paragraphe.append(' ', lienParametres);
+	if (estLimiteSansToken(erreur) || estJetonRefuse(erreur)) {
+		const lienConnexion = document.createElement('a');
+		lienConnexion.href = lien('/connexion');
+		lienConnexion.className = 'text-accent-lien hover:underline';
+		lienConnexion.textContent = estJetonRefuse(erreur) ? 'Se reconnecter' : 'Se connecter';
+		paragraphe.append(' ', lienConnexion);
 	}
 }
 

@@ -1,42 +1,36 @@
 ---
-// Page « Connexion réussie » (maquette Figma : « Site - Connexion réussie »), affichée après la connexion.
-// Sans connexion, la page renvoie vers /connexion.
+// Page « Connexion réussie » (maquette Figma : « Site - Connexion réussie »), où GitHub renvoie après « Se connecter avec GitHub ».
+// Le script (src/scripts/connexion-reussie.ts) vérifie le retour de GitHub, récupère le token et ouvre la session.
+// Sans connexion ni retour de GitHub, la page renvoie vers /connexion.
 import Layout from '../layouts/layout.astro';
 import Bouton from '../components/ui/bouton.astro';
 import MessageConfirmation from '../components/ui/message-confirmation.astro';
 import { lien } from '../lib/adresses.ts';
 ---
 
-<Layout titre="Connexion réussie" description="Tu es connecté avec ton pseudo GitHub.">
+<Layout titre="Connexion réussie" description="Tu es connecté avec ton compte GitHub.">
 	<main id="principal" tabindex="-1" class="flex flex-1 items-center justify-center px-4 sm:px-10 py-16">
-		<MessageConfirmation id="message-connexion" titre="Connexion réussie" texte="Tu es connecté.">
+		<div id="en-cours" role="status" class="text-center">
+			<h1 class="font-titre text-2xl font-bold">Connexion en cours…</h1>
+			<p class="mt-3 text-sm text-texte-secondaire">Un instant, on termine avec GitHub.</p>
+		</div>
+
+		<MessageConfirmation id="message-connexion" hidden titre="Connexion réussie" texte="Tu es connecté.">
 			<!-- Première habitude : découvrir ses recommandations, puis revenir les consulter depuis la navbar -->
 			<div class="mt-8 flex flex-wrap justify-center gap-3">
 				<Bouton href={lien('/pour-toi')}>Voir mes recommandations</Bouton>
 				<Bouton href={lien('/explorer')} variante="secondaire">Explorer les repos</Bouton>
 			</div>
 		</MessageConfirmation>
+
+		<div id="erreur-connexion" role="alert" hidden class="flex max-w-[466px] flex-col items-center gap-3 text-center">
+			<h1 class="font-titre text-2xl font-bold">Connexion impossible</h1>
+			<p id="texte-erreur" class="text-sm text-texte-secondaire"></p>
+			<Bouton href={lien('/connexion')} class="mt-4">Réessayer</Bouton>
+		</div>
 	</main>
 </Layout>
 
 <script>
-	import { lien } from '../lib/adresses.ts';
-	import { lireSession } from '../lib/session.ts';
-
-	function stockage(): Storage | null {
-		try {
-			return globalThis.localStorage ?? null;
-		} catch {
-			return null;
-		}
-	}
-
-	// Pas de session : on n'a rien à confirmer, on va se connecter
-	const session = lireSession(stockage());
-	if (!session) {
-		window.location.replace(lien('/connexion'));
-	} else {
-		const texte = document.querySelector('#message-connexion p');
-		if (texte) texte.textContent = `Tu es connecté en tant que @${session.pseudo}.`;
-	}
+	import '../scripts/connexion-reussie.ts';
 </script>

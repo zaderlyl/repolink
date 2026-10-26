@@ -1,7 +1,9 @@
-// Session « connexion par pseudo » gardée dans le navigateur, sans serveur ni mot de passe :
+// Session « connexion avec GitHub » gardée dans le navigateur, sans serveur ni mot de passe :
 // on retient le pseudo GitHub (public) de la personne, son nom et sa photo pour la navbar et les pages « Pour toi », « Mon profil »…
+// Une session n'existe qu'avec le token de la connexion : une ancienne session sans token (connexion par pseudo) compte comme déconnectée.
 // Ces fonctions ne touchent pas à la page : le stockage est passé en paramètre, ce qui permet de les tester seules.
 import { estPseudoValide } from './recherche.ts';
+import { lireToken } from './token.ts';
 
 export const CLE_SESSION = 'repolink:session';
 
@@ -18,7 +20,7 @@ export type StockageSession = Pick<Storage, 'getItem' | 'setItem' | 'removeItem'
 export function lireSession(stockage: StockageSession | null): Session | null {
 	try {
 		const brut = stockage?.getItem(CLE_SESSION);
-		if (!brut) return null;
+		if (!brut || !lireToken(stockage)) return null;
 		const donnees: unknown = JSON.parse(brut);
 		if (!donnees || typeof donnees !== 'object') return null;
 		const { pseudo, nom, avatar } = donnees as Record<string, unknown>;

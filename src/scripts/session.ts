@@ -3,6 +3,7 @@
 // et l'avatar prend sa photo GitHub ; « Pour toi » et « Favoris » n'apparaissent que connecté. Tout bouton avec l'attribut data-deconnexion déconnecte.
 // Les pages qui dépendent de la connexion écoutent l'événement « session-changee » (déclenché ici).
 import { effacerSession, lireSession } from '../lib/session.ts';
+import { effacerToken } from '../lib/token.ts';
 import { afficherToast } from './toasts.ts';
 
 function stockage(): Storage | null {
@@ -39,8 +40,9 @@ function rafraichirNavbar() {
 	}
 }
 
+// Le token de la connexion part avec la session : après la déconnexion, plus rien ne reste dans le navigateur
 function deconnecter() {
-	if (!effacerSession(stockage())) {
+	if (!effacerSession(stockage()) || !effacerToken(stockage())) {
 		afficherToast('Déconnexion impossible : ton navigateur bloque le stockage.', 'erreur');
 		return;
 	}

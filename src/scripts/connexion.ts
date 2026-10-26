@@ -1,17 +1,9 @@
-// Page Connexion : vérifie que le pseudo existe sur GitHub, le garde dans le navigateur (src/lib/session.ts)
-// puis va sur la page « Connexion réussie ». Une personne déjà connectée voit un message à la place du formulaire.
-import { ErreurGithub, recupererProfil } from '../lib/github.ts';
-import { versProfil } from '../lib/conversion.ts';
-import { ecrireSession, lireSession, nettoyerPseudo } from '../lib/session.ts';
-import { estPseudoValide } from '../lib/recherche.ts';
-import { $, messageErreur } from './commun.ts';
-import { afficherErreur, validerFormulaire } from './formulaire.ts';
+// Page Connexion : « Se connecter avec GitHub » garde un `state` aléatoire puis envoie chez GitHub (src/lib/oauth.ts) ;
+// le retour se fait sur « Connexion réussie ». Une personne déjà connectée voit un message à la place du bouton.
+import { lireSession } from '../lib/session.ts';
+import { adresseAutorisation, garderEtat, genererEtat } from '../lib/oauth.ts';
+import { $ } from './commun.ts';
 import { afficherToast } from './toasts.ts';
-import { lien } from '../lib/adresses.ts';
-
-const formulaire = $<HTMLFormElement>('formulaire-connexion');
-const champ = $<HTMLInputElement>('connexion-pseudo');
-const bouton = $<HTMLButtonElement>('bouton-continuer');
 
 function stockage(): Storage | null {
 	try {
@@ -21,7 +13,7 @@ function stockage(): Storage | null {
 	}
 }
 
-// Formulaire ou message « déjà connecté », selon la session
+// Bouton GitHub ou message « déjà connecté », selon la session
 function afficherEtat() {
 	const session = lireSession(stockage());
 	$('deja-connecte').hidden = !session;
@@ -29,41 +21,19 @@ function afficherEtat() {
 	if (session) $('pseudo-connecte').textContent = `@${session.pseudo}`;
 }
 
-async function seConnecter() {
-	const pseudo = nettoyerPseudo(champ.value);
-	if (!estPseudoValide(pseudo)) {
-		afficherErreur(champ, 'Un pseudo GitHub ne contient que des lettres, des chiffres et des tirets (39 au plus).');
-		champ.focus();
+$('bouton-github').addEventListener('click', () => {
+	const etat = genererEtat();
+	let stockageEtat: Storage | null = null;
+	try {
+		stockageEtat = globalThis.sessionStorage ?? null;
+	} catch {
+		stockageEtat = null;
+	}
+	if (!garderEtat(stockageEtat, etat)) {
+		afficherToast('Connexion impossible : ton navigateur bloque le stockage.', 'erreur');
 		return;
 	}
-
-	bouton.disabled = true;
-	bouton.textContent = 'Vérification…';
-	try {
-		const utilisateur = await recupererProfil(pseudo);
-		const profil = versProfil(utilisateur);
-		const enregistre = ecrireSession(stockage(), { pseudo: profil.pseudo, nom: profil.nom, avatar: utilisateur.avatar_url });
-		if (!enregistre) {
-			afficherToast('Connexion impossible : ton navigateur bloque le stockage.', 'erreur');
-			return;
-		}
-		window.location.assign(lien('/connexion-reussie'));
-	} catch (erreur) {
-		if (erreur instanceof ErreurGithub && erreur.type === 'introuvable') {
-			afficherErreur(champ, 'Ce pseudo n’existe pas sur GitHub.');
-			champ.focus();
-		} else {
-			afficherToast(messageErreur(erreur), 'erreur');
-		}
-	} finally {
-		bouton.disabled = false;
-		bouton.textContent = 'Continuer';
-	}
-}
-
-// La vérification du format et du champ vide est faite par validerFormulaire ; seConnecter fait le reste
-validerFormulaire(formulaire, () => {
-	void seConnecter();
+	window.location.assign(adresseAutorisation(etat));
 });
 
 afficherEtat();
