@@ -1,35 +1,35 @@
 ---
 // Page « Cookies » (maquette Figma : « Site - Cookies »).
-// Les choix ne sont pas encore enregistrés : l'interrupteur et le bouton sont là pour la mise en page.
+// Repolink ne dépose aucun cookie : tout ce qu'il retient est dans le stockage du navigateur (voir src/lib/donnees.ts).
 import Article from '../layouts/article.astro';
-import LigneParametre from '../components/ui/ligne-parametre.astro';
-import Bouton from '../components/ui/bouton.astro';
 
 const sections = [
 	{
-		id: 'definition',
-		titre: 'Qu’est-ce qu’un cookie ?',
-		texte: 'Un cookie est un petit fichier enregistré dans ton navigateur pour mémoriser une information, comme ta préférence de thème.',
+		id: 'cookies',
+		titre: 'Cookies',
+		texte: 'Un cookie est un petit fichier enregistré par un site dans ton navigateur et renvoyé à chaque visite. Repolink n’en dépose aucun : il n’y a ni cookie de mesure d’audience, ni cookie publicitaire, ni cookie de suivi. Il n’y a donc aucun choix à faire ni bandeau à accepter.',
 	},
 	{
-		id: 'preferences',
-		titre: 'Gérer tes préférences',
-		texte: 'Les cookies essentiels sont toujours actifs. La mesure d’audience est facultative.',
+		id: 'stockage-local',
+		titre: 'Stockage local',
+		texte: 'Pour fonctionner, le site utilise le stockage local de ton navigateur (localStorage et sessionStorage). Contrairement à un cookie, il n’est jamais envoyé à un serveur : il reste sur ton appareil. Il garde ta connexion (pseudo, nom, photo et jeton GitHub), tes favoris, les créateurs que tu suis, tes préférences, et pendant une heure une copie des réponses de GitHub pour limiter le nombre de requêtes. Pendant la connexion, une valeur temporaire de sécurité est aussi gardée le temps de la page, ainsi que l’ouverture du panneau « Plus de filtres » de la recherche.',
+	},
+	{
+		id: 'effacer',
+		titre: 'Tout effacer',
+		texte: '« Se déconnecter » ferme ta connexion. « Supprimer mon compte » dans les paramètres efface de ce navigateur ta connexion, tes favoris, tes créateurs suivis et tes préférences. Tu peux aussi vider les données du site depuis les réglages de ton navigateur.',
+	},
+	{
+		id: 'tiers',
+		titre: 'Sites tiers',
+		texte: 'Repolink affiche des données de GitHub et envoie ta connexion à GitHub, qui peut utiliser ses propres cookies sur ses pages. Consulte la politique de confidentialité de GitHub pour en savoir plus.',
 	},
 ];
 ---
 
 <Article
-	titre="Cookies"
-	description="Les cookies utilisés par Repolink et comment choisir ceux que tu acceptes."
-	intro="Repolink utilise très peu de cookies. Tu peux choisir ceux que tu acceptes."
+	titre="Cookies et stockage local"
+	description="Repolink ne dépose aucun cookie. Ce que le site garde dans ton navigateur et comment l'effacer."
+	intro="Repolink ne dépose aucun cookie. Voici ce que le site garde dans ton navigateur."
 	sections={sections}
->
-	<form class="mt-4 flex flex-col gap-3" aria-label="Préférences de cookies">
-		<LigneParametre type="toggle" label="Cookies essentiels" id="cookies-essentiels" name="essentiels" actif />
-		<LigneParametre type="toggle" label="Mesure d’audience" id="cookies-audience" name="audience" />
-		<div class="mt-2">
-			<Bouton>Enregistrer mes choix</Bouton>
-		</div>
-	</form>
-</Article>
+/>
