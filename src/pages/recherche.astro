@@ -1,6 +1,6 @@
 ---
 // Page « Recherche » (maquettes Figma : « Site - Liste de résultats » et « Site - Chargement »).
-// La page est statique : les filtres sont lus dans l'adresse (?q=…&langage=…&topic=…&page=…)
+// La page est statique : les filtres sont lus dans l'adresse (?q=…&langage=…&topic=…&taille=…&page=…)
 // et les résultats viennent de l'API de GitHub dans le navigateur (src/scripts/recherche.ts).
 // Les <template> sont les modèles que le script remplit : ils utilisent les vrais composants.
 import Layout from '../layouts/layout.astro';
@@ -11,7 +11,7 @@ import EtatVide from '../components/ui/etat-vide.astro';
 import Bouton from '../components/ui/bouton.astro';
 import AideMots from '../components/ui/aide-mots.astro';
 import { couleurLangage } from '../lib/conversion.ts';
-import { hrefRecherche } from '../lib/recherche.ts';
+import { hrefRecherche, TAILLES } from '../lib/recherche.ts';
 import { lien } from '../lib/adresses.ts';
 
 const langagesRapides = ['JavaScript', 'Python'];
@@ -32,9 +32,20 @@ const langagesRapides = ['JavaScript', 'Python'];
 			))}
 		</nav>
 
+		<!-- Taille du projet : « Petits projets » donne leur chance aux créateurs encore peu connus. Le script remplace les pastilles selon l'adresse. -->
+		<div class="mt-3 flex flex-wrap items-center gap-3">
+			<span class="text-[13px] text-texte-secondaire">Taille</span>
+			<nav id="filtres-taille" aria-label="Filtrer par taille de projet" class="flex flex-wrap gap-3">
+				{TAILLES.map(({ id, texte }) => (
+					<Chip href={hrefRecherche({ taille: id })} actif={id === 'tous'}>{texte}</Chip>
+				))}
+			</nav>
+		</div>
+
 		<form id="formulaire-recherche" action={lien('/recherche')} method="get" role="search" class="mt-7">
 			<input type="hidden" name="langage" disabled />
 			<input type="hidden" name="topic" disabled />
+			<input type="hidden" name="taille" disabled />
 			<ChampRecherche name="q" label="Rechercher un repo, un topic ou un créateur" maxlength={100} />
 		</form>
 
