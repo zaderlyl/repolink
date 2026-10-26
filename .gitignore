@@ -8,6 +8,7 @@ dist/
 # Données de l'accueil et de l'Explorer générées par « npm run donnees »
 src/data/accueil.json
 src/data/explorer.json
+src/data/langages.json
 
 # Variables d'environnement (jamais de clé ou token dans git)
 .env
