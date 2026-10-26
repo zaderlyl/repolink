@@ -1,6 +1,7 @@
 // Conversion des réponses de GitHub vers les types de src/data/accueil.ts (Repo, Issue, Profil).
 // Les pages et les composants ne voient ainsi que des textes prêts à afficher.
 import type { Issue, Profil, Repo } from '../data/accueil.ts';
+import { langagesRecherche } from '../data/filtres.ts';
 import type {
 	ContributeurGithub,
 	EvenementGithub,
@@ -10,30 +11,8 @@ import type {
 	UtilisateurGithub,
 } from './github.ts';
 
-// Couleurs des langages de GitHub (l'API ne les donne pas) ; gris pour les autres
-const COULEURS_LANGAGES: Record<string, string> = {
-	JavaScript: '#f1e05a',
-	TypeScript: '#3178c6',
-	Python: '#3572a5',
-	CSS: '#563d7c',
-	HTML: '#e34c26',
-	Go: '#00add8',
-	Rust: '#dea584',
-	Java: '#b07219',
-	'C++': '#f34b7d',
-	C: '#555555',
-	'C#': '#178600',
-	PHP: '#4f5d95',
-	Ruby: '#701516',
-	Swift: '#f05138',
-	Kotlin: '#a97bff',
-	Shell: '#89e051',
-	Vue: '#41b883',
-	Svelte: '#ff3e00',
-	Dart: '#00b4ab',
-	Lua: '#000080',
-	SCSS: '#c6538c',
-};
+// Couleurs des langages de GitHub (l'API ne les donne pas), prises dans la liste des filtres (src/data/filtres.ts) ; gris pour les autres
+const COULEURS_LANGAGES: Record<string, string> = Object.fromEntries(langagesRecherche.map(({ nom, couleur }) => [nom, couleur]));
 const COULEUR_PAR_DEFAUT = '#8b949e';
 // Un repo peut avoir 20 topics : la carte n'en montre que deux, pour rester lisible
 const MAX_TOPICS = 2;

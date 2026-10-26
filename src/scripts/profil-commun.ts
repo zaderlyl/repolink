@@ -49,10 +49,10 @@ function afficherProfil(profil: ProfilCreateur, titrePage: string) {
 export function lignesCreateur(profil: ProfilCreateur, evenements: number | null): LigneProfil[] {
 	const lignes: LigneProfil[] = [];
 	if (profil.langages.length > 0) {
-		lignes.push({ label: `Langages : ${profil.langages.join(', ')}`, href: hrefRecherche({ langage: profil.langages[0] }) });
+		lignes.push({ label: `Langages : ${profil.langages.join(', ')}`, href: hrefRecherche({ langages: [profil.langages[0]] }) });
 	}
 	if (profil.competences.length > 0) {
-		lignes.push({ label: `Compétences : ${profil.competences.join(', ')}`, href: hrefRecherche({ topic: profil.competences[0] }) });
+		lignes.push({ label: `Compétences : ${profil.competences.join(', ')}`, href: hrefRecherche({ topics: [profil.competences[0]] }) });
 	}
 	// Pas de ligne quand il n'y a rien à dire (ex. une organisation n'a pas d'événements publics à son nom)
 	if (evenements) lignes.push({ label: `Activité récente : ${evenements} événement${evenements > 1 ? 's' : ''}`, href: '#activite' });
@@ -65,10 +65,10 @@ export function lignesMoi(favoris: number): (profil: ProfilCreateur) => LignePro
 	return (profil) => {
 		const lignes: LigneProfil[] = [];
 		if (profil.langages.length > 0) {
-			lignes.push({ label: `Langages : ${profil.langages.join(', ')}`, href: hrefRecherche({ langage: profil.langages[0] }) });
+			lignes.push({ label: `Langages : ${profil.langages.join(', ')}`, href: hrefRecherche({ langages: [profil.langages[0]] }) });
 		}
 		if (profil.competences.length > 0) {
-			lignes.push({ label: `Compétences : ${profil.competences.join(', ')}`, href: hrefRecherche({ topic: profil.competences[0] }) });
+			lignes.push({ label: `Compétences : ${profil.competences.join(', ')}`, href: hrefRecherche({ topics: [profil.competences[0]] }) });
 		}
 		lignes.push({ label: `Favoris (${favoris})`, href: lien('/favoris') });
 		lignes.push({ label: 'Paramètres du compte', href: lien('/parametres') });

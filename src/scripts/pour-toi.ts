@@ -36,7 +36,7 @@ function afficherCompetences(langages: string[], pseudo: string) {
 	const vide = $('competences-vide');
 	liste.replaceChildren(
 		...langages.map((langage) =>
-			depuisModele('modele-competence', { texte: langage, couleur: couleurLangage(langage), href: hrefRecherche({ langage }) }),
+			depuisModele('modele-competence', { texte: langage, couleur: couleurLangage(langage), href: hrefRecherche({ langages: [langage] }) }),
 		),
 	);
 	vide.hidden = langages.length > 0;

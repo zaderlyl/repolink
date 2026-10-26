@@ -35,8 +35,8 @@ async function charger() {
 	const filtres = lireFiltres(new URLSearchParams(location.search));
 	afficherPastilles($('filtres'), {
 		langagesRapides: LANGAGES_RAPIDES,
-		langage: filtres.langage,
-		hrefLangage: (langage) => hrefIssues({ langage }),
+		langage: filtres.langages[0] ?? '',
+		hrefLangage: (langage) => hrefIssues({ langages: langage ? [langage] : [] }),
 	});
 	montrer(ZONES, 'chargement');
 
