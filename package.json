@@ -11,7 +11,8 @@
     "preview": "astro preview",
     "verifier": "astro check",
     "donnees": "node --env-file-if-exists=.env scripts/preparer-donnees.ts && node --env-file-if-exists=.env scripts/preparer-explorer.ts && node --env-file-if-exists=.env scripts/preparer-langages.ts",
-    "astro": "astro"
+    "astro": "astro",
+    "test": "node --experimental-strip-types --test \"tests/**/*.test.ts\""
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.7.4",
