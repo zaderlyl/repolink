@@ -33,7 +33,10 @@ const titreComplet = titre === 'Repolink' ? titre : `${titre} · Repolink`;
 		<meta name="description" content={description} />
 		<meta name="generator" content={Astro.generator} />
 		<link rel="icon" type="image/svg+xml" href={lien('/favicon.svg')} />
-		<link rel="icon" href={lien('/favicon.ico')} />
+		<link rel="icon" href={lien('/favicon.ico')} sizes="48x48" />
+		<link rel="apple-touch-icon" href={lien('/apple-touch-icon.png')} />
+		<link rel="manifest" href={lien('/site.webmanifest')} />
+		<meta name="theme-color" content="#0d1117" />
 		<link rel="canonical" href={adresseCanonique} />
 		<!-- Aperçu du lien quand la page est partagée (réseaux sociaux, messageries) -->
 		<meta property="og:type" content="website" />
