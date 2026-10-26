@@ -16,16 +16,38 @@ Données de l'accueil (API GitHub) : créer un fichier `.env` avec `GITHUB_TOKEN
 ## Structure
 ```
 src/
-  pages/    une page = une route (index.astro = l'accueil)
-  styles/   global.css : thème Tailwind (couleurs et polices Figma)
-assets/     images et polices
-public/     fichiers servis tels quels (favicon)
-README.md
+  pages/        une page = une route (index.astro = l'accueil)
+  layouts/      layout.astro (en-tête, SEO) et article.astro (pages de contenu et blog)
+  components/   navbar, footer, composants de page ; ui/ = composants de la maquette (bouton, chip, carte-repo…)
+  scripts/      code lancé dans le navigateur, un fichier par page
+  lib/          logique sans page (API GitHub, recherche, session, token, OAuth, cache) : testée dans tests/
+  data/         listes (filtres, blog, langages) et données générées par « npm run donnees »
+  styles/       global.css : thème Tailwind (couleurs et polices Figma)
+scripts/        scripts Node de « npm run donnees » (préparent les JSON de src/data/)
+tests/          tests (npm test)
+worker/         Worker Cloudflare de la connexion GitHub
+public/         fichiers servis tels quels (icônes, robots.txt, image de partage)
+assets/         sources des images (ex. image-partage.svg)
+.github/        workflow de déploiement, modèles d'issue et de pull request
 ```
 
 ## Stack
 - Astro (pages et composants), Tailwind CSS (styles), API publique de GitHub (données).
 - Couleurs et polices : variables de la collection Figma « Repolink » (fond, panneau, bordure, texte, accents, boutons). Titres en Space Grotesk, texte en Inter.
+
+## Connexion avec GitHub
+- OAuth App GitHub sans permission (lecture seule). Le site est statique : le secret de l'application ne peut pas y être gardé, donc `worker/` (Cloudflare Workers) échange le code temporaire contre le jeton. Le secret `CLIENT_SECRET` n'existe que chez Cloudflare (voir `worker/README.md`).
+- Le jeton (`gho_…`) et la session sont dans le `localStorage` du navigateur (`src/lib/token.ts`, `session.ts`). Il sert à passer de 60 à 5 000 requêtes par heure.
+- Se connecter ne marche qu'en production : une seule adresse de retour est enregistrée dans l'OAuth App.
+
+## Données
+- Accueil, Explorer et pages par langage : générés au build (`npm run donnees`, jeton du workflow). Chaque JSON est ignoré par git ; sans lui le site se construit quand même (données d'exemple, ou pages par langage sans liste d'issues).
+- Recherche, Good first issues, fiches repo et profils : appels à l'API de GitHub dans le navigateur, avec un cache d'une heure (`src/lib/cache.ts`).
+- Le déploiement tourne à chaque push sur `main` et chaque jour à 5 h UTC (`.github/workflows/deploiement.yml`).
+
+## Blog
+- Les articles sont dans `src/data/blog.ts` (pas de CMS). Une section accepte des paragraphes, listes et blocs de code (`blocs`) ; `{base}` dans un lien devient `/repolink`.
+- L'auteur reste « Équipe Repolink » tant qu'une personne n'a pas signé un article (données structurées dans `src/pages/blog/[slug].astro`).
 
 ## Maquettes (Figma)
 - Pages, composants et prototype : https://www.figma.com/design/GJ2KMbxx5scYChiw6kxbUE (fichier « wireframe github (copie) »).
@@ -36,8 +58,8 @@ README.md
 - kebab-case pour les fichiers, commentaires en français.
 - Garder cette même organisation sur tous mes projets.
 - Une branche par fonctionnalité, jamais de code directement sur `main`.
-- Commits au format `type: Message en français` (chore, feat, fix, docs, refactor, style).
+- Commits au format `type: Message en français` (chore, feat, fix, docs, test, refactor, style).
 - Jamais de clé API ni de token dans git (voir `.env` dans `.gitignore`).
 
-## Idées pour plus tard
-- **Filtres multiples** sur la Recherche et les Good first issues : pouvoir choisir plusieurs langages et/ou plusieurs topics en même temps (aujourd'hui un seul de chaque). Il faudra des paramètres répétés dans l'adresse (`?langage=Go&langage=Rust`), des pastilles cumulables et un test de la façon dont GitHub combine plusieurs `language:` (ET ou OU) dans une requête. Le code à faire évoluer : `src/lib/recherche.ts` (`lireFiltres`, `construireRequete`, `hrefRecherche`) et `src/scripts/recherche.ts` (pastilles).
+## Feuille de route
+Elle est dans les [issues GitHub](https://github.com/zaderlyl/repolink/issues), classées par labels (`feature`, `bug`, `seo`, `tests`…) et par priorité (`priorité: haute|moyenne|basse`). Les mentions légales à compléter (éditeur, contact) sont l'issue n°56.
