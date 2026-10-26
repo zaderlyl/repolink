@@ -27,18 +27,20 @@ const [aLaUne, ...autres] = articles;
 			</div>
 		</article>
 
-		<section aria-label="Tous les articles" class="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-			{
-				autres.map((article) => (
-					<CarteArticle
-						titre={article.titre}
-						resume={article.resume}
-						tag={article.tag}
-						date={infosArticle(article)}
-						href={hrefArticle(article.slug)}
-					/>
-				))
-			}
-		</section>
+		{
+			autres.length > 0 && (
+				<section aria-label="Tous les articles" class="mt-10 grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+					{autres.map((article) => (
+						<CarteArticle
+							titre={article.titre}
+							resume={article.resume}
+							tag={article.tag}
+							date={infosArticle(article)}
+							href={hrefArticle(article.slug)}
+						/>
+					))}
+				</section>
+			)
+		}
 	</main>
 </Layout>

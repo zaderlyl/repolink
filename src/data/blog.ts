@@ -35,186 +35,88 @@ export const hrefArticle = (slug: string) => lien(`/blog/${slug}`);
 // « 12 oct. 2026 · 5 min de lecture », affiché sous les titres
 export const infosArticle = (article: Article) => `${article.date} · ${article.lecture}`;
 
-// Premier article : celui de la bannière « À la une » du blog
+// Le premier article est celui de la bannière « À la une » du blog.
+// Les articles sont écrits par l'équipe : `auteur` reste « Équipe Repolink » tant qu'aucune personne n'a signé un article.
 export const articles: Article[] = [
 	{
-		slug: 'premiere-pull-request',
-		titre: 'Comment j’ai fait ma première pull request',
-		resume: 'Il y a un mois, je n’avais jamais contribué à l’open source. Voici ce que j’ai appris en corrigeant ma première issue.',
-		tag: 'Témoignage',
-		auteur: 'Camille Durand',
-		date: '12 oct. 2026',
-		dateIso: '2026-10-12',
-		lecture: '5 min de lecture',
-		intro: 'Il y a un mois, je n’avais jamais contribué à un projet open source. Voici ce que j’ai appris en corrigeant ma première issue.',
-		sections: [
-			{
-				id: 'choix-du-projet',
-				titre: 'Le choix du projet',
-				texte: 'J’ai commencé par un petit kit d’interface en CSS, très bien documenté. La section « good first issue » m’a donné plusieurs idées par où démarrer.',
-			},
-			{
-				id: 'erreurs-du-debut',
-				titre: 'Les erreurs du début',
-				texte: 'Mon premier commit ne respectait pas le format demandé. Le mainteneur m’a expliqué la règle en deux lignes, et j’ai corrigé en dix minutes.',
-			},
-			{
-				id: 'ce-que-je-retiens',
-				titre: 'Ce que je retiens',
-				texte: 'Poser une question n’a rien de gênant. Les mainteneurs préfèrent une question claire à une pull request qui s’éloigne de ce qu’ils attendent.',
-			},
-		],
-	},
-	{
-		slug: 'choisir-sa-premiere-good-first-issue',
-		titre: 'Choisir sa première good first issue',
-		resume: 'Trois critères simples pour ne pas se tromper de projet quand on débute.',
+		slug: 'premiere-contribution-open-source',
+		titre: 'Comment faire sa première contribution open source',
+		resume: 'Un guide pas à pas pour passer de « je n’ose pas » à une première pull request acceptée : choisir un projet, une issue, et envoyer ton travail.',
 		tag: 'Guide',
-		auteur: 'Yanis Moreau',
-		date: '12 oct. 2026',
-		dateIso: '2026-10-12',
-		lecture: '5 min de lecture',
-		intro: 'Toutes les good first issues ne se valent pas. Voici trois critères pour choisir celle qui te fera vraiment progresser.',
+		auteur: 'Équipe Repolink',
+		date: '26 oct. 2026',
+		dateIso: '2026-10-26',
+		lecture: '7 min de lecture',
+		intro: 'Contribuer à un projet open source semble réservé aux experts. C’est faux : une faute corrigée dans une documentation ou un petit bug réglé comptent autant qu’une grosse fonctionnalité. Voici la marche à suivre, de A à Z.',
 		sections: [
 			{
-				id: 'projet-actif',
-				titre: 'Un projet actif',
-				texte: 'Regarde la date des derniers commits et le temps de réponse aux issues. Un projet qui répond en quelques jours te laissera moins bloqué.',
+				id: 'choisir-un-projet',
+				titre: 'Choisir un projet à ta portée',
+				blocs: [
+					{ type: 'p', texte: 'Le bon premier projet n’est pas le plus célèbre, c’est celui où tu te sentiras accueilli. Quelques signes qui ne trompent pas :' },
+					{
+						type: 'liste',
+						items: [
+							'<strong>Il est actif</strong> : des changements récents, des issues et des pull requests qui reçoivent une réponse.',
+							'<strong>Il explique comment contribuer</strong> : un fichier <code>CONTRIBUTING.md</code> ou une section dédiée dans le README.',
+							'<strong>Il est de taille raisonnable</strong> : un petit projet se lit plus vite et les mainteneurs ont plus de temps pour toi.',
+							'<strong>Tu l’utilises ou tu le comprends</strong> : tu sauras plus facilement ce qui manque.',
+						],
+					},
+					{ type: 'p', texte: 'Sur Repolink, le filtre « Petits projets » de la <a href="{base}/recherche?taille=petits">recherche</a> met en avant des créateurs moins connus, souvent très heureux d’avoir de l’aide.' },
+				],
 			},
 			{
-				id: 'issue-claire',
-				titre: 'Une issue claire',
-				texte: 'Une bonne issue décrit le problème et le résultat attendu. Si tu ne comprends pas ce qu’il faut faire, passe à la suivante.',
+				id: 'trouver-une-issue',
+				titre: 'Trouver une issue pour débuter',
+				blocs: [
+					{ type: 'p', texte: 'Une issue est une tâche ou un problème signalé sur le projet. Les mainteneurs marquent les plus accessibles avec le label <code>good first issue</code>. Tu peux les parcourir sur la page <a href="{base}/good-first-issues/">Good first issues</a>, par langage si tu préfères.' },
+					{ type: 'p', texte: 'Avant de te lancer, vérifie que personne n’est déjà dessus, puis écris un commentaire court : « Je voudrais m’en occuper, est-ce toujours disponible ? ». Attends la réponse du mainteneur : ça évite de travailler pour rien.' },
+				],
 			},
 			{
-				id: 'taille-raisonnable',
-				titre: 'Une taille raisonnable',
-				texte: 'Vise un changement de quelques lignes. Ta première contribution n’a pas besoin d’être spectaculaire pour être utile.',
-			},
-		],
-	},
-	{
-		slug: 'apprendre-git-sans-stress',
-		titre: 'Apprendre Git sans stress',
-		resume: 'Les cinq commandes qui suffisent pour contribuer à un projet.',
-		tag: 'Tutoriel',
-		auteur: 'Inès Garcia',
-		date: '12 oct. 2026',
-		dateIso: '2026-10-12',
-		lecture: '5 min de lecture',
-		intro: 'Git semble immense au début, mais cinq commandes couvrent presque tout ce qu’il faut pour contribuer.',
-		sections: [
-			{
-				id: 'cloner-et-brancher',
-				titre: 'Cloner et créer une branche',
-				texte: 'git clone récupère le projet, puis git switch -c crée ta branche. Ne travaille jamais directement sur la branche principale.',
+				id: 'copier-le-projet',
+				titre: 'Faire ta copie du projet',
+				blocs: [
+					{ type: 'p', texte: 'Tu n’as pas le droit de modifier directement le dépôt d’un autre. Tu en fais donc une copie à ton nom, un <strong>fork</strong>, avec le bouton « Fork » en haut de la page du projet. Puis tu la télécharges sur ton ordinateur, c’est le <strong>clone</strong> :' },
+					{ type: 'code', code: 'git clone https://github.com/TON-PSEUDO/le-projet.git\ncd le-projet' },
+				],
 			},
 			{
-				id: 'enregistrer',
-				titre: 'Enregistrer ton travail',
-				texte: 'git add prépare tes fichiers et git commit les enregistre avec un message court qui dit ce que tu as changé.',
+				id: 'modifier',
+				titre: 'Créer une branche et faire ta modification',
+				blocs: [
+					{ type: 'p', texte: 'Travaille toujours sur une branche à part : le travail de la branche principale reste intact et ta contribution est facile à relire. Donne-lui un nom qui dit ce qu’elle fait.' },
+					{ type: 'code', code: 'git switch -c fix/faute-dans-le-readme' },
+					{ type: 'p', texte: 'Fais ta modification, en restant strictement dans ce que demande l’issue : un petit changement bien fait est accepté plus vite qu’un gros. Relis les règles du projet, par exemple le format des messages de commit. Puis enregistre et envoie ton travail :' },
+					{
+						type: 'code',
+						code: 'git add .\ngit commit -m "docs: Corrige une faute dans le README"\ngit push origin fix/faute-dans-le-readme',
+					},
+				],
 			},
 			{
-				id: 'envoyer',
-				titre: 'Envoyer tes changements',
-				texte: 'git push envoie ta branche sur GitHub, d’où tu pourras ouvrir ta pull request.',
-			},
-		],
-	},
-	{
-		slug: 'ouvrir-une-issue-qui-donne-envie-de-repondre',
-		titre: 'Ouvrir une issue qui donne envie de répondre',
-		resume: 'Comment décrire un bug pour que les mainteneurs le comprennent vite.',
-		tag: 'Conseils',
-		auteur: 'Camille Durand',
-		date: '12 oct. 2026',
-		dateIso: '2026-10-12',
-		lecture: '5 min de lecture',
-		intro: 'Une issue bien écrite reçoit une réponse plus vite. Voici comment décrire un bug pour qu’on le comprenne du premier coup.',
-		sections: [
-			{
-				id: 'titre-precis',
-				titre: 'Un titre précis',
-				texte: '« Ça ne marche pas » ne dit rien. Écris ce qui échoue et où : « Le menu se ferme au clic sur mobile ».',
+				id: 'pull-request',
+				titre: 'Ouvrir ta pull request',
+				blocs: [
+					{ type: 'p', texte: 'Sur GitHub, un bandeau te propose « Compare &amp; pull request » : c’est la demande de fusion de ta branche dans le projet. Rédige-la comme tu aimerais la lire :' },
+					{
+						type: 'liste',
+						items: [
+							'un titre précis, par exemple « Corrige une faute dans le README » ;',
+							'quelques lignes qui expliquent ce que tu as changé et pourquoi ;',
+							'la mention <code>Closes #12</code> (avec le numéro de l’issue) : GitHub fermera l’issue quand ta pull request sera acceptée.',
+						],
+					},
+				],
 			},
 			{
-				id: 'etapes',
-				titre: 'Les étapes pour reproduire',
-				texte: 'Liste ce que tu as fait, ce que tu attendais et ce qui s’est passé. Ajoute ton navigateur ou ta version si c’est utile.',
-			},
-		],
-	},
-	{
-		slug: 'trouver-un-mentor-open-source',
-		titre: 'Trouver un mentor open source',
-		resume: 'Où chercher, quoi demander, et comment remercier.',
-		tag: 'Mentorat',
-		auteur: 'Yanis Moreau',
-		date: '12 oct. 2026',
-		dateIso: '2026-10-12',
-		lecture: '5 min de lecture',
-		intro: 'Un mentor te fait gagner des semaines. Voici comment le trouver sans le déranger.',
-		sections: [
-			{
-				id: 'ou-chercher',
-				titre: 'Où chercher',
-				texte: 'Commence par les mainteneurs des projets où tu as déjà contribué, ou par les créateurs de profils sur Repolink.',
-			},
-			{
-				id: 'quoi-demander',
-				titre: 'Quoi demander',
-				texte: 'Une question précise vaut mieux qu’un « peux-tu m’aider ? ». Dis ce que tu as essayé et où tu bloques.',
-			},
-			{
-				id: 'remercier',
-				titre: 'Comment remercier',
-				texte: 'Un retour sur ce qui a marché, ou une pull request qui améliore la documentation, fait toujours plaisir.',
-			},
-		],
-	},
-	{
-		slug: 'documenter-son-projet-en-30-minutes',
-		titre: 'Documenter son projet en 30 minutes',
-		resume: 'Un README clair attire plus de contributeurs que du code parfait.',
-		tag: 'Documentation',
-		auteur: 'Inès Garcia',
-		date: '12 oct. 2026',
-		dateIso: '2026-10-12',
-		lecture: '5 min de lecture',
-		intro: 'Un bon README tient en une page. Voici de quoi l’écrire en une demi-heure.',
-		sections: [
-			{
-				id: 'presentation',
-				titre: 'Dire à quoi sert le projet',
-				texte: 'Une phrase pour le but, une capture ou un exemple, puis les commandes pour l’installer et le lancer.',
-			},
-			{
-				id: 'contribuer',
-				titre: 'Expliquer comment contribuer',
-				texte: 'Ajoute un fichier CONTRIBUTING court et marque quelques issues « good first issue » pour accueillir les débutants.',
-			},
-		],
-	},
-	{
-		slug: 'publier-son-projet-sur-github-pages',
-		titre: 'Publier son projet sur GitHub Pages',
-		resume: 'En dix minutes, mets ton site en ligne gratuitement et partage le lien.',
-		tag: 'Tutoriel',
-		auteur: 'Camille Durand',
-		date: '12 oct. 2026',
-		dateIso: '2026-10-12',
-		lecture: '5 min de lecture',
-		intro: 'GitHub Pages héberge gratuitement un site statique. Voici comment mettre le tien en ligne.',
-		sections: [
-			{
-				id: 'activer-pages',
-				titre: 'Activer GitHub Pages',
-				texte: 'Dans les paramètres du dépôt, choisis la branche à publier. GitHub construit et héberge le site pour toi.',
-			},
-			{
-				id: 'partager',
-				titre: 'Partager le lien',
-				texte: 'L’adresse apparaît après quelques minutes. Ajoute-la à la description du dépôt pour que chacun la trouve.',
+				id: 'apres',
+				titre: 'Et après ?',
+				blocs: [
+					{ type: 'p', texte: 'Un mainteneur relira ton travail et te demandera peut-être des changements : c’est normal et ça ne veut pas dire que c’est raté. Réponds poliment, corrige sur la même branche, et ta pull request se met à jour toute seule. Selon le projet, la réponse peut prendre quelques heures ou plusieurs semaines : sois patient et ne relance pas tous les jours.' },
+					{ type: 'p', texte: 'Quand ta pull request est fusionnée, tu es officiellement contributeur. Tu peux alors choisir une deuxième issue, un peu plus ambitieuse : la première marche est franchie.' },
+				],
 			},
 		],
 	},
