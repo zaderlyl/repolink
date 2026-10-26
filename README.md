@@ -79,6 +79,8 @@ assets/         sources des images
 .github/        workflow de déploiement, modèles d'issue et de pull request
 ```
 
+Pour comprendre comment les pièces s'assemblent (déploiement, données, connexion, recherche), lis [docs/architecture.md](docs/architecture.md).
+
 ## Contribuer
 
 Les contributions sont les bienvenues, surtout celles des débutants : lis le [guide de contribution](CONTRIBUTING.md) et le [code de conduite](CODE_OF_CONDUCT.md). Pour signaler une faille, voir [SECURITY.md](SECURITY.md).
