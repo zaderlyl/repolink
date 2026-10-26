@@ -2,10 +2,19 @@ import { lien } from '../lib/adresses.ts';
 // Articles du blog (données factices : le blog n'a pas d'API, les articles sont écrits ici).
 // Les types décrivent la forme que les pages /blog et /blog/[slug] attendent.
 
+// Un morceau de contenu dans une section. Le texte d'un paragraphe ou d'un élément de liste peut contenir du HTML simple
+// (<code>, <strong>, <a>) : il est écrit ici, pas par les visiteurs. Un lien interne s'écrit href="{base}/recherche".
+export type Bloc =
+	| { type: 'p'; texte: string }
+	| { type: 'liste'; items: string[]; ordonnee?: boolean }
+	| { type: 'code'; code: string };
+
+// `texte` : un seul paragraphe simple ; `blocs` : paragraphes, listes et commandes, affichés après `texte`
 export type SectionArticle = {
 	id: string;
 	titre: string;
-	texte: string;
+	texte?: string;
+	blocs?: Bloc[];
 };
 
 export type Article = {

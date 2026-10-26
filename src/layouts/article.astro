@@ -3,11 +3,15 @@
 // Titre, introduction et sections viennent des props ; `sommaire` ajoute la colonne de liens à gauche.
 // Le contenu supplémentaire (ex. réglages des cookies) se met dans le slot, après les sections.
 import Layout from './layout.astro';
+import { lien } from '../lib/adresses.ts';
+import type { Bloc } from '../data/blog';
 
 interface Section {
 	id: string;
 	titre: string;
-	texte: string;
+	texte?: string;
+	// Paragraphes, listes et commandes (articles de blog), affichés après `texte`
+	blocs?: Bloc[];
 }
 
 interface Props {
@@ -22,6 +26,10 @@ interface Props {
 }
 
 const { titre, description, intro, sections, sommaire, libellesSommaire } = Astro.props;
+
+// {base} dans un texte devient le dossier du site (« /repolink » sur GitHub Pages)
+const html = (texte: string) => texte.replaceAll('{base}', lien(''));
+const classesTexte = 'text-[15px] leading-6 text-texte-secondaire [&_a]:text-accent-lien [&_a:hover]:underline [&_code]:rounded [&_code]:bg-fond-champ [&_code]:px-1 [&_code]:py-0.5 [&_code]:font-mono [&_code]:text-[13px] [&_strong]:text-texte-principal';
 ---
 
 <Layout titre={titre} description={description}>
@@ -58,7 +66,21 @@ const { titre, description, intro, sections, sommaire, libellesSommaire } = Astr
 					sections.map((section) => (
 						<section id={section.id} class="scroll-mt-6">
 							<h2 class="text-[22px] leading-7 font-semibold">{section.titre}</h2>
-							<p class="mt-3 text-[15px] leading-6 text-texte-secondaire">{section.texte}</p>
+							{section.texte && <p class={`mt-3 ${classesTexte}`}>{section.texte}</p>}
+							{section.blocs?.map((bloc) => {
+								if (bloc.type === 'p') return <p class={`mt-3 ${classesTexte}`} set:html={html(bloc.texte)} />;
+								if (bloc.type === 'liste') {
+									const Liste = bloc.ordonnee ? 'ol' : 'ul';
+									return (
+										<Liste class:list={['mt-3 flex flex-col gap-1.5 pl-6', bloc.ordonnee ? 'list-decimal' : 'list-disc', classesTexte]}>
+											{bloc.items.map((item) => <li set:html={html(item)} />)}
+										</Liste>
+									);
+								}
+								return (
+									<pre class="mt-3 overflow-x-auto rounded-lg border border-bordure-defaut bg-fond-panneau p-4 font-mono text-[13px] leading-5 text-texte-principal"><code>{bloc.code}</code></pre>
+								);
+							})}
 						</section>
 					))
 				}
