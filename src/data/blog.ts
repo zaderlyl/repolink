@@ -247,4 +247,83 @@ export const articles: Article[] = [
 			},
 		],
 	},
+	{
+		slug: 'vocabulaire-github-explique',
+		titre: 'Le vocabulaire de GitHub expliqué simplement',
+		resume: 'Dépôt, fork, clone, branche, commit, pull request… Les mots à connaître pour comprendre une discussion de développeurs sans te perdre.',
+		tag: 'Guide',
+		auteur: 'Équipe Repolink',
+		date: '26 oct. 2026',
+		dateIso: '2026-10-26',
+		lecture: '5 min de lecture',
+		intro: 'GitHub a son propre jargon, et il peut décourager quand on débute. Bonne nouvelle : une douzaine de mots suffisent pour suivre presque toutes les discussions. Les voici, regroupés par ce qu’ils permettent de faire.',
+		sections: [
+			{
+				id: 'depot-et-copies',
+				titre: 'Le projet et ses copies',
+				blocs: [
+					{
+						type: 'liste',
+						items: [
+							'<strong>Dépôt</strong> (repository, ou « repo ») : le dossier d’un projet avec tous ses fichiers et tout l’historique de leurs modifications.',
+							'<strong>Fork</strong> : ta copie personnelle du dépôt de quelqu’un d’autre, hébergée sur ton compte GitHub. Tu peux la modifier librement sans toucher à l’original.',
+							'<strong>Clone</strong> : le téléchargement d’un dépôt sur ton ordinateur pour travailler dessus. On clone souvent son propre fork.',
+						],
+					},
+					{ type: 'code', code: 'git clone https://github.com/TON-PSEUDO/le-projet.git' },
+				],
+			},
+			{
+				id: 'enregistrer',
+				titre: 'Enregistrer son travail',
+				blocs: [
+					{
+						type: 'liste',
+						items: [
+							'<strong>Commit</strong> : une photo de tes modifications à un instant donné, avec un message qui dit ce que tu as changé. Un projet est une suite de commits.',
+							'<strong>Branche</strong> : une ligne de travail parallèle. Tu y fais tes essais sans toucher à la version principale du projet, appelée en général <code>main</code>.',
+							'<strong>Push</strong> : envoyer tes commits de ton ordinateur vers GitHub.',
+							'<strong>Pull</strong> : l’inverse, récupérer les derniers changements de GitHub sur ton ordinateur.',
+						],
+					},
+					{ type: 'code', code: 'git switch -c ma-branche\ngit add .\ngit commit -m "docs: Corrige une faute"\ngit push origin ma-branche' },
+				],
+			},
+			{
+				id: 'proposer',
+				titre: 'Proposer et discuter',
+				blocs: [
+					{
+						type: 'liste',
+						items: [
+							'<strong>Issue</strong> : une fiche de discussion sur le projet : un bug, une idée, une question. Chacune a un numéro, par exemple <code>#12</code>.',
+							'<strong>Pull request</strong> (« PR ») : ta demande d’ajouter tes modifications au projet. C’est là que les autres relisent ton travail et en discutent.',
+							'<strong>Review</strong> : la relecture de ta pull request par un mainteneur, avec ses remarques.',
+							'<strong>Merge</strong> (fusion) : l’acceptation de ta pull request. Tes modifications entrent dans le projet.',
+						],
+					},
+				],
+			},
+			{
+				id: 'les-personnes',
+				titre: 'Les personnes',
+				blocs: [
+					{
+						type: 'liste',
+						items: [
+							'<strong>Mainteneur</strong> : une personne qui s’occupe du projet. Elle relit les propositions et décide de ce qui est accepté.',
+							'<strong>Contributeur</strong> : toute personne qui propose une modification. Dès que ta première pull request est fusionnée, c’est toi.',
+						],
+					},
+				],
+			},
+			{
+				id: 'pour-aller-plus-loin',
+				titre: 'Pour aller plus loin',
+				blocs: [
+					{ type: 'p', texte: 'Le plus simple pour retenir ces mots, c’est de les utiliser. Suis le guide <a href="{base}/blog/premiere-contribution-open-source/">Comment faire sa première contribution open source</a> : tu y croiseras chacun d’eux, dans l’ordre. Et pour savoir où commencer, lis aussi <a href="{base}/blog/lire-un-readme-github/">Lire un README</a>.' },
+				],
+			},
+		],
+	},
 ];
