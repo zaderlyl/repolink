@@ -12,6 +12,7 @@ import AideMots from '../components/ui/aide-mots.astro';
 import { couleurLangage } from '../lib/conversion.ts';
 import { hrefIssues } from '../lib/recherche.ts';
 import { lien } from '../lib/adresses.ts';
+import { pagesLangages } from '../data/pages-langages.ts';
 
 const langagesRapides = ['JavaScript', 'Python', 'CSS'];
 ---
@@ -71,6 +72,14 @@ const langagesRapides = ['JavaScript', 'Python', 'CSS'];
 		</noscript>
 
 		<div id="pagination" class="mt-6 flex justify-center"></div>
+
+		<!-- Liens vers les pages par langage : écrits dans le HTML, pour que les moteurs de recherche les suivent -->
+		<h2 class="mt-10 text-xl font-semibold">Good first issues par langage</h2>
+		<nav aria-label="Pages Good first issues par langage" class="mt-4 flex flex-wrap gap-3 pb-10">
+			{pagesLangages.map((page) => (
+				<Chip href={lien(`/good-first-issues/${page.slug}/`)} couleur={couleurLangage(page.nom)}>{page.nom}</Chip>
+			))}
+		</nav>
 	</main>
 
 	<!-- Modèles remplis par le script : __cle__ est remplacé par la valeur -->
