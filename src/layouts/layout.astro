@@ -20,6 +20,8 @@ const {
 // Adresse officielle de la page (sans ?filtres ni #ancre), pour que les moteurs de recherche ne la comptent qu'une fois
 const adresseCanonique = new URL(Astro.url.pathname, Astro.site).href;
 
+const imagePartage = new URL(lien('/image-partage.png'), Astro.site).href;
+
 const titreComplet = titre === 'Repolink' ? titre : `${titre} · Repolink`;
 ---
 
@@ -33,6 +35,18 @@ const titreComplet = titre === 'Repolink' ? titre : `${titre} · Repolink`;
 		<link rel="icon" type="image/svg+xml" href={lien('/favicon.svg')} />
 		<link rel="icon" href={lien('/favicon.ico')} />
 		<link rel="canonical" href={adresseCanonique} />
+		<!-- Aperçu du lien quand la page est partagée (réseaux sociaux, messageries) -->
+		<meta property="og:type" content="website" />
+		<meta property="og:site_name" content="Repolink" />
+		<meta property="og:locale" content="fr_FR" />
+		<meta property="og:title" content={titreComplet} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={adresseCanonique} />
+		<meta property="og:image" content={imagePartage} />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta property="og:image:alt" content="Repolink : trouve des repos GitHub à ta portée et rencontre des créateurs." />
+		<meta name="twitter:card" content="summary_large_image" />
 		<title>{titreComplet}</title>
 	</head>
 	<body class="flex min-h-screen flex-col bg-fond-page text-texte-principal antialiased">
