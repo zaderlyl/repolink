@@ -182,4 +182,69 @@ export const articles: Article[] = [
 			},
 		],
 	},
+	{
+		slug: 'lire-un-readme-github',
+		titre: 'Lire un README : comprendre un projet GitHub quand on débute',
+		resume: 'Le README est la porte d’entrée d’un projet. Voici comment le lire pour savoir à quoi il sert, s’il est vivant et comment y contribuer.',
+		tag: 'Tutoriel',
+		auteur: 'Équipe Repolink',
+		date: '26 oct. 2026',
+		dateIso: '2026-10-26',
+		lecture: '5 min de lecture',
+		intro: 'Tu arrives sur la page d’un projet GitHub et tu ne sais pas par où commencer ? Le premier réflexe, c’est de lire le README. Ce fichier est la vitrine du projet, et savoir le lire te fera gagner beaucoup de temps avant de contribuer.',
+		sections: [
+			{
+				id: 'ce-que-cest',
+				titre: 'Un README, c’est quoi ?',
+				blocs: [
+					{ type: 'p', texte: 'Le README est un fichier texte, le plus souvent <code>README.md</code>, que GitHub affiche automatiquement sous la liste des fichiers du projet. Son rôle : présenter le projet à quelqu’un qui le découvre. Le <code>.md</code> signifie qu’il est écrit en Markdown, une façon simple de mettre des titres, des listes et du code en forme.' },
+					{ type: 'p', texte: 'Un bon README répond en quelques minutes à trois questions : à quoi sert le projet, comment l’essayer, et comment participer.' },
+				],
+			},
+			{
+				id: 'les-parties',
+				titre: 'Les parties que tu vas retrouver',
+				blocs: [
+					{ type: 'p', texte: 'Chaque projet organise son README à sa façon, mais on retrouve souvent la même structure :' },
+					{
+						type: 'code',
+						code: '# Nom du projet\nUne phrase qui explique à quoi il sert.\n\n## Installation\nLes commandes pour le mettre en route.\n\n## Utilisation\nUn exemple pour l’essayer.\n\n## Contribuer\nComment proposer ton aide.\n\n## Licence\nCe que tu as le droit de faire avec.',
+					},
+					{
+						type: 'liste',
+						items: [
+							'<strong>Description</strong> : en tête, une ou deux phrases. Si tu ne comprends pas à quoi sert le projet après les avoir lues, il n’est peut-être pas pour toi.',
+							'<strong>Installation et utilisation</strong> : les commandes pour le lancer sur ton ordinateur. C’est ce que tu suivras pour tester ta modification.',
+							'<strong>Contribuer</strong> : les règles du projet. Souvent, le README renvoie vers un fichier <code>CONTRIBUTING.md</code> qui détaille la marche à suivre.',
+							'<strong>Licence</strong> : ce que les autres ont le droit de faire avec le code. Elle est détaillée dans le fichier <code>LICENSE</code>.',
+						],
+					},
+				],
+			},
+			{
+				id: 'projet-vivant',
+				titre: 'Le projet est-il vivant ?',
+				blocs: [
+					{ type: 'p', texte: 'Le README ne dit pas tout : regarde aussi la page du projet. Quelques indices pour savoir s’il est suivi :' },
+					{
+						type: 'liste',
+						items: [
+							'la date du dernier commit, affichée en haut de la liste des fichiers ;',
+							'les issues et pull requests récentes, et si quelqu’un y répond ;',
+							'la présence d’un fichier <code>CODE_OF_CONDUCT.md</code>, signe d’une communauté qui soigne l’accueil.',
+						],
+					},
+					{ type: 'p', texte: 'Un projet sans activité depuis plus d’un an n’est pas forcément mort, mais tu risques d’attendre longtemps une réponse. Pour un premier essai, vise un projet actif.' },
+				],
+			},
+			{
+				id: 'dans-la-pratique',
+				titre: 'Dans la pratique',
+				blocs: [
+					{ type: 'p', texte: 'Avant de commenter une issue, prends dix minutes : lis le README, essaie de lancer le projet, puis ouvre le fichier de contribution s’il existe. Tu poseras de meilleures questions, et les mainteneurs apprécieront que tu aies fait cet effort.' },
+					{ type: 'p', texte: 'Prêt à te lancer ? Trouve une tâche sur la page <a href="{base}/good-first-issues/">Good first issues</a>, puis suis le guide <a href="{base}/blog/premiere-contribution-open-source/">Comment faire sa première contribution open source</a>.' },
+				],
+			},
+		],
+	},
 ];
