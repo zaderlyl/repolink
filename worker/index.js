@@ -4,7 +4,8 @@
 const ORIGINES_AUTORISEES = ['https://zaderlyl.github.io', 'http://localhost:4321'];
 
 function reponse(corps, statut, origine) {
-	return new Response(JSON.stringify(corps), {
+	// Un statut 204 n'a pas de contenu : y mettre un corps fait planter Response (la requête préliminaire CORS échouait)
+	return new Response(statut === 204 ? null : JSON.stringify(corps), {
 		status: statut,
 		headers: {
 			'Content-Type': 'application/json',
