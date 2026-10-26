@@ -1,0 +1,15 @@
+{
+  "name": "Repolink",
+  "short_name": "Repolink",
+  "description": "Trouve des repos GitHub à ta portée et rencontre des créateurs.",
+  "lang": "fr",
+  "start_url": "/repolink/",
+  "scope": "/repolink/",
+  "display": "browser",
+  "background_color": "#0d1117",
+  "theme_color": "#0d1117",
+  "icons": [
+    { "src": "/repolink/icone-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/repolink/icone-512.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

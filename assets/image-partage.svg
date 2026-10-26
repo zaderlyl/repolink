@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <rect width="1200" height="630" fill="#0d1117"/>
+  <rect x="0" y="0" width="1200" height="8" fill="#58a6ff"/>
+  <g transform="translate(100 200)" fill="none" stroke="#58a6ff" stroke-width="14" stroke-linecap="round">
+    <circle cx="30" cy="30" r="26"/>
+    <circle cx="170" cy="30" r="26"/>
+    <line x1="64" y1="30" x2="136" y2="30"/>
+  </g>
+  <text x="100" y="400" font-family="Helvetica, Arial, sans-serif" font-size="120" font-weight="700" fill="#e6edf3">Repolink</text>
+  <text x="100" y="470" font-family="Helvetica, Arial, sans-serif" font-size="40" fill="#8b949e">Trouve des repos GitHub à ta portée</text>
+  <text x="100" y="525" font-family="Helvetica, Arial, sans-serif" font-size="40" fill="#8b949e">et rencontre des créateurs.</text>
+  <text x="100" y="585" font-family="Helvetica, Arial, sans-serif" font-size="28" fill="#58a6ff">zaderlyl.github.io/repolink</text>
+</svg>
