@@ -9,7 +9,7 @@ npm run dev
 ```
 URL : http://localhost:4321/repolink/
 
-Données de l'accueil (API GitHub) : créer un fichier `.env` avec `GITHUB_TOKEN=…` (token fine-grained en lecture seule sur les repos publics), puis lancer `npm run donnees`. Cela écrit `src/data/accueil.json` et `src/data/explorer.json` (ignorés par git).
+Données de l'accueil (API GitHub) : créer un fichier `.env` avec `GITHUB_TOKEN=…` (token fine-grained en lecture seule sur les repos publics), puis lancer `npm run donnees`. Cela écrit `src/data/accueil.json`, `src/data/explorer.json` et `src/data/langages.json` (les issues des pages `/good-first-issues/<langage>/`), ignorés par git.
 
 ## Structure
 ```
