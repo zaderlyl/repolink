@@ -14,7 +14,8 @@ export type Article = {
 	resume: string;
 	tag: string;
 	auteur: string;
-	date: string;
+	date: string; // texte affiché, par exemple « 12 oct. 2026 »
+	dateIso: string; // même date au format AAAA-MM-JJ, pour les moteurs de recherche
 	lecture: string;
 	intro: string;
 	sections: SectionArticle[];
@@ -34,6 +35,7 @@ export const articles: Article[] = [
 		tag: 'Témoignage',
 		auteur: 'Camille Durand',
 		date: '12 oct. 2026',
+		dateIso: '2026-10-12',
 		lecture: '5 min de lecture',
 		intro: 'Il y a un mois, je n’avais jamais contribué à un projet open source. Voici ce que j’ai appris en corrigeant ma première issue.',
 		sections: [
@@ -61,6 +63,7 @@ export const articles: Article[] = [
 		tag: 'Guide',
 		auteur: 'Yanis Moreau',
 		date: '12 oct. 2026',
+		dateIso: '2026-10-12',
 		lecture: '5 min de lecture',
 		intro: 'Toutes les good first issues ne se valent pas. Voici trois critères pour choisir celle qui te fera vraiment progresser.',
 		sections: [
@@ -88,6 +91,7 @@ export const articles: Article[] = [
 		tag: 'Tutoriel',
 		auteur: 'Inès Garcia',
 		date: '12 oct. 2026',
+		dateIso: '2026-10-12',
 		lecture: '5 min de lecture',
 		intro: 'Git semble immense au début, mais cinq commandes couvrent presque tout ce qu’il faut pour contribuer.',
 		sections: [
@@ -115,6 +119,7 @@ export const articles: Article[] = [
 		tag: 'Conseils',
 		auteur: 'Camille Durand',
 		date: '12 oct. 2026',
+		dateIso: '2026-10-12',
 		lecture: '5 min de lecture',
 		intro: 'Une issue bien écrite reçoit une réponse plus vite. Voici comment décrire un bug pour qu’on le comprenne du premier coup.',
 		sections: [
@@ -137,6 +142,7 @@ export const articles: Article[] = [
 		tag: 'Mentorat',
 		auteur: 'Yanis Moreau',
 		date: '12 oct. 2026',
+		dateIso: '2026-10-12',
 		lecture: '5 min de lecture',
 		intro: 'Un mentor te fait gagner des semaines. Voici comment le trouver sans le déranger.',
 		sections: [
@@ -164,6 +170,7 @@ export const articles: Article[] = [
 		tag: 'Documentation',
 		auteur: 'Inès Garcia',
 		date: '12 oct. 2026',
+		dateIso: '2026-10-12',
 		lecture: '5 min de lecture',
 		intro: 'Un bon README tient en une page. Voici de quoi l’écrire en une demi-heure.',
 		sections: [
@@ -186,6 +193,7 @@ export const articles: Article[] = [
 		tag: 'Tutoriel',
 		auteur: 'Camille Durand',
 		date: '12 oct. 2026',
+		dateIso: '2026-10-12',
 		lecture: '5 min de lecture',
 		intro: 'GitHub Pages héberge gratuitement un site statique. Voici comment mettre le tien en ligne.',
 		sections: [
