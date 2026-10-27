@@ -27,7 +27,7 @@ export const ETOILES_PETIT_MAX = 50;
 // Sans texte, les repos « tous » sans étoile ne montreraient que des dépôts vides : on les écarte sous ce seuil
 const ETOILES_MIN_SANS_TEXTE = 10;
 // Un repo plus léger que cela (en Ko) est presque vide : on l'écarte des petits projets
-const TAILLE_MIN_PETIT = 200;
+export const TAILLE_MIN_PETIT = 200;
 
 // Langue du repo (celle de son README). GitHub ne la connaît pas : on cherche des mots très courants de cette langue,
 // donc c'est indicatif (quelques repos peuvent se glisser en trop ou manquer). L'anglais n'a pas de mots à lui : il n'est pas proposé.
