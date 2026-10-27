@@ -115,7 +115,7 @@ const profilsFactices: Profil[] = [
 	},
 ];
 
-type DonneesAccueil = { genereLe: string; repos: Repo[]; issues: Issue[]; profils: Profil[] };
+type DonneesAccueil = { genereLe: string; repos: Repo[]; issues: Issue[]; profils: Profil[]; pepites?: Repo[] };
 
 // import.meta.glob ne plante pas quand le fichier est absent : il renvoie simplement une liste vide
 const fichiers = import.meta.glob<{ default: DonneesAccueil }>('./accueil.json', { eager: true });
@@ -125,6 +125,8 @@ const donnees = Object.values(fichiers)[0]?.default;
 export const repos: Repo[] = donnees?.repos?.length ? donnees.repos : reposFactices;
 export const issues: Issue[] = donnees?.issues?.length ? donnees.issues : issuesFactices;
 export const profils: Profil[] = donnees?.profils?.length ? donnees.profils : profilsFactices;
+// Les pépites n'ont pas de données factices : sans vraies données, la section de l'accueil n'est pas affichée
+export const pepites: Repo[] = donnees?.pepites ?? [];
 
 // Activité d'exemple : 24 semaines de 5 jours, niveaux de 0 à 4.
 // La `graine` change le dessin d'un profil à l'autre. Ce sera remplacé par les vraies contributions.

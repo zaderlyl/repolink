@@ -7,6 +7,7 @@ import { dirname } from 'node:path';
 import { rechercherIssues, rechercherRepos, recupererProfil, ErreurGithub } from '../src/lib/github.ts';
 import type { RepoGithub } from '../src/lib/github.ts';
 import { versIssue, versProfil, versRepo } from '../src/lib/conversion.ts';
+import { choisirPepites, construireRequetePepites } from '../src/lib/pepites.ts';
 
 const SORTIE = 'src/data/accueil.json';
 const NB_REPOS = 4;
@@ -46,6 +47,14 @@ try {
 		repos.push(versRepo(repo, await compterGoodFirstIssues(repo.full_name)));
 	}
 
+	// Pépites à soutenir : petits projets récents avec une good first issue. Il peut n'y en avoir aucune : la section
+	// de l'accueil disparaît alors, sans faire échouer la préparation des données.
+	const recherchePepites = await rechercherRepos(construireRequetePepites(new Date()), { tri: 'updated', ordre: 'desc', parPage: 100, token });
+	const pepites = [];
+	for (const repo of choisirPepites(recherchePepites.items)) {
+		pepites.push(versRepo(repo, await compterGoodFirstIssues(repo.full_name)));
+	}
+
 	// Issues : récentes, choisies parmi les repos à la une pour que les liens de l'accueil restent cohérents
 	const filtreRepos = aLaUne.map((repo) => `repo:${repo.full_name}`).join(' ');
 	const issuesGithub = await rechercherIssues(`${filtreRepos} label:"good first issue" state:open is:issue`, {
@@ -65,8 +74,8 @@ try {
 	if (profils.length < NB_PROFILS) throw new Error(`Seulement ${profils.length} profils trouvés.`);
 
 	await mkdir(dirname(SORTIE), { recursive: true });
-	await writeFile(SORTIE, JSON.stringify({ genereLe: new Date().toISOString(), repos, issues, profils }, null, '\t') + '\n');
-	console.log(`${SORTIE} écrit : ${repos.length} repos, ${issues.length} issues, ${profils.length} profils.`);
+	await writeFile(SORTIE, JSON.stringify({ genereLe: new Date().toISOString(), repos, issues, profils, pepites }, null, '\t') + '\n');
+	console.log(`${SORTIE} écrit : ${repos.length} repos, ${issues.length} issues, ${profils.length} profils, ${pepites.length} pépites.`);
 } catch (erreur) {
 	// Message seul : jamais d'objet complet, pour ne pas afficher d'en-têtes ni de token dans les journaux
 	const message = erreur instanceof ErreurGithub || erreur instanceof Error ? erreur.message : String(erreur);
