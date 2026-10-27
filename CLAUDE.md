@@ -41,7 +41,8 @@ assets/         sources des images (ex. image-partage.svg)
 - Se connecter ne marche qu'en production : une seule adresse de retour est enregistrée dans l'OAuth App.
 
 ## Données
-- Accueil, Explorer et pages par langage : générés au build (`npm run donnees`, jeton du workflow). Chaque JSON est ignoré par git ; sans lui le site se construit quand même (données d'exemple, ou pages par langage sans liste d'issues).
+- Accueil (repos à la une, issues, profils et « Pépites à soutenir »), Explorer et pages par langage : générés au build (`npm run donnees`, jeton du workflow). Chaque JSON est ignoré par git ; sans lui le site se construit quand même (données d'exemple, pages par langage sans liste d'issues, accueil sans pépites : cette section n'a pas de données factices et disparaît).
+- Les pépites (petits projets récents avec une good first issue) sont choisies par `src/lib/pepites.ts`, testé dans `tests/pepites.test.ts`.
 - Recherche, Good first issues, fiches repo et profils : appels à l'API de GitHub dans le navigateur, avec un cache d'une heure (`src/lib/cache.ts`).
 - Le déploiement tourne à chaque push sur `main` et chaque jour à 5 h UTC (`.github/workflows/deploiement.yml`).
 
