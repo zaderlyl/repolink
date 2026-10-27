@@ -8,6 +8,7 @@ Un site pour trouver facilement des repos GitHub à ta portée et rencontrer des
 
 - **Recherche** de repos avec des filtres simples : langages et topics (plusieurs à la fois), taille du projet (petits créateurs, populaires), langue.
 - **Good first issues** : les issues accessibles aux débutants, filtrées par langage, avec une page par langage lisible par les moteurs de recherche.
+- **Pépites à soutenir** sur l'accueil : des petits projets récents, encore peu connus, qui cherchent des contributeurs.
 - **Explorer**, fiches de repo et profils de créateurs, mise en relation, favoris et page « Pour toi ».
 - **Connexion avec GitHub** (lecture seule) pour passer de 60 à 5 000 requêtes par heure.
 - **Blog** : des guides pour réussir sa première contribution open source.

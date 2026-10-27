@@ -8,8 +8,9 @@ import Bouton from '../components/ui/bouton.astro';
 import CarteRepo from '../components/ui/carte-repo.astro';
 import LigneIssue from '../components/ui/ligne-issue.astro';
 import EntetePanneau from '../components/ui/entete-panneau.astro';
-import { repos, issues, hrefRepo } from '../data/accueil';
+import { repos, issues, pepites, hrefRepo } from '../data/accueil';
 import { lien } from '../lib/adresses.ts';
+import { hrefRecherche } from '../lib/recherche.ts';
 
 // Liens du bloc « plan du site » en bas de page, en colonnes (les liens légaux sont dans le footer)
 const colonnes = [
@@ -103,6 +104,34 @@ const colonnes = [
 					}
 				</div>
 			</section>
+
+			<!-- Pépites à soutenir : petits projets récents qui cherchent des contributeurs (absente sans données, voir src/data/accueil.ts) -->
+			{
+				pepites.length > 0 && (
+					<section class="mt-8" aria-labelledby="pepites-a-soutenir">
+						<div class="flex items-baseline justify-between">
+							<h2 id="pepites-a-soutenir" class="text-xl font-semibold">Pépites à soutenir</h2>
+							<a href={hrefRecherche({ taille: 'petits' })} class="text-sm font-medium text-accent-lien hover:underline">Voir les petits projets</a>
+						</div>
+						<p class="mt-1 text-sm text-texte-secondaire">Des projets récents, encore peu connus, avec une issue pour débuter : un coup de main compte vraiment.</p>
+						<div class="mt-4 grid gap-6 md:grid-cols-2">
+							{pepites.map((repo) => (
+								<CarteRepo
+									nom={repo.nom}
+									href={hrefRepo(repo.nom)}
+									description={repo.description}
+									miseAJour={repo.miseAJour}
+									langage={repo.langage}
+									couleurLangage={repo.couleurLangage}
+									etoiles={repo.etoiles}
+									topics={repo.topics}
+									goodFirstIssues={repo.goodFirstIssues}
+								/>
+							))}
+						</div>
+					</section>
+				)
+			}
 
 			<!-- Good first issues -->
 			<section aria-label="Good first issues" class="mt-8 overflow-hidden rounded-xl border border-bordure-defaut">

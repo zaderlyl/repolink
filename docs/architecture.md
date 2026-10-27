@@ -28,12 +28,16 @@ Le workflow `.github/workflows/deploiement.yml` tourne à chaque push sur `main`
 
 | Page | Données | Quand |
 |---|---|---|
-| Accueil, Explorer | JSON générés par `npm run donnees` | au build, rafraîchis chaque jour |
+| Accueil (dont « Pépites à soutenir »), Explorer | JSON générés par `npm run donnees` | au build, rafraîchis chaque jour |
 | Pages `/good-first-issues/<langage>/` | `src/data/langages.json` | au build, rafraîchis chaque jour |
 | Recherche, Good first issues, fiches repo, profils | API de GitHub | dans le navigateur, à chaque visite |
 | Blog | `src/data/blog.ts` | écrites à la main |
 
 Dans le navigateur, `src/lib/github.ts` appelle l'API et `src/lib/cache.ts` garde chaque réponse une heure dans le `localStorage`, pour rester sous la limite de GitHub (60 requêtes par heure sans jeton, 5 000 avec).
+
+## Les pépites de l'accueil
+
+La section « Pépites à soutenir » met en avant des petits projets : 1 à 50 étoiles, créés ces 12 derniers mois, actifs ces 30 derniers jours, avec au moins une good first issue. `src/lib/pepites.ts` construit la requête et choisit quatre repos (les personnes avant les organisations, un seul par auteur). Le choix est refait à chaque déploiement. Sans données, la section n'est pas affichée : il n'y a pas de pépites d'exemple.
 
 ## La recherche
 
